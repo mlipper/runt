@@ -10,122 +10,32 @@ require 'date'
   Author: Matthew Lipper
 =end
 
-class Date
-	
-	include Runt
-
-	attr_accessor :date_precision
-  
-	class << self
-
-  	alias_method :old_civil, :civil
-
-		def civil(*args)		
-			if(args[0].instance_of?(Runt::DatePrecision::Precision))
-				precision = args.shift
-			else
-				return Runt::DatePrecision.day_of_month(*args)
-				#precision = nil
-			end
-			_civil = old_civil(*args)
-			_civil.date_precision = precision
-			_civil
-		end
-	end
-
-	def + (n)
-		raise TypeError, 'expected numeric' unless n.kind_of?(Numeric) 
-		
-		if(leap?) 
-			days_in_year = 365
-		else
-			days_in_year = 366
-		end
-		
-		case @date_precision
-			when Runt::DatePrecision::YEAR then 
-				return new_self_plus(n){ |n| n = n*days_in_year }	
-			when Runt::DatePrecision::MONTH then 
-				return new_self_plus(n){ |n| n = (n*(days_in_year/12).to_i)} 
-			#Default behaviour already in Date
-			when Runt::DatePrecision::DAY_OF_MONTH then 
-				return new_self_plus(n){ |n| n = n }			
-		end
-		#~ return self.class.new0(@ajd + n, @of, @sg)
-	end
-	
-	private
-
-	def new_self_plus(n)		
-		if(block_given?)
-			n=yield(n) 
-			#~ puts "n==#{n}"
-		end
-		
-		return Runt::DatePrecision::to_p(self.class.new0(@ajd + n, @of, @sg),@date_precision)
-	end
-end
-
-class DateTime
-
-	attr_accessor :date_precision
-  
-	class << self
-
-  	alias_method :old_civil, :civil
-
-		def civil(*args)
-			if(args[0].instance_of?(Runt::DatePrecision::Precision))
-				precision = args.shift
-			else
-				return Runt::DatePrecision.minute(*args)			
-				#precision = nil
-			end
-		_civil = old_civil(*args)
-		_civil.date_precision = precision
-		_civil
-		end
-	end
-		
-	
-	def + (n)
-		raise TypeError, 'expected numeric' unless n.kind_of?(Numeric) 
-		case @date_precision
-			when Runt::DatePrecision::HOUR_OF_DAY then n = (n*(1.to_r/24) )			
-			when Runt::DatePrecision::MINUTE then n = (n*(1.to_r/1440) )		
-			when Runt::DatePrecision::SECOND then n = (n*(1.to_r/86400) )
-		end
-		return self.class.new0(@ajd + n, @of, @sg)
-	end
-
-end
-
 module Runt
 	
 	module DatePrecision
-  
+				
 		def DatePrecision.year(yr,*ignored)
-			Date::civil( YEAR, yr, MONTH.min_value, DAY_OF_MONTH.min_value  )
+			TimePoint::civil( YEAR, yr, MONTH.min_value, DAY_OF_MONTH.min_value  )
 		end
 
 		def DatePrecision.month( yr,mon,*ignored )    
-			Date::civil( MONTH, yr, mon, DAY_OF_MONTH.min_value  )
+			TimePoint::civil( MONTH, yr, mon, DAY_OF_MONTH.min_value  )
 		end
 
 		def DatePrecision.day_of_month( yr,mon,day,*ignored )
-			Date::civil( DAY_OF_MONTH, yr, mon, day )			
+			TimePoint::civil( DAY_OF_MONTH, yr, mon, day )			
 		end
       
 		def DatePrecision.hour_of_day( yr,mon,day,hr=HOUR_OF_DAY.min_value,*ignored ) 
-			DateTime::civil( HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)						
+			TimePoint::civil( HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)						
 		end
   
 		def DatePrecision.minute( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,*ignored )  
-			DateTime::civil( MINUTE, yr, mon, day,hr,min, SECOND.min_value)									
+			TimePoint::civil( MINUTE, yr, mon, day,hr,min, SECOND.min_value)									
 		end
   
 		def DatePrecision.second( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,sec=SECOND.min_value,*ignored ) 
-			DateTime::civil( SECOND, yr, mon, day,hr,min, sec)									
+			TimePoint::civil( SECOND, yr, mon, day,hr,min, sec)									
 		end
   
 		def DatePrecision.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
@@ -133,11 +43,10 @@ module Runt
 		end
 
 		def DatePrecision.default(*args)  
-			DateTime::civil(DEFAULT, *args)									
+			TimePoint::civil(DEFAULT, *args)									
 		end
 
 		def DatePrecision.to_p(date,prec=DEFAULT)
-				puts prec
 				case prec
 					when MINUTE then DatePrecision.minute(*DatePrecision.explode(date))
 					when DAY_OF_MONTH then DatePrecision.day_of_month(*DatePrecision.explode(date))
@@ -153,10 +62,11 @@ module Runt
 		
 		def DatePrecision.explode(date)
 			result = [date.year,date.month,date.day]
-			if( date.instance_of? DateTime )			
+			#~ if( date.instance_of? DateTime )			
+			#~ if( date.instance_of?(TimePoint) && date.date_precision > DAY_OF_MONTH )			
+			if( date.date_precision > DAY_OF_MONTH )			
 				result << date.hour << date.min << date.sec					
 			end
-			p result 
 			result
 		end
 		
@@ -253,26 +163,6 @@ module Runt
 	MILLISECOND = Precision.millisecond
 	#Defaults to minute
 	DEFAULT=MINUTE
-	
-	end
-	
-	class DatePrec < Date
-  
-		include DatePrecision
-
-		def initialize(*args)
-			civil(*args)
-		end
-	
-	end
-	
-	class DateTimePrec < DateTime
-  
-		include DatePrecision
-
-		def initialize(*args)
-			civil(*args)
-		end
 	
 	end
 	

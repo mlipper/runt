@@ -16,7 +16,10 @@ module Runt
   VERSION_MAJOR = 0
   VERSION_MINOR = 1
   RELEASE = 0
-  DEBUG = false
+  DEBUG = true
+	
+	include Tracing if $DEBUG 
+
 	#See Date::ABBR_DAYNAMES
 	Sunday = Date::DAYNAMES.index("Sunday")
 	Monday = Date::DAYNAMES.index("Monday")
@@ -59,4 +62,5 @@ module Runt
 end
 
 require "runt/dateprecision"
+require "runt/timepoint"
 require "runt/temporalexpression"
