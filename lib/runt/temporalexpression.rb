@@ -16,6 +16,8 @@ module Runt
 # <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
 # described by Martin Fowler. Essentially, they provide a pattern language for
 # specifying recurring events using set expressions.
+#
+# See also [tutorial_te.rdoc]
 class TemporalExpression
   # Returns true or false depending on whether this TemporalExpression includes the supplied
   # date expression.
