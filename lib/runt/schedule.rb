@@ -60,7 +60,7 @@ module Runt
 
     #  Schedule this event to occur using the given expression.
     def add_schedule(expression)
-      schedule.add(schedule.add(self, expression))
+      @schedule.add(@schedule.add(self, expression))
     end
 
     def to_s; @id.to_s end

@@ -21,6 +21,22 @@ class TemporalExpression
   # date expression.
   def include?(date_expr); false end
   def to_s; "TemporalExpression" end
+
+  protected
+  def week_in_month(day_in_month)
+    ((day_in_month - 1) / 7) + 1
+  end
+
+  def days_left_in_month(date)
+    return max_day_of_month(date) - date.day
+  end
+
+  def max_day_of_month(date)
+    result = 1
+    date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }
+    result
+  end
+
 end
 
 # Base class for TemporalExpression classes that can be composed of other
@@ -127,50 +143,40 @@ class ArbitraryRangeTE < TemporalExpression
   def to_s; "ArbitraryRangeTE" end
 end
 
+# TemporalExpression that provides support for building a temporal
+# expression using the form:
+#
+#     DayInMonthTE.new(1,0)
+#
+# where the first argument is the week of the month and the second
+# argument is the wday of the week as defined by the 'wday' method
+# in the standard library class Date.
+#
+# A negative value for the week of the month argument will count
+# backwards from the end of the month. So, to match the last Saturday
+# of the month
+#
+#     DayInMonthTE.new(-1,6)
+#
+# Using constants defined in the base Runt module, you can re-write
+# the first example above as:
+#
+#     DayInMonthTE.new(First,Sunday)
+#
+# and the second as:
+#
+#     DayInMonthTE.new(Last,Saturday)
+#
+#  See also: Date, Runt
 class DayInMonthTE < TemporalExpression
 
-  def initialize(offset, day_index)
+  def initialize(week_of_month_index,day_index)
     @day_index = day_index
-    @offset = offset
+    @week_of_month_index = week_of_month_index
   end
 
   def include?(date)
     ( day_matches?(date) ) && ( week_matches?(date) )
-  end
-
-  def day_matches?(date)
-    @day_index == date.wday
-  end
-
-  def week_matches?(date)
-    if(@offset > 0)
-      return week_from_start_matches?(date)
-    else
-      return week_from_end_matches?(date)
-    end
-  end
-
-  def week_from_start_matches?(date)
-    week_in_month(date.day)==@offset
-  end
-
-  def week_from_end_matches?(date)
-    n = days_left_in_month(date) + 1
-    week_in_month(n) == @offset.abs
-  end
-
-  def week_in_month(day_in_month)
-    ((day_in_month - 1) / 7) + 1
-  end
-
-  def days_left_in_month(date)
-    return max_day_of_month(date) - date.day
-  end
-
-  def max_day_of_month(date)
-    result = 1
-    date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }
-    result
   end
 
   def to_s
@@ -187,6 +193,60 @@ class DayInMonthTE < TemporalExpression
     puts "days_left_in_month == #{days_left_in_month(date)}"
     puts "max_day_of_month == #{max_day_of_month(date)}"
   end
+
+  private
+  def day_matches?(date)
+    @day_index == date.wday
+  end
+
+  def week_matches?(date)
+    if(@week_of_month_index > 0)
+      return week_from_start_matches?(date)
+    else
+      return week_from_end_matches?(date)
+    end
+  end
+
+  def week_from_start_matches?(date)
+    week_in_month(date.day)==@week_of_month_index
+  end
+
+  def week_from_end_matches?(date)
+    n = days_left_in_month(date) + 1
+    week_in_month(n) == @week_of_month_index.abs
+  end
+
+end
+
+# TemporalExpression that matches days of the week where the first argument
+# is an integer denoting the ordinal day of the week. Valid values are 0..6 where
+# 0 == Sunday and 6==Saturday
+#
+# For example:
+#
+#     DayInWeekhTE.new(0)
+#
+# Using constants defined in the base Runt module, you can re-write
+# the first example above as:
+#
+#     DayInWeekhTE.new(Sunday)
+#
+#  See also: Date, Runt
+class DayInWeekTE < TemporalExpression
+
+  VALID_RANGE = 0..6
+
+  def initialize(ordinal_weekday)
+    unless VALID_RANGE.include?(ordinal_weekday)
+      raise ArgumentError, 'invalid ordinal day of week'
+    end
+    @ordinal_weekday = ordinal_weekday
+  end
+
+  def include?(date)
+    @ordinal_weekday == date.wday
+  end
+
 end
 
 class RangeEachYearTE < TemporalExpression
@@ -265,17 +325,16 @@ class RangeEachDayTE < TemporalExpression
     return @range.include?(get_current(date.hour,date.min))
   end
 
-
   def to_s
     "RangeEachDayTE"
   end
-
 
   def print(date)
     puts "DayInMonthTE: #{date}"
     puts "include? == #{include?(date)}"
   end
 
+  private
   def spans_midnight?(start_hour, end_hour)
     return end_hour <= start_hour
   end
@@ -287,6 +346,28 @@ class RangeEachDayTE < TemporalExpression
 
   def get_next(hour,minute)
       TimePoint.minute(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
+  end
+
+end
+
+# TemporalExpression that matches the week in a month. For example:
+#
+#     WeekInMonthTE.new(1)
+#
+#  See also: Date
+class WeekInMonthTE < TemporalExpression
+
+  VALID_RANGE = -5..5
+
+  def initialize(ordinal)
+    unless VALID_RANGE.include?(ordinal)
+      raise ArgumentError, 'invalid ordinal week of month'
+    end
+    @ordinal = ordinal
+  end
+
+  def include?(date)
+    @ordinal == week_in_month(date.day)
   end
 
 end

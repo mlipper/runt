@@ -121,6 +121,26 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(expr3.include?(dt3))
   end
 
+  def test_day_in_week_te
+    #Friday (woo-hoo!)
+    expr = DayInWeekTE.new(Friday)
+    #Friday, January 9th 2004
+    assert(expr.include?(TimePoint.new(2004,1,9)))
+    #Friday, January 16th 2004
+    assert(expr.include?(TimePoint.new(2004,1,16)))
+    #Monday, January 12th 2004
+    assert(!expr.include?(TimePoint.new(2004,1,12)))
+  end
+  def test_week_in_month_te
+    expr = WeekInMonthTE.new(Third)
+    assert(expr.include?(TimePoint.day_of_month(2004,2,19)))
+    assert(!expr.include?(TimePoint.day_of_month(2004,2,29)))
+    #FIXME!!!
+    #~ expr2 = WeekInMonthTE.new(Last)
+    #~ puts (-5..5).include?(-1)
+    #~ assert(expr2.include?(TimePoint.day_of_month(2004,2,29)))
+  end
+
   def test_range_each_year_te
     # November 1st, 1961
     dt1 = Date.civil(1961,11,1)
@@ -155,5 +175,36 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #12:01 am (January 28th, 2004 - ignored)
     assert(!expr2.include?(TimePoint.minute(2004,1,28,0,01)))
   end
+
+  def test_combined_te
+    #Tuesdays
+    tuesdays = DayInWeekTE.new(Tuesday)
+    #Thursdays
+    thursdays = DayInWeekTE.new(Thursday)
+    #9:30 pm to midnight
+    nine_thirty_to_midnight = RangeEachDayTE.new(21,30,00,00)
+    #Last Monday
+    last_monday = DayInMonthTE.new(Last,Monday)
+    #First Monday
+    first_monday = DayInMonthTE.new(First,Monday)
+
+    #Memorial Day = last Monday of May
+    memorial_day = IntersectionTE.new
+    memorial_day.add(RangeEachYearTE.new(5)).add(DayInMonthTE.new(Last,Monday))
+
+    #Labor Day = first Monday in September
+    labor_day = IntersectionTE.new
+    labor_day.add(RangeEachYearTE.new(9)).add(DayInMonthTE.new(First,Monday))
+
+    #~ before=AnchoredBeforeTE.new(labor_day,true)
+    #~ puts before.include?(TimePoint.minute(2004,5,8,0,01))
+
+    #All Summer long!
+    summer_time = IntersectionTE.new
+
+
+
+  end
+
 
 end
