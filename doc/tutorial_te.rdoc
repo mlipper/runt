@@ -1,6 +1,93 @@
 = Temporal Expressions Tutorial
 
-coming soon...
+Based on a pattern[http://martinfowler.com/apsupp/recurring.pdf]
+created by Martin Fowler, temporal expressions define points or ranges
+in time using <em>set expressions</em>. This means, an application
+developer can precisely describe recurring events without resorting to
+hacking out a big-ol' nasty enumerated list of dates.
 
-  blah, blah, blah
+For example, say you wanted to schedule an event that occurred
+annually on the last Thursday of every August. You could, of course,
+do something like this:
+
+  require 'date'
+  
+  some_dates = [Date.new(2002,8,29),Date.new(2003,8,28),Date.new(2004,8,26)]
+
   ...etc.
+
+This is fine for two or three years, but what about for thirty years?
+What if you want to say every Monday, Tuesday and Friday, between 3
+and 5pm for the next fifty years? *Ouch*.
+
+As Fowler notes in his paper, TemporalExpressions(<tt>TE</tt> for
+short) provide a reasonably straightforward pattern language for
+defining a given set of dates and/or times. They can be 'mixed-and-
+matched' as necessary, providing an incremental, modular and expanding
+expressive power.
+
+Alrighty, then...less talkin', more tutorin'!
+
+=== Example 1 
+<b>Define An Expression That Says: 'the last Thursday in August'</b>
+  
+  1   require 'runt'
+  2
+  3   last_thursday = DayInMonthTE.new(Last_of,Thursday)
+  4    
+  5   august = RangeEachYearTE.new(8)
+  6
+  7   intersect_expr = IntersectionTE.new.add(last_thursday).add(august) 
+  8
+  9   #Thursday, August 29th, 2002
+  10  intersect_expr.include?(Date.new(2002,8,29)) # => true
+  11
+  12  #Thursday, August 28th, 2003
+  13  intersect_expr.include?(Date.new(2003,8,28)) # => true
+  14
+  15  #Thursday, August 26th, 2004
+  16  intersect_expr.include?(Date.new(2004,8,26)) # => true
+  17    
+  18  #Friday, August 27th, 2004
+  19  intersect_expr.include?(Date.new(2004,8,27)) # => false
+  20        
+  21  #Thursday, March 18th, 2004
+  22  intersect_expr.include?(Date.new(2004,3,18)) # => true
+
+A couple things are worth noting before we try and get too fancy.
+IntersectionTE is a composite type that selects the intersection of
+its component expressions. Regarding implementation, composite TE's
+are generally subclasses of CollectionTE. As seen on line 7,
+CollectionTEs are built providing sub-expressions using the 
+<tt>#add</tt> method.
+
+Now what? Beginning on line 10, you can see that calling the 
+<tt>#include?</tt> method will let you know whether the expression you've
+defined includes a given date (or, in some cases, a range, or another
+TE). This is much like the way you use the standard <tt>Range#include?</tt>.
+
+=== Example 2 
+<b>Define: 'Street Cleaning Rules/Alternate Side Parking in NYC'</b>
+
+In his paper, Fowler uses Boston parking regulations to illustrate
+some examples. Since I'm from New York City, and Boston-related
+examples might cause an allergic reaction, I'll use NYC's street
+cleaning and parking
+calendar[http://www.nyc.gov/html/dot/html/motorist/scrintro.html#street] 
+instead. Since I'm not <em>completely</em> insane, I'll only use a small
+subset of the actual rules.
+
+
+
+
+These are simple examples, but they demonstrate how
+TemporalExpressions can be used to define patterns of occurrence
+and recurrence. Additionally, there are several other
+TemporalExpressions, and once you get the hang of it, it's easy
+to write your own.
+
+<em>See Also:</em>
+
+* Fowler's recurring event pattern[http://martinfowler.com/apsupp/recurring.pdf]
+
+* Other temporal patterns[http://martinfowler.com/ap2/timeNarrative.html]
