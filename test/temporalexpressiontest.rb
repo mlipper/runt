@@ -65,9 +65,13 @@ class TExprTest < Test::Unit::TestCase
 
   def test_intersection_te
     #Should match the first Sunday of March and April
-    intersect_expr  = REYear.new(3,4) & DIMonth.new(First,Sunday)
-    assert(intersect_expr.include?(PDate.new(2004,3,7))) #Sunday, March 7th, 2004
-    assert(!intersect_expr.include?(PDate.new(2004,4,1))) #First Sunday in February, 2004
+    expr1  = REYear.new(3,4) & DIMonth.new(First,Sunday)
+    assert(expr1.include?(PDate.new(2004,3,7))) #Sunday, March 7th, 2004
+    assert(!expr1.include?(PDate.new(2004,4,1))) #First Sunday in February, 2004
+    expr2 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
+    assert(expr2.include?( PDate.new(2004,5,4,8,06)))
+    assert(!expr2.include?(PDate.new(2004,5,1,8,06)))
+    assert(!expr2.include?(PDate.new(2004,5,3,9,06)))
   end
 
   def test_difference_te
@@ -163,31 +167,32 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr2.include?(PDate.minute(2004,1,28,0,01)))
   end
   def test_range_each_week_te
-		begin
-			expr = REWeek.new(10,4)
-			fail "ArgumentError expected"
-		rescue ArgumentError
-			#Expected, YAY! we passed! YAY!
-		end
-		#Sunday through Thursday
-		expr2 = REWeek.new(0,4)
+
+    assert_raises(ArgumentError){ expr = REWeek.new(10,4) }
+
+    expr1 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
+    assert(!expr1.include?(PDate.new(2004,5,1,8,06)))
+
+
+    #Sunday through Thursday
+    expr2 = REWeek.new(0,4)
     assert(expr2.include?(PDate.minute(2004,2,19,23,59,59)))
     assert(!expr2.include?(PDate.minute(2004,2,20,0,0,0)))
-	end
+  end
   def test_combined_te
-		#This is a hack.....
-		#In the U.S., Memorial Day begins the last Monday of May
-		#
-		#The month of May
-		may=REYear.new(5)
-		#Monday through Saturday
-		monday_to_saturday = REWeek.new(1,6)
-		#Last week of (any) month
-		last_week_in = WIMonth.new(Last_of)
-		#So, to say 'starting from the last Monday in May',
+    #This is a hack.....
+    #In the U.S., Memorial Day begins the last Monday of May
+    #
+    #The month of May
+    may=REYear.new(5)
+    #Monday through Saturday
+    monday_to_saturday = REWeek.new(1,6)
+    #Last week of (any) month
+    last_week_in = WIMonth.new(Last_of)
+    #So, to say 'starting from the last Monday in May',
     #we need to select just that last week of May begining with
     #the Monday of that week
-		last_week_of_may = may & monday_to_saturday & last_week_in
+    last_week_of_may = may & monday_to_saturday & last_week_in
 
     #This is another hack similar to the above, except instead of selecting a range
     #starting at the begining of the month, we need to select only the time period in
@@ -195,15 +200,15 @@ class TExprTest < Test::Unit::TestCase
     #
     #In the U.S., Labor Day is the first Monday in September
     #
-		#The month of September
-		september=REYear.new(9)
-		#First week of (any) month
-		first_week_in = WIMonth.new(First)
+    #The month of September
+    september=REYear.new(9)
+    #First week of (any) month
+    first_week_in = WIMonth.new(First)
     entire_first_week_of_september = september & first_week_in
     #To exclude everything in the first week which occurs on or after Monday.
     first_week_of_september=entire_first_week_of_september - monday_to_saturday
     #June through August
-		june_through_august=REYear.new(6,First,8)
+    june_through_august=REYear.new(6,First,8)
     assert(june_through_august.include?(PDate.day_of_month(2004,7,4)))
     #Finally!
     summer_time = last_week_of_may | first_week_of_september | june_through_august

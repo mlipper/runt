@@ -12,30 +12,45 @@ class ScheduleTest < Test::Unit::TestCase
 
   include Runt
 
-  def test_create_new
-    schedule = Schedule.new
-    assert(!schedule.nil?,"Call to Schedule.new returned NULL reference")
-  end
-
   def test_add
-    elmo_party_schedule = Schedule.new
-    elmo_party = Event.new("Elmo's Birthday Party",elmo_party_schedule)
-    elmo_party_schedule.add(elmo_party,@elmo_party_te)
-    assert(elmo_party_schedule.is_occurring?(elmo_party, PDate.new(2004,2,1,11,06)))
-    assert(elmo_party_schedule.is_occurring?(!elmo_party, PDate.new(2004,2,1,9,06)))
-    assert(elmo_party.schedule==elmo_party_schedule)
 
-    tv_schedule = Schedule.new
-    elmos_world = Event.new("Elmo's World",tv_schedule)
+    #Jane is very busy these days.
+    j_sched = Schedule.new
 
-    #~ p @sesame_street_broadcast_te
-    #schedule.add(
+    #Elmo's World is on TV: Mon-Fri 8am-8:30am
+    elmo = Event.new("Elmo's World")
+  
+    j_sched.add(elmo,(REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)))
+    assert(j_sched.include?(elmo, PDate.new(2004,5,4,8,06)))
+    assert(!j_sched.include?(elmo, PDate.new(2004,5,1,8,06)))
+    assert(!j_sched.include?(elmo, PDate.new(2004,5,3,9,06)))
+
+    #Oobi's on TV: Thu-Sat 8:30am-9am
+    oobi = Event.new("Oobi")
+
+    j_sched.add(oobi,(REWeek.new(Thu,Sat) & REDay.new(8,30,9,00)))
+
+    assert(j_sched.include?(oobi, PDate.new(2004,4,30,8,56)))
+    assert(!j_sched.include?(oobi, PDate.new(2004,5,1,8,12)))
+    assert(!j_sched.include?(oobi, PDate.new(2004,5,5,8,50)))
 
   end
 
-  def setup
-    #~ @elmo_party = Event.new("Elmo's Birthday Party")
-    @elmo_party_te = REDay.new(10,00,16,00)
-    @sesame_street_broadcast_te = REWeek.new(Monday,Friday) - REDay.new(9,00,10,00)
+  def test_dates
+
+    # range: May 1st, 2004 to May 31st, 2004
+    d_range = DateRange.new(PDate.day_of_month(2004,5,1), PDate.day_of_month(2004,5,31))
+    sched = Schedule.new
+    event = Event.new("Visit Ernie")
+
+    # First and last Friday of the month
+    expr1 = DIMonth.new(1,Fri) |  DIMonth.new(-1,Fri)
+    sched.add(event,expr1)
+
+    dates = sched.dates(event,d_range)
+    expected = [PDate.day_of_month(2004,5,7), PDate.day_of_month(2004,5,28)]
+    assert_equal(expected,dates)
   end
+
 end
+
