@@ -23,7 +23,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
   def test_union_te
     #midnight to 6:30am AND/OR first Tuesday of the month
-    expr = (RangeEachDayTE.new(0,0,6,30) | DayInMonthTE.new(First,Tuesday))
+    expr = RangeEachDayTE.new(0,0,6,30) | DayInMonthTE.new(First,Tuesday)
     assert(expr.include?(TimePoint.day_of_month(2004,1,6))) #January 6th, 2004 (First Tuesday)
     assert(expr.include?(TimePoint.hour_of_day(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
     assert(!expr.include?(TimePoint.minute(2030,7,4,6,31))) #6:31am, July, 4th, 2030
@@ -64,28 +64,15 @@ class TemporalExpressionTest < Test::Unit::TestCase
   end
 
   def test_intersection_te
-    #Test before adding expressions
-    intersect_expr  = IntersectionTE.new
-    assert(!intersect_expr.include?(Date.today))
-    #March through April
-    expr1 = RangeEachYearTE.new(3,4)
-    #First Sunday of any month
-    expr2 = DayInMonthTE.new(First,Sunday)
     #Should match the first Sunday of March and April
-    intersect_expr.add(expr1).add(expr2)
-    #Sunday, March 7th, 2004
-    assert(intersect_expr.include?(TimePoint.new(2004,3,7)))
-    #First Sunday in February, 2004
-    assert(!intersect_expr.include?(TimePoint.new(2004,4,1)))
+    intersect_expr  = RangeEachYearTE.new(3,4) & DayInMonthTE.new(First,Sunday)
+    assert(intersect_expr.include?(TimePoint.new(2004,3,7))) #Sunday, March 7th, 2004
+    assert(!intersect_expr.include?(TimePoint.new(2004,4,1))) #First Sunday in February, 2004
   end
 
   def test_difference_te
-    #8:30 pm to 12:00 midnight
-    expr1 = RangeEachDayTE.new(20,30,00,00)
-    #11:04 pm to 6:20 am
-    expr2 = RangeEachDayTE.new(23,04,6,20)
     #Should match for 8:30 pm to 11:04 pm
-    diff_expr  = DifferenceTE.new(expr1,expr2)
+    diff_expr  = RangeEachDayTE.new(20,30,00,00) - RangeEachDayTE.new(23,04,6,20)
     #8:45 pm (May 1st, 2003 - ignored)
     assert(diff_expr.include?(TimePoint.new(2003,5,1,20,45)))
     #11:05 pm (February 1st, 2004 - ignored)
@@ -188,17 +175,6 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(!expr2.include?(TimePoint.minute(2004,2,20,0,0,0)))
 	end
   def test_combined_te
-    #~ #Tuesdays
-    #~ tuesdays = DayInWeekTE.new(Tuesday)
-    #~ #Thursdays
-    #~ thursdays = DayInWeekTE.new(Thursday)
-    #~ #9:30 pm to midnight
-    #~ nine_thirty_to_midnight = RangeEachDayTE.new(21,30,00,00)
-    #~ #Last Monday
-    #~ last_monday = DayInMonthTE.new(Last,Monday)
-    #~ #First Monday
-    #~ first_monday = DayInMonthTE.new(First,Monday)
-
 		#This is a hack.....
 		#In the U.S., Memorial Day begins the last Monday of May
 		#
@@ -211,9 +187,9 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		#So, to say 'starting from the last Monday in May',
     #we need to select just that last week of May begining with
     #the Monday of that week
-		last_week_of_may = IntersectionTE.new
-		last_week_of_may.add(may).add(monday_to_saturday).add(last_week_in)
-		#This is another hack similar to the above, except instead of selecting a range
+		last_week_of_may = may & monday_to_saturday & last_week_in
+
+    #This is another hack similar to the above, except instead of selecting a range
     #starting at the begining of the month, we need to select only the time period in
     #September up until Labor Day.
     #
@@ -223,16 +199,14 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		september=RangeEachYearTE.new(9)
 		#First week of (any) month
 		first_week_in = WeekInMonthTE.new(First)
-    entire_first_week_of_september = IntersectionTE.new
-    entire_first_week_of_september.add(september).add(first_week_in)
+    entire_first_week_of_september = september & first_week_in
     #To exclude everything in the first week which occurs on or after Monday.
-    first_week_of_september=DifferenceTE.new(entire_first_week_of_september,monday_to_saturday)
+    first_week_of_september=entire_first_week_of_september - monday_to_saturday
     #June through August
 		june_through_august=RangeEachYearTE.new(6,First,8)
     assert(june_through_august.include?(TimePoint.day_of_month(2004,7,4)))
     #Finally!
-    summer_time = UnionTE.new
-    summer_time.add(last_week_of_may).add(first_week_of_september).add(june_through_august)
+    summer_time = last_week_of_may | first_week_of_september | june_through_august
 
     #Will work, but will be incredibly slow:
     #  assert(summer_time.include?(TimePoint.minute(2004,5,31,0,0)))
@@ -246,9 +220,10 @@ class TemporalExpressionTest < Test::Unit::TestCase
   def test_nyc_parking_te
 
     #Monday, Wednesday, Friday
-    mon_wed_fri = UnionTE.new.add(DayInWeekTE.new(Monday)) \
-                    .add(DayInWeekTE.new(Wednesday)) \
-                      .add(DayInWeekTE.new(Friday))
+    mon_wed_fri = (DayInWeekTE.new(Monday) | \
+                    DayInWeekTE.new(Wednesday) | \
+                      DayInWeekTE.new(Friday))
+
 
     #Wednesday (at 7:15pm - ignored)
     assert(mon_wed_fri.include?(DateTime.new(2004,3,10,19,15)))
@@ -260,11 +235,10 @@ class TemporalExpressionTest < Test::Unit::TestCase
     eight_to_eleven = RangeEachDayTE.new(8,00,11,00)
 
     #=> Mon,Wed,Fri - 8am to 11am
-    expr1 = IntersectionTE.new.add(mon_wed_fri).add(eight_to_eleven)
+    expr1 = mon_wed_fri & eight_to_eleven
 
     #Tuesdays, Thursdays
-    tues_thurs = UnionTE.new.add(DayInWeekTE.new(Tuesday)) \
-                   .add(DayInWeekTE.new(Thursday))
+    tues_thurs = (DayInWeekTE.new(Tuesday) | DayInWeekTE.new(Thursday))
 
     #11:30am to 2pm
     eleven_thirty_to_two = RangeEachDayTE.new(11,30,14,00)
@@ -277,12 +251,12 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
 
     #=> Tues,Thurs - 11:30am to 2pm
-    expr2 = IntersectionTE.new.add(tues_thurs).add(eleven_thirty_to_two)
+    expr2 = tues_thurs & eleven_thirty_to_two
 
     #
     #Sigh...now if I can only get my dad to remember this...
     #
-    parking_ticket = UnionTE.new.add(expr1).add(expr2)
+    parking_ticket = (expr1 | expr2)
 
     assert(parking_ticket.include?(DateTime.new(2004,3,11,12,15)))
     assert(parking_ticket.include?(DateTime.new(2004,3,10,9,15)))
