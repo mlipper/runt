@@ -184,12 +184,16 @@ end
 
 class RangeEachYearTE < TemporalExpression
 
-	def initialize(start_month, end_month=start_month, start_day=0, end_day=0)
+	def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
 		super()
 		@start_month = start_month
-		@end_month = end_month
+		puts "@start_month==#{@start_month}"
 		@start_day = start_day
-		@end_month = end_day
+		puts "@start_day==#{@start_day}"
+		@end_month = end_month
+		puts "@end_month==#{@end_month}"
+		@end_day = end_day
+		puts "@end_day==#{@end_day}"
 	end
 	
 	def includes?(date)
@@ -202,16 +206,60 @@ class RangeEachYearTE < TemporalExpression
 		(date.mon > @start_month) && (date.mon < @end_month)
 	end
 
-  def end_month_includes?(date)
+	def end_month_includes?(date)
 		return false unless (date.mon == @end_month) 
 		(@end_day == 0)  || (date.day <= @end_day)
 	end
 	
-  def start_month_includes?(date)
+	def start_month_includes?(date)
 		return false unless (date.mon == @start_month)		
 		(@start_day == 0) || (date.day >= @start_day)
 	end
 	
+	def to_s
+		"RangeEachYearTE"
+	end
+
+	def print(date)
+		puts "DayInMonthTE: #{date}"
+		puts "includes? == #{includes?(date)}"
+		puts "months_include? == #{months_include?(date)}"
+		puts "end_month_includes? == #{end_month_includes?(date)}"
+		puts "start_month_includes? == #{start_month_includes?(date)}"
+	end
+	
+end
+
+class RangeEachDayTE < TemporalExpression
+
+	#~ CURRENT_DAY = DatePrecision.
+	#~ NEXT_DAY = 
+
+	def initialize(start_hour, start_minute, end_hour, end_minute)
+		@start_hour = start_hour
+		@start_minute = start_minute
+		@end_hour = end_hour
+		@end_minute = end_minute
+		@spans_midnight = spans_midnight?(start_hour, end_hour)
+	end
+	
+	def includes?(date)
+	end
+	
+	def to_s
+		"RangeEachDayTE"
+	end
+	
+	def spans_midnight?(start_hour, end_hour)
+		return false unless start_hour <= end_hour
+		return true
+	end
+
+	def print(date)
+		puts "DayInMonthTE: #{date}"
+		puts "includes? == #{includes?(date)}"
+	end
+
 end
 
 end

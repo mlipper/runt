@@ -79,12 +79,34 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		
 		#last Sunday of the month
 		expr3 = DayInMonthTE.new(Last_of,Sunday)
-		expr3.print(dt3)
+		#~ expr3.print(dt3)
 		assert(expr3.includes?(dt3))	
+	end
 
-end
+	def test_range_each_year_te
+		# November 1st, 1961
+		dt1 = Date.civil(1961,11,1)
 
-def test_range_each_year_te
-end
+		#June, 1986
+		dt2 = DatePrecision::month(1986,6)
+		
+		#November and December
+		expr1 = RangeEachYearTE.new(11,12)
+		
+		#May 31st through  and September 6th
+		expr2 = RangeEachYearTE.new(5,31,9,6)
+
+		assert(expr1.includes?(dt1))
+
+		assert(!expr1.includes?(dt2))
+		
+		expr2.print(dt2)
+		
+		assert(expr2.includes?(dt2))
+
+	end
+	
+	def setup 
+	end
 
 end

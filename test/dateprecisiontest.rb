@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+	#!/usr/bin/env ruby
 
 $:<<'../lib'
 
@@ -65,4 +65,13 @@ class DatePrecisionTest < Test::Unit::TestCase
 		assert(month_prec==DatePrecision.to_p(no_prec_datetime,DatePrecision::MONTH))
 
 	end	
+	def test_plus
+		year_prec = DatePrecision.year(2010,8)
+		#Year precision will truncate month		
+		assert(DatePrecision.year(2022,12)==(year_prec+12))		
+		month_prec = DatePrecision.month(2004,8)
+		assert(DatePrecision.month(2005,1)==(month_prec+6))		
+		#11:59 (:04 - ignored) December 31st, 1999 
+		prec = DatePrecision.minute(1999,12,31,23,59,4)
+ 	end
 end
