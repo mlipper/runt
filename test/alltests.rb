@@ -2,7 +2,7 @@
 
 $:<<'../lib'
 
-puts $:
+#~ puts $:
 
 require 'dateprecisiontest'
 require 'temporalexpressiontest'

@@ -187,13 +187,13 @@ class RangeEachYearTE < TemporalExpression
 	def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
 		super()
 		@start_month = start_month
-		puts "@start_month==#{@start_month}"
+		#~ puts "@start_month==#{@start_month}"
 		@start_day = start_day
-		puts "@start_day==#{@start_day}"
+		#~ puts "@start_day==#{@start_day}"
 		@end_month = end_month
-		puts "@end_month==#{@end_month}"
+		#~ puts "@end_month==#{@end_month}"
 		@end_day = end_day
-		puts "@end_day==#{@end_day}"
+		#~ puts "@end_day==#{@end_day}"
 	end
 	
 	def includes?(date)
@@ -232,34 +232,62 @@ end
 
 class RangeEachDayTE < TemporalExpression
 
-	#~ CURRENT_DAY = DatePrecision.
-	#~ NEXT_DAY = 
-
+	CURRENT=28
+	NEXT=29
+	ANY_DATE=TimePoint.day_of_month(2002,8,CURRENT)
+	
 	def initialize(start_hour, start_minute, end_hour, end_minute)
-		@start_hour = start_hour
-		@start_minute = start_minute
-		@end_hour = end_hour
-		@end_minute = end_minute
-		@spans_midnight = spans_midnight?(start_hour, end_hour)
+		super()
+		
+		start_time = TimePoint.minute(ANY_DATE.year,ANY_DATE.month,
+																								ANY_DATE.day,start_hour,start_minute)
+		
+		if(@spans_midnight = spans_midnight?(start_hour, end_hour)) then		
+			end_time = get_next(end_hour,end_minute)			
+		else
+			end_time = get_current(end_hour,end_minute)					
+		end
+		
+		@range = start_time..end_time
 	end
 	
 	def includes?(date)
+		raise TypeError, 'expected date' unless date.kind_of?(Date)
+		
+		if(@spans_midnight&&date.hour<12) then
+			#Assume next day
+			return @range.include?(get_next(date.hour,date.min))  
+		end
+			
+		#Same day
+		return @range.include?(get_current(date.hour,date.min))  
+		
 	end
+	
 	
 	def to_s
 		"RangeEachDayTE"
 	end
 	
-	def spans_midnight?(start_hour, end_hour)
-		return false unless start_hour <= end_hour
-		return true
-	end
 
 	def print(date)
 		puts "DayInMonthTE: #{date}"
 		puts "includes? == #{includes?(date)}"
 	end
 
+	def spans_midnight?(start_hour, end_hour)
+		return end_hour <= start_hour
+	end
+	
+	private 
+	def get_current(hour,minute)
+			TimePoint.minute(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
+	end
+	
+	def get_next(hour,minute)
+			TimePoint.minute(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
+	end
+	
 end
 
 end

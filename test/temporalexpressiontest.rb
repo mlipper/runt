@@ -27,7 +27,6 @@ class TemporalExpressionTest < Test::Unit::TestCase
 	def test_union_te
     
 		dt = Date.civil(2003,12,30)
-		#dt = DatePrecision.second(2003,12,30)
 		
 		expr1 = ArbitraryTE.new(dt)
   	
@@ -99,13 +98,32 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
 		assert(!expr1.includes?(dt2))
 		
-		expr2.print(dt2)
+		#~ expr2.print(dt2)
 		
 		assert(expr2.includes?(dt2))
 
 	end
 	
-	def setup 
+	def test_range_each_day_te
+		#noon to 4:30pm
+		expr1 = RangeEachDayTE.new(12,0,16,30)		
+		#3:15 pm (May 8th, 2012 - ignored)
+		assert(expr1.includes?(TimePoint.hour_of_day(2012,5,8,15,15)))
+		#4:30 pm (April 18th, 1922 - ignored)
+		assert(expr1.includes?(TimePoint.hour_of_day(1922,4,18,16,30)))
+		#noon (June 5th, 1975 - ignored)
+		assert(expr1.includes?(TimePoint.hour_of_day(1975,6,5,12,0)))
+		#3:15 am (May 8th, 2012 - ignored)
+		assert(!expr1.includes?(TimePoint.hour_of_day(2012,5,8,3,15)))
+		
+		#8:30pm to 12:00 midnite
+		expr2 = RangeEachDayTE.new(20,30,00,00)		
+		#9:00 pm (January 28th, 2004 - ignored)
+		assert(expr2.includes?(TimePoint.minute(2004,1,28,21,00)))
+		#12:00 am (January 28th, 2004 - ignored)
+		assert(expr2.includes?(TimePoint.minute(2004,1,28,0,0)))
+		#12:01 am (January 28th, 2004 - ignored)
+		assert(!expr2.includes?(TimePoint.minute(2004,1,28,0,01)))		
 	end
-
+	
 end
