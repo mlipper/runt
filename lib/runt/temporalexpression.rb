@@ -255,6 +255,7 @@ class RangeEachDayTE < TemporalExpression
   end
 
   def includes?(date)
+	puts "--->#{date.class}"
     raise TypeError, 'expected date' unless date.kind_of?(Date)
 
     if(@spans_midnight&&date.hour<12) then

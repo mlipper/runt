@@ -13,7 +13,7 @@ module Runt
 
 		#  Schedule event to occur using the given expression.
 		def add(event, expression)
-			elements.push(ScheduleElement.new(event, expression))
+			@elements.push(ScheduleElement.new(event, expression))
 		end
 		
 		# For the given date range, returns an Array of TimePoint objects at which
@@ -29,7 +29,7 @@ module Runt
 		# Return true or false depend on if the supplied event is scheduled to occur on the
 		# given date.
 		def is_occurring?(event, date)
-			elements.each{|element| element.is_occurring?(event, date) }
+			@elements.each{|element| element.is_occurring?(event, date) }
 		end
 
 	end
@@ -47,5 +47,28 @@ module Runt
 			@expression.includes?(date)
 		end
 	end
+
+	class Event
+	
+		attr_reader :schedule, :id
+
+		def initialize(id,schedule=Schedule.new)
+			raise Exception, "id argument cannot be nil" unless !id.nil?
+			@id = id
+			@schedule = schedule
+		end
+
+		#  Schedule this event to occur using the given expression.
+		def add_schedule(expression)
+			schedule.add(schedule.add(self, expression))
+		end		
+		
+		def to_s; @id.to_s end
+		
+		def == (other)
+			return true if other.kind_of?(Event) && @id == other.id
+		end
+	end
+
 
 end
