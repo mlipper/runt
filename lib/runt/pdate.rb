@@ -26,7 +26,7 @@ module Runt
         if(args[0].instance_of?(DPrecision::Precision))
           precision = args.shift
         else
-          return PDate::second(*args)
+          return PDate::sec(*args)
         end
         _civil = old_civil(*args)
         _civil.date_precision = precision
@@ -98,19 +98,19 @@ module Runt
       PDate.civil(MONTH, yr, mon, DAY.min_value  )
     end
 
-    def PDate.day_of_month( yr,mon,day,*ignored )
+    def PDate.day( yr,mon,day,*ignored )
       PDate.civil(DAY, yr, mon, day )
     end
 
-    def PDate.hour_of_day( yr,mon,day,hr=HOUR.min_value,*ignored )
+    def PDate.hour( yr,mon,day,hr=HOUR.min_value,*ignored )
       PDate.civil(HOUR, yr, mon, day,hr,MIN.min_value, SEC.min_value)
     end
 
-    def PDate.minute( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,*ignored )
+    def PDate.min( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,*ignored )
       PDate.civil(MIN, yr, mon, day,hr,min, SEC.min_value)
     end
 
-    def PDate.second( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,sec=SEC.min_value,*ignored )
+    def PDate.sec( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,sec=SEC.min_value,*ignored )
       PDate.civil(SEC, yr, mon, day,hr,min, sec)
     end
 

@@ -39,7 +39,7 @@ class ScheduleTest < Test::Unit::TestCase
   def test_dates
 
     # range: May 1st, 2004 to May 31st, 2004
-    d_range = DateRange.new(PDate.day_of_month(2004,5,1), PDate.day_of_month(2004,5,31))
+    d_range = DateRange.new(PDate.day(2004,5,1), PDate.day(2004,5,31))
     sched = Schedule.new
     event = Event.new("Visit Ernie")
 
@@ -48,7 +48,7 @@ class ScheduleTest < Test::Unit::TestCase
     sched.add(event,expr1)
 
     dates = sched.dates(event,d_range)
-    expected = [PDate.day_of_month(2004,5,7), PDate.day_of_month(2004,5,28)]
+    expected = [PDate.day(2004,5,7), PDate.day(2004,5,28)]
     assert_equal(expected,dates)
   end
 

@@ -18,12 +18,12 @@ module Runt
     def DPrecision.to_p(date,prec=DEFAULT)
 
       case prec
-        when MIN then PDate.minute(*DPrecision.explode(date,prec))
-        when DAY then PDate.day_of_month(*DPrecision.explode(date,prec))
-        when HOUR then PDate.hour_of_day(*DPrecision.explode(date,prec))
+        when MIN then PDate.min(*DPrecision.explode(date,prec))
+        when DAY then PDate.day(*DPrecision.explode(date,prec))
+        when HOUR then PDate.hour(*DPrecision.explode(date,prec))
         when MONTH then PDate.month(*DPrecision.explode(date,prec))
         when YEAR then PDate.year(*DPrecision.explode(date,prec))
-        when SEC then PDate.second(*DPrecision.explode(date,prec))
+        when SEC then PDate.sec(*DPrecision.explode(date,prec))
         when MILLI then raise "Not implemented."
         else PDate.default(*DPrecision.explode(date,prec))
       end

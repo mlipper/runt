@@ -389,11 +389,11 @@ class REDay < TExpr
 
   CURRENT=28
   NEXT=29
-  ANY_DATE=PDate.day_of_month(2002,8,CURRENT)
+  ANY_DATE=PDate.day(2002,8,CURRENT)
 
   def initialize(start_hour, start_minute, end_hour, end_minute)
 
-    start_time = PDate.minute(ANY_DATE.year,ANY_DATE.month,
+    start_time = PDate.min(ANY_DATE.year,ANY_DATE.month,
               ANY_DATE.day,start_hour,start_minute)
 
     if(@spans_midnight = spans_midnight?(start_hour, end_hour)) then
@@ -433,11 +433,11 @@ class REDay < TExpr
 
   private
   def get_current(hour,minute)
-      PDate.minute(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
+      PDate.min(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
   end
 
   def get_next(hour,minute)
-      PDate.minute(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
+      PDate.min(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
   end
 
 end

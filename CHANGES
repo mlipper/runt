@@ -7,6 +7,11 @@
 * RAA deployment
 * GEM deployment
 * Renamed file dateprecisiontest.rb to dprecisiontest.rb
+* Renamed several methods on PDate:
+  - second -> sec
+  - minute -> min  
+  - hour_of_day -> hour
+  - day_of_month -> day
 
 == Version 0.1.0
 

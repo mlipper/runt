@@ -24,14 +24,14 @@ class TExprTest < Test::Unit::TestCase
   def test_union_te
     #midnight to 6:30am AND/OR first Tuesday of the month
     expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
-    assert(expr.include?(PDate.day_of_month(2004,1,6))) #January 6th, 2004 (First Tuesday)
-    assert(expr.include?(PDate.hour_of_day(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
-    assert(!expr.include?(PDate.minute(2030,7,4,6,31))) #6:31am, July, 4th, 2030
+    assert(expr.include?(PDate.day(2004,1,6))) #January 6th, 2004 (First Tuesday)
+    assert(expr.include?(PDate.hour(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
+    assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
 
   def test_arbitrary_te
-    expr1 = Spec.new(PDate.day_of_month(2003,12,30))
-    expr2 = Spec.new(PDate.day_of_month(2004,1,1))
+    expr1 = Spec.new(PDate.day(2003,12,30))
+    expr2 = Spec.new(PDate.day(2004,1,1))
     assert(expr1.include?(Date.new(2003,12,30)))
     assert(!expr1.include?(Date.new(2003,12,31)))
     assert(expr2.include?(Date.new(2004,1,1)))
@@ -46,19 +46,19 @@ class TExprTest < Test::Unit::TestCase
     #will work. However, it takes a LONG time to evaluate if range is large
     #and/or precision is small. Use DateRange instead
 
-    r_start = PDate.second(2004,2,29,16,24,12)
-    r_end = PDate.second(2004,3,2,4,22,58)
+    r_start = PDate.sec(2004,2,29,16,24,12)
+    r_end = PDate.sec(2004,3,2,4,22,58)
     #inclusive range equivalent to r_start..r_end
     expr1 = RSpec.new(DateRange.new(r_start,r_end))
-    assert(expr1.include?(PDate.second(2004,2,29,16,24,12)))
-    assert(expr1.include?(PDate.second(2004,3,2,4,22,58)))
+    assert(expr1.include?(PDate.sec(2004,2,29,16,24,12)))
+    assert(expr1.include?(PDate.sec(2004,3,2,4,22,58)))
     assert(expr1.include?(DateTime.new(2004,3,1,23,00)))
     assert(!expr1.include?(DateTime.new(2004,3,2,4,22,59)))
     assert(!expr1.include?(Date.new(2003,3,1)))
     #exclusive range equivalent to r_start...r_end
     expr2 = RSpec.new(DateRange.new(r_start,r_end,true))
-    assert(expr2.include?(PDate.second(2004,2,29,16,24,12)))
-    assert(!expr2.include?(PDate.second(2004,3,2,4,22,58)))
+    assert(expr2.include?(PDate.sec(2004,2,29,16,24,12)))
+    assert(!expr2.include?(PDate.sec(2004,3,2,4,22,58)))
     r_sub = DateRange.new( (r_start+10), (r_end-10) )
     assert(expr1.include?(r_sub))
   end
@@ -117,12 +117,12 @@ class TExprTest < Test::Unit::TestCase
   end
   def test_week_in_month_te
     expr = WIMonth.new(Third)
-    assert(expr.include?(PDate.day_of_month(2004,2,19)))
-    assert(!expr.include?(PDate.day_of_month(2004,2,29)))
+    assert(expr.include?(PDate.day(2004,2,19)))
+    assert(!expr.include?(PDate.day(2004,2,29)))
     expr2 = WIMonth.new(Last_of)
-    assert(expr2.include?(PDate.day_of_month(2004,2,29)))
+    assert(expr2.include?(PDate.day(2004,2,29)))
     expr3 = WIMonth.new(Second_to_last)
-    assert(expr3.include?(PDate.day_of_month(2004,2,22)))
+    assert(expr3.include?(PDate.day(2004,2,22)))
   end
 
   def test_range_each_year_te
@@ -150,21 +150,21 @@ class TExprTest < Test::Unit::TestCase
     #noon to 4:30pm
     expr1 = REDay.new(12,0,16,30)
     #3:15 pm (May 8th, 2012 - ignored)
-    assert(expr1.include?(PDate.hour_of_day(2012,5,8,15,15)))
+    assert(expr1.include?(PDate.hour(2012,5,8,15,15)))
     #4:30 pm (April 18th, 1922 - ignored)
-    assert(expr1.include?(PDate.hour_of_day(1922,4,18,16,30)))
+    assert(expr1.include?(PDate.hour(1922,4,18,16,30)))
     #noon (June 5th, 1975 - ignored)
-    assert(expr1.include?(PDate.hour_of_day(1975,6,5,12,0)))
+    assert(expr1.include?(PDate.hour(1975,6,5,12,0)))
     #3:15 am (May 8th, 2012 - ignored)
-    assert(!expr1.include?(PDate.hour_of_day(2012,5,8,3,15)))
+    assert(!expr1.include?(PDate.hour(2012,5,8,3,15)))
     #8:30pm to 12:00 midnite
     expr2 = REDay.new(20,30,00,00)
     #9:00 pm (January 28th, 2004 - ignored)
-    assert(expr2.include?(PDate.minute(2004,1,28,21,00)))
+    assert(expr2.include?(PDate.min(2004,1,28,21,00)))
     #12:00 am (January 28th, 2004 - ignored)
-    assert(expr2.include?(PDate.minute(2004,1,28,0,0)))
+    assert(expr2.include?(PDate.min(2004,1,28,0,0)))
     #12:01 am (January 28th, 2004 - ignored)
-    assert(!expr2.include?(PDate.minute(2004,1,28,0,01)))
+    assert(!expr2.include?(PDate.min(2004,1,28,0,01)))
   end
   def test_range_each_week_te
 
@@ -176,8 +176,8 @@ class TExprTest < Test::Unit::TestCase
 
     #Sunday through Thursday
     expr2 = REWeek.new(0,4)
-    assert(expr2.include?(PDate.minute(2004,2,19,23,59,59)))
-    assert(!expr2.include?(PDate.minute(2004,2,20,0,0,0)))
+    assert(expr2.include?(PDate.min(2004,2,19,23,59,59)))
+    assert(!expr2.include?(PDate.min(2004,2,20,0,0,0)))
   end
   def test_combined_te
     #This is a hack.....
@@ -209,17 +209,17 @@ class TExprTest < Test::Unit::TestCase
     first_week_of_september=entire_first_week_of_september - monday_to_saturday
     #June through August
     june_through_august=REYear.new(6,First,8)
-    assert(june_through_august.include?(PDate.day_of_month(2004,7,4)))
+    assert(june_through_august.include?(PDate.day(2004,7,4)))
     #Finally!
     summer_time = last_week_of_may | first_week_of_september | june_through_august
 
     #Will work, but will be incredibly slow:
-    #  assert(summer_time.include?(PDate.minute(2004,5,31,0,0)))
-    assert(summer_time.include?(PDate.day_of_month(2004,5,31,0,0)))
-    assert(summer_time.include?(PDate.day_of_month(2004,7,4)))
+    #  assert(summer_time.include?(PDate.min(2004,5,31,0,0)))
+    assert(summer_time.include?(PDate.day(2004,5,31,0,0)))
+    assert(summer_time.include?(PDate.day(2004,7,4)))
     #also works...also slow:
-    #  assert(!summer_time.include?(PDate.minute(2004,9,6,0,0)))
-    assert(!summer_time.include?(PDate.hour_of_day(2004,9,6,0,0)))
+    #  assert(!summer_time.include?(PDate.min(2004,9,6,0,0)))
+    assert(!summer_time.include?(PDate.hour(2004,9,6,0,0)))
 
   end
   def test_nyc_parking_te

@@ -68,7 +68,7 @@ module Runt
     def to_s; @start_expr.to_s + " " + @end_expr.to_s end
 
 
-    EMPTY = DateRange.new(PDate.day_of_month(2004,2,2),PDate.day_of_month(2004,2,1))
+    EMPTY = DateRange.new(PDate.day(2004,2,2),PDate.day(2004,2,1))
 
   end
 end

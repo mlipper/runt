@@ -14,8 +14,8 @@ class DateRangeTest < Test::Unit::TestCase
   include Runt
 
   def test_sub_range
-    r_start = PDate.second(2004,2,29,16,24,12)
-    r_end = PDate.second(2004,3,2,4,22,58)
+    r_start = PDate.sec(2004,2,29,16,24,12)
+    r_end = PDate.sec(2004,3,2,4,22,58)
     range = DateRange.new(r_start,r_end)
     assert(range.min==r_start)
     assert(range.max==r_end)
@@ -26,8 +26,8 @@ class DateRangeTest < Test::Unit::TestCase
   end
 
   def test_date
-    r_start = PDate.minute(1979,12,31,23,57)
-    r_end = PDate.minute(1980,1,1,0,2)
+    r_start = PDate.min(1979,12,31,23,57)
+    r_end = PDate.min(1980,1,1,0,2)
     range = DateRange.new(r_start,r_end)
     assert(range.min==r_start)
     assert(range.max==r_end)
@@ -38,8 +38,8 @@ class DateRangeTest < Test::Unit::TestCase
   end
 
   def test_spaceship_operator
-    r_start = PDate.minute(1984,8,31,22,00)
-    r_end = PDate.minute(1984,9,15,0,2)
+    r_start = PDate.min(1984,8,31,22,00)
+    r_end = PDate.min(1984,9,15,0,2)
     range = DateRange.new(r_start,r_end)
     assert(-1==(range<=>(DateRange.new(r_start+2,r_end+5))))
     assert(1==(range<=>(DateRange.new(r_start-24,r_end+5))))
@@ -60,19 +60,19 @@ class DateRangeTest < Test::Unit::TestCase
   end
 
   def test_empty
-    r_start = PDate.hour_of_day(2004,2,10,0)
-    r_end = PDate.hour_of_day(2004,2,9,23)
+    r_start = PDate.hour(2004,2,10,0)
+    r_end = PDate.hour(2004,2,9,23)
     empty_range = DateRange.new(r_start,r_end)
     assert(empty_range.empty?)
     assert(DateRange::EMPTY.empty?)
   end
 
   def test_gap
-    r_start = PDate.day_of_month(2000,6,12)
-    r_end = PDate.day_of_month(2000,6,14)
+    r_start = PDate.day(2000,6,12)
+    r_end = PDate.day(2000,6,14)
     range = DateRange.new(r_start,r_end)
-    g_start = PDate.day_of_month(2000,6,18)
-    g_end = PDate.day_of_month(2000,6,20)
+    g_start = PDate.day(2000,6,18)
+    g_end = PDate.day(2000,6,20)
     g_range = DateRange.new(g_start,g_end)
     the_gap=range.gap(g_range)
     assert(the_gap.start_expr==(r_end+1))
