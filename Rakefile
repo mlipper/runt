@@ -72,5 +72,5 @@ end
 
 desc "Publish the Documentation to the build dir."
 task :test_publish => [:rerdoc,:copy_site,:clobber_package] do |t|
-  puts "YAY! We've published! YAY!"
+  puts "YAY! We've tested publish! YAY!"
 end
