@@ -135,10 +135,10 @@ class TemporalExpressionTest < Test::Unit::TestCase
     expr = WeekInMonthTE.new(Third)
     assert(expr.include?(TimePoint.day_of_month(2004,2,19)))
     assert(!expr.include?(TimePoint.day_of_month(2004,2,29)))
-    #FIXME!!!
-    #~ expr2 = WeekInMonthTE.new(Last)
-    #~ puts (-5..5).include?(-1)
-    #~ assert(expr2.include?(TimePoint.day_of_month(2004,2,29)))
+    expr2 = WeekInMonthTE.new(Last_of)
+    assert(expr2.include?(TimePoint.day_of_month(2004,2,29)))
+    expr3 = WeekInMonthTE.new(Second_to_last)
+    assert(expr3.include?(TimePoint.day_of_month(2004,2,22)))
   end
 
   def test_range_each_year_te

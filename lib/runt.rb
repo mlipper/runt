@@ -88,6 +88,6 @@ module Runt
   public
   Last = ApplyLast.new
   Last_of = Last[First]
-
+  Second_to_last = Last[Second]
 
 end

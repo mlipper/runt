@@ -37,6 +37,23 @@ class TemporalExpression
     result
   end
 
+  def week_matches?(index,date)
+    if(index > 0)
+      return week_from_start_matches?(index,date)
+    else
+      return week_from_end_matches?(index,date)
+    end
+  end
+
+  def week_from_start_matches?(index,date)
+    week_in_month(date.day)==index
+  end
+
+  def week_from_end_matches?(index,date)
+    n = days_left_in_month(date) + 1
+    week_in_month(n)==index.abs
+  end
+
 end
 
 # Base class for TemporalExpression classes that can be composed of other
@@ -176,7 +193,7 @@ class DayInMonthTE < TemporalExpression
   end
 
   def include?(date)
-    ( day_matches?(date) ) && ( week_matches?(date) )
+    ( day_matches?(date) ) && ( week_matches?(@week_of_month_index,date) )
   end
 
   def to_s
@@ -197,23 +214,6 @@ class DayInMonthTE < TemporalExpression
   private
   def day_matches?(date)
     @day_index == date.wday
-  end
-
-  def week_matches?(date)
-    if(@week_of_month_index > 0)
-      return week_from_start_matches?(date)
-    else
-      return week_from_end_matches?(date)
-    end
-  end
-
-  def week_from_start_matches?(date)
-    week_in_month(date.day)==@week_of_month_index
-  end
-
-  def week_from_end_matches?(date)
-    n = days_left_in_month(date) + 1
-    week_in_month(n) == @week_of_month_index.abs
   end
 
 end
@@ -247,6 +247,28 @@ class DayInWeekTE < TemporalExpression
     @ordinal_weekday == date.wday
   end
 
+end
+
+class RangeEachWeekTE < TemporalExpression
+  def initialize(start_day,end_day=start_day)
+    super()
+    @start_day = start_day
+    @end_day = end_day
+  end
+
+  def include?(date)
+    return true if  @start_day==@end_day
+    return  if spans_week
+    @start_day<=date.wday && @end_day>=date.wday
+  end
+
+  def spans_week
+    @start_day>@end_day
+  end
+
+  def to_s
+    "RangeEachWeekTE"
+  end
 end
 
 class RangeEachYearTE < TemporalExpression
@@ -357,7 +379,7 @@ end
 #  See also: Date
 class WeekInMonthTE < TemporalExpression
 
-  VALID_RANGE = -5..5
+  VALID_RANGE = -2..5
 
   def initialize(ordinal)
     unless VALID_RANGE.include?(ordinal)
@@ -367,7 +389,7 @@ class WeekInMonthTE < TemporalExpression
   end
 
   def include?(date)
-    @ordinal == week_in_month(date.day)
+    week_matches?(@ordinal,date)
   end
 
 end
