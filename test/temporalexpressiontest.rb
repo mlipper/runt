@@ -16,18 +16,15 @@ class TemporalExpressionTest < Test::Unit::TestCase
 	include DatePrecision
 
 	def test_collection_te
-    
 		#base class that should always return false
-		expr = CollectionTE.new
-  
-		assert(!expr.includes(Date.today))	
-	
+		expr = CollectionTE.new  
+		assert(!expr.includes(Date.today))		
 	end
 	
 	def test_union_te
-	
+		#Test before adding expressions
 		union_expr = UnionTE.new		
-		
+		assert(!union_expr.includes(Date.today))				
 		#Everyday from midnight to 6:30am
 		expr1 = RangeEachDayTE.new(0,0,6,30)		
 		#First Tuesday of the month
@@ -52,24 +49,20 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		assert(!expr2.includes?(Date.new(2003,1,1)))
 	end
 	
-	def test_intersection_te
-	
+	def test_intersection_te	
+		#Test before adding expressions		
+		intersect_expr  = IntersectionTE.new
+		assert(!intersect_expr.includes(Date.today))				
 		#March through April
 		expr1 = RangeEachYearTE.new(3,4)
-
 		#First Sunday of any month
 		expr2 = DayInMonthTE.new(First,Sunday)
-		
 		#Should match the first Sunday of March and April
-		intersect_expr  = IntersectionTE.new
-		intersect_expr.add(expr1).add(expr2)
-		
+		intersect_expr.add(expr1).add(expr2)		
 		#Sunday, March 7th, 2004
 		assert(intersect_expr.includes?(TimePoint.new(2004,3,7)))
 		#First Sunday in February, 2004
 		assert(!intersect_expr.includes?(TimePoint.new(2004,4,1)))
-
-
   end
 	
 	def test_day_in_month_te
@@ -106,24 +99,15 @@ class TemporalExpressionTest < Test::Unit::TestCase
 	def test_range_each_year_te
 		# November 1st, 1961
 		dt1 = Date.civil(1961,11,1)
-
 		#June, 1986
-		dt2 = TimePoint::month(1986,6)
-		
+		dt2 = TimePoint::month(1986,6)		
 		#November and December
 		expr1 = RangeEachYearTE.new(11,12)
-		
 		#May 31st through  and September 6th
 		expr2 = RangeEachYearTE.new(5,31,9,6)
-
 		assert(expr1.includes?(dt1))
-
 		assert(!expr1.includes?(dt2))
-		
-		#~ expr2.print(dt2)
-		
 		assert(expr2.includes?(dt2))
-
 	end
 	
 	def test_range_each_day_te
