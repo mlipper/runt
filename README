@@ -1,0 +1,64 @@
+Runt - Ruby Temporal Expressions
+
+README for Runt version 0.1 (ALPHA)
+   Released under the Apache Software license (see LICENSE.txt)
+   This file last updated 2004-02-05
+
+--------------------------------------------------------------------
+INTRODUCTION
+
+It doesn't get much more alpha than this! 
+
+
+--------------------------------------------------------------------
+INSTALL
+
+*  Unpack the Runt distribution
+
+*  cd $INSTALL_DIR/runt/
+
+*  execute: 
+
+   $ ruby setup.rb config
+   $ ruby setup.rb setup
+   # ruby setup.rb install (may require root privilege)
+
+or 
+
+   $ ruby setup.rb --help
+
+for more options
+
+* this (should) install 
+
+RUBY_HOME/**/*
++
+|
++--site_ruby/
+   +
+   |
+   +--runt.rb   <-- this module will include all files in runt/ automatically
+   |
+   `runt/
+    +
+    |
+    `--dateprecision.rb
+    |
+    `--etc...
+
+--------------------------------------------------------------------
+QUICK START
+
+*  require 'runt'
+
+*  See $INSTALL_DIR/runt/test for example usage.
+
+*  See http://chronicJ.org for better commented source
+
+
+
+Get in touch if you need help...
+
+Matt
+
+matt@digitalclash.com
