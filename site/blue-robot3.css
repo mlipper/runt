@@ -9,7 +9,7 @@ body {
 h1 {
   margin:0px 0px 15px 0px;
   padding:0px;
-  font-size:26px;
+  font-size:14px;
   font-weight:900;
   color:#ccc;
   }
@@ -106,7 +106,13 @@ body>#navBeta {width:168px;}
 
 #contentFooter {
   text-align: center;
+  font-size:10px;
   }
+
+#contentFooter a {
+  font-size:10px;
+  }
+
   
 #logo {  
   border: 0px solid ;
@@ -114,6 +120,7 @@ body>#navBeta {width:168px;}
   height: 33px;
   vertical-align: -50%;
   }
+
 
 #dcl-logo {
   border: 0px solid ; 
