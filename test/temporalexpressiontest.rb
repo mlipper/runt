@@ -5,6 +5,7 @@ $:<<'../lib'
 require 'test/unit'
 require 'runt'
 require 'date'
+require 'date/format'
 
 # Unit tests for TemporalExpression classes
 # Author:: Matthew Lipper
@@ -185,47 +186,59 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		#Sunday through Thursday
 		expr2 = RangeEachWeekTE.new(0,4)
     assert(expr2.include?(TimePoint.minute(2004,2,19,23,59,59)))
-    assert(!expr2.include?(TimePoint.minute(2004,2,20,0,0,0)))		
+    assert(!expr2.include?(TimePoint.minute(2004,2,20,0,0,0)))
 	end
   def test_combined_te
-    #Tuesdays
-    tuesdays = DayInWeekTE.new(Tuesday)
-    #Thursdays
-    thursdays = DayInWeekTE.new(Thursday)
-    #9:30 pm to midnight
-    nine_thirty_to_midnight = RangeEachDayTE.new(21,30,00,00)
-    #Last Monday
-    last_monday = DayInMonthTE.new(Last,Monday)
-    #First Monday
-    first_monday = DayInMonthTE.new(First,Monday)
+    #~ #Tuesdays
+    #~ tuesdays = DayInWeekTE.new(Tuesday)
+    #~ #Thursdays
+    #~ thursdays = DayInWeekTE.new(Thursday)
+    #~ #9:30 pm to midnight
+    #~ nine_thirty_to_midnight = RangeEachDayTE.new(21,30,00,00)
+    #~ #Last Monday
+    #~ last_monday = DayInMonthTE.new(Last,Monday)
+    #~ #First Monday
+    #~ first_monday = DayInMonthTE.new(First,Monday)
 
-
-    
 		#This is a hack.....
 		#In the U.S., Memorial Day begins the last Monday of May
 		#
 		#The month of May
 		may=RangeEachYearTE.new(5)
 		#Monday through Saturday
-		monday_to_saturday = RangeEachWeekTE.new(0,5)
-		#Last week of any month
-		last_week_in = WeekInMonthTE.new(Last)
-		#So, to say 'starting from the last Monday in May'
+		monday_to_saturday = RangeEachWeekTE.new(1,6)
+		#Last week of (any) month
+		last_week_in = WeekInMonthTE.new(Last_of)
+		#So, to say 'starting from the last Monday in May',
+    #we need to select just that last week of May begining with
+    #the Monday of that week
 		last_week_of_may = IntersectionTE.new
 		last_week_of_may.add(may).add(monday_to_saturday).add(last_week_in)
-
-		#This is another hack.....
+		#This is another hack similar to the above, except instead of selecting a range
+    #starting at the begining of the month, we need to select only the time period in
+    #September up until Labor Day.
+    #
     #In the U.S., Labor Day is the first Monday in September
+    #
+		#The month of September
 		september=RangeEachYearTE.new(9)
+		#First week of (any) month
+		first_week_in = WeekInMonthTE.new(First)
+    entire_first_week_of_september = IntersectionTE.new
+    entire_first_week_of_september.add(september).add(first_week_in)
+    #To exclude everything in the first week which occurs on or after Monday.
+    first_week_of_september=DifferenceTE.new(entire_first_week_of_september,monday_to_saturday)
+    #June through August
+		june_through_august=RangeEachYearTE.new(6,First,8)
+    assert(june_through_august.include?(TimePoint.day_of_month(2004,7,4)))
+    #Finally!
+    summer_time = UnionTE.new
+    summer_time.add(last_week_of_may).add(first_week_of_september).add(june_through_august)
 
-		labor_day = IntersectionTE.new
-    labor_day.add(RangeEachYearTE.new(9)).add(DayInMonthTE.new(First,Monday))
-
-    #~ before=AnchoredBeforeTE.new(labor_day,true)
-    #~ puts before.include?(TimePoint.minute(2004,5,8,0,01))
-
-    #All Summer long!
-    summer_time = IntersectionTE.new
+    assert(summer_time.include?(TimePoint.minute(2004,5,31,0,0)))
+    assert(summer_time.include?(TimePoint.day_of_month(2004,7,4)))
+    #~ assert(summer_time.include?(TimePoint.day_of_month(2000,7,4)))
+    assert(!summer_time.include?(TimePoint.minute(2004,9,6,0,0)))
 
 
 

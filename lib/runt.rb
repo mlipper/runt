@@ -32,6 +32,7 @@
 # purpose.
 
 require 'date'
+require 'date/format'
 require "runt/dateprecision"
 require "runt/timepoint"
 require "runt/temporalexpression"
@@ -50,6 +51,7 @@ module Runt
 
   RUNTVERSION = 0
 
+  #Yes it's true, I'm a big idiot!
   Sunday = Date::DAYNAMES.index("Sunday")
   Monday = Date::DAYNAMES.index("Monday")
   Tuesday = Date::DAYNAMES.index("Tuesday")
