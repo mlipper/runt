@@ -62,6 +62,8 @@ thread[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/95465] on c.l
 that inspired a more Ruby-esque syntax for creating TE's. 2X Thanks to Hal, for
 taking the time to exchange ideas off-line.
 
+The ruby-nyc user's group for their suggestions and feedback.
+
 BlueRobot[http://www.bluerobot.com/web/layouts/] for the CSS used to prettify the Runt website.
 
 The number 12, and the letters E and J.
@@ -72,7 +74,7 @@ The number 12, and the letters E and J.
 
 Author::   Matthew Lipper <matt@digitalclash.com>
 Requires:: Ruby 1.8.0 or later, Date/DateTime classes
-License::  Copyright 2003 by Digital Clash LLC.
+License::  Copyright 2004 by Digital Clash LLC.
            Released under the Apache Software license (see LICENSE.txt)
            included in the distribution.
 

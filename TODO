@@ -4,8 +4,7 @@ Send suggestions, questions, threats, etc. for this list to Matt[mailto:matt@dig
 
 === To Do
 
-* Fix REWeek so that ordinal day values where the end day < start day does not 
-  fail
+* Fix REWeek so that ordinal day values where the end day < start day does not fail
 
 * Rename unit tests to reflect new class names
 

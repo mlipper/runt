@@ -5,7 +5,7 @@ $:<<'../lib'
 # All Runt unit tests
 #
 # Author:: Matthew Lipper
-require 'dateprecisiontest'
+require 'dprecisiontest'
 require 'temporalexpressiontest'
 require 'pdatetest'
 require 'scheduletest'

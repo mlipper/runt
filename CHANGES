@@ -6,6 +6,7 @@
 * Renamed Schedule#is_occurring? to Schedule#include?
 * RAA deployment
 * GEM deployment
+* Renamed file dateprecisiontest.rb to dprecisiontest.rb
 
 == Version 0.1.0
 
