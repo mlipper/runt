@@ -37,7 +37,7 @@ module Runt
     class << self; alias_method :new, :civil end
 
       def + (n)
-				raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
+        raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
         case @date_precision
         when YEAR then
           return DatePrecision::to_p(TimePoint::civil(year+n,month,day),@date_precision)
@@ -56,25 +56,25 @@ module Runt
     end
 
     def - (x)
-			case x
-				when Numeric then
-					return self+(-x)
-				#FIXME!!
+      case x
+        when Numeric then
+          return self+(-x)
+        #FIXME!!
         when Date;    return @ajd - x.ajd
-			end
-			raise TypeError, 'expected numeric or date'
+      end
+      raise TypeError, 'expected numeric or date'
     end
 
-		def <=> (other)
-			result = nil
-			if(other.respond_to?("date_precision") && other.date_precision>@date_precision)
-				result = super(DatePrecision::to_p(other,@date_precision))
-			else
-				result = super(other)
-			end
-			puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
-			result
-		end
+    def <=> (other)
+      result = nil
+      if(other.respond_to?("date_precision") && other.date_precision>@date_precision)
+        result = super(DatePrecision::to_p(other,@date_precision))
+      else
+        result = super(other)
+      end
+      puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
+      result
+    end
 
     def new_self_plus(n)
       if(block_given?)

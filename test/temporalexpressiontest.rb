@@ -45,29 +45,29 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(!expr2.include?(Date.new(2003,1,1)))
   end
 
-	def test_arbitrary_range_te
-		#NOTE:
-		#Using standard range functionality like the following:
-		#...	expr1 = ArbitraryRangeTE.new(r_start..r_end)
-		#...  assert(expr1.include?((r_start+10)..(r_end-10)))
-		#will work. However, it takes a LONG time to evaluate if range is large
-		#and/or precision is small. Use DateRange instead
+  def test_arbitrary_range_te
+    #NOTE:
+    #Using standard range functionality like the following:
+    #...  expr1 = ArbitraryRangeTE.new(r_start..r_end)
+    #...  assert(expr1.include?((r_start+10)..(r_end-10)))
+    #will work. However, it takes a LONG time to evaluate if range is large
+    #and/or precision is small. Use DateRange instead
 
-		r_start = TimePoint.second(2004,2,29,16,24,12)
+    r_start = TimePoint.second(2004,2,29,16,24,12)
     r_end = TimePoint.second(2004,3,2,4,22,58)
-		#inclusive range equivalent to r_start..r_end
-		expr1 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end))
-		assert(expr1.include?(TimePoint.second(2004,2,29,16,24,12)))
-		assert(expr1.include?(TimePoint.second(2004,3,2,4,22,58)))
-		assert(expr1.include?(DateTime.new(2004,3,1,23,00)))
+    #inclusive range equivalent to r_start..r_end
+    expr1 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end))
+    assert(expr1.include?(TimePoint.second(2004,2,29,16,24,12)))
+    assert(expr1.include?(TimePoint.second(2004,3,2,4,22,58)))
+    assert(expr1.include?(DateTime.new(2004,3,1,23,00)))
     assert(!expr1.include?(DateTime.new(2004,3,2,4,22,59)))
     assert(!expr1.include?(Date.new(2003,3,1)))
-		#exclusive range equivalent to r_start...r_end
-		expr2 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end,true))
-		assert(expr2.include?(TimePoint.second(2004,2,29,16,24,12)))
-		assert(!expr2.include?(TimePoint.second(2004,3,2,4,22,58)))
-		r_sub = DateRange.new( (r_start+10), (r_end-10) )
-		assert(expr1.include?(r_sub))
+    #exclusive range equivalent to r_start...r_end
+    expr2 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end,true))
+    assert(expr2.include?(TimePoint.second(2004,2,29,16,24,12)))
+    assert(!expr2.include?(TimePoint.second(2004,3,2,4,22,58)))
+    r_sub = DateRange.new( (r_start+10), (r_end-10) )
+    assert(expr1.include?(r_sub))
   end
 
   def test_intersection_te

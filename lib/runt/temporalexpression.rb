@@ -61,12 +61,12 @@ end
 class IntersectionTE < CollectionTE
 
   def include?(aDate)
-		#Handle @expressions.size==0
-		result = false
+    #Handle @expressions.size==0
+    result = false
     @expressions.each do |expr|
-			return false unless (result = expr.include?(aDate))
+      return false unless (result = expr.include?(aDate))
     end
-		result
+    result
   end
 
   def to_s; "IntersectionTE" end
@@ -114,14 +114,14 @@ end
 class ArbitraryRangeTE < TemporalExpression
 
   def initialize(date_expr)
-		raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
+    raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
     @date_expr = date_expr
   end
 
-	# Will return true if the supplied object is included in the range used to
+  # Will return true if the supplied object is included in the range used to
   # create this instance
   def include?(date_expr)
-		return @date_expr.include?(date_expr)
+    return @date_expr.include?(date_expr)
   end
 
   def to_s; "ArbitraryRangeTE" end
@@ -217,7 +217,7 @@ class RangeEachYearTE < TemporalExpression
     puts "start_month_include? == #{start_month_include?(date)}"
   end
 
-	private
+  private
   def months_include?(date)
     (date.mon > @start_month) && (date.mon < @end_month)
   end
@@ -254,7 +254,7 @@ class RangeEachDayTE < TemporalExpression
   end
 
   def include?(date)
-		raise TypeError, 'expected date' unless date.kind_of?(Date)
+    raise TypeError, 'expected date' unless date.kind_of?(Date)
 
     if(@spans_midnight&&date.hour<12) then
       #Assume next day
