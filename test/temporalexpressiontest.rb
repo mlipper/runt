@@ -199,12 +199,26 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #First Monday
     first_monday = DayInMonthTE.new(First,Monday)
 
-    #Memorial Day = last Monday of May
-    memorial_day = IntersectionTE.new
-    memorial_day.add(RangeEachYearTE.new(5)).add(DayInMonthTE.new(Last,Monday))
 
-    #Labor Day = first Monday in September
-    labor_day = IntersectionTE.new
+    
+		#This is a hack.....
+		#In the U.S., Memorial Day begins the last Monday of May
+		#
+		#The month of May
+		may=RangeEachYearTE.new(5)
+		#Monday through Saturday
+		monday_to_saturday = RangeEachWeekTE.new(0,5)
+		#Last week of any month
+		last_week_in = WeekInMonthTE.new(Last)
+		#So, to say 'starting from the last Monday in May'
+		last_week_of_may = IntersectionTE.new
+		last_week_of_may.add(may).add(monday_to_saturday).add(last_week_in)
+
+		#This is another hack.....
+    #In the U.S., Labor Day is the first Monday in September
+		september=RangeEachYearTE.new(9)
+
+		labor_day = IntersectionTE.new
     labor_day.add(RangeEachYearTE.new(9)).add(DayInMonthTE.new(First,Monday))
 
     #~ before=AnchoredBeforeTE.new(labor_day,true)

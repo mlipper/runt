@@ -250,8 +250,7 @@ class DayInWeekTE < TemporalExpression
 end
 
 # TemporalExpression that matches days of the week within one
-# week only. If the start day is greater than the end day, an
-# ArgumentError will be raised.
+# week only. 
 #
 # If start and end day are equal, the entire week will match true.
 #
@@ -259,8 +258,12 @@ end
 class RangeEachWeekTE < TemporalExpression
 
   VALID_RANGE = 0..6
-
-  def initialize(start_day,end_day=start_day)
+	
+	#If one argument is used, then the range will include from 
+	# that
+	# If the start day is greater than the end day, an
+	# ArgumentError will be raised
+	def initialize(start_day,end_day)
 		super()
 		validate(start_day,end_day)
     @start_day = start_day
