@@ -9,9 +9,19 @@ require 'runt/dateprecision'
 
 module Runt
 
+# Base class for all TemporalExpression classes that will probably be scuttled 
+# unless it proves itself useful in some fashion. Mostly a side-effect of many
+# years working with statically typed languages. 
+#
+# TemporalExpressions are inspired by the recurring event 
+# <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
+# described by Martin Fowler. Essentially, they provide a pattern language for 
+# specifying recurring events using set expressions.
 class TemporalExpression
 	
-	def includes(aDate)
+  # Returns true or false depending on whether this TemporalExpression includes the supplied
+	# date.
+	def includes(aDate) #aDate can be Date, DateTime, or TimePoint
 		false
 	end
   
@@ -27,79 +37,73 @@ class TemporalExpression
 
 end
 
+
+# Base class for TemporalExpression classes that can be composed of other
+# TemporalExpression objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
 class CollectionTE < TemporalExpression
 
 	attr_reader :expressions
 	protected :expressions
   
 	def initialize
-		super
 		@expressions = Array.new
 	end
   
-	def includes?(aDate)
-		false
-	end
+	def includes?(aDate);	false end
   
 	def add(anExpression)
 		@expressions.push anExpression
 		self
 	end
 
-	def to_s
-		"CollectionTE"
-	end
+	def to_s;	"CollectionTE" end
 end
 
+# Composite TemporalExpression that will be true if <b>any</b> of it's 
+# component expressions are true.
 class UnionTE < CollectionTE
 
 	def includes?(aDate)
 		@expressions.each do |expr|
-			log(expr,aDate)
 			return true if expr == aDate 
 		end
 	end
- 	def to_s
-		"UnionTE"
-	end
- 
+	
+ 	def to_s;	"UnionTE" end
 end
 
+# Composite TemporalExpression that will be true only if <b>all</b> it's 
+# component expressions are true.
 class IntersectionTE < CollectionTE
 
 	def includes?(aDate)
 		@expressions.each do |expr|
-		log(expr,aDate)
-		return false unless expr == aDate 
+			return false unless expr == aDate
+		end
 	end
 
-	def to_s
-		"IntersectionTE"
-	end
-	
-end
-  
+	def to_s;	"IntersectionTE" end	
 end
 
+# TemporalExpression that will be true only if the first of
+# it's two contained expressions is true and the second is false.
 class DifferenceTE < TemporalExpression
 
 	def initialize(expr1, expr2)
 		super
 		@expr1 = expr1
 		@expr2 = expr2	
-	  end
+	end
   
 	def includes?(aDate)
 		log(expr,aDate)
 		return false unless (@expr1.includes(aDate) && !expr2.includes(aDate))  
 	end
 	
-	def to_s
-		"DifferenceTE"
-	end
-  
+	def to_s;	"DifferenceTE" end  
 end
 
+# TemporalExpression that provides for inclusion of an arbitrary date. 
 class ArbitraryTE < TemporalExpression
 
 	def initialize(aDate)
@@ -107,15 +111,15 @@ class ArbitraryTE < TemporalExpression
 		@date_time = aDate
 	end
 	
+	# Will return true if the supplied object is == to that which was used to
+	# create this instance	
 	def includes?(aDate)
 		log(@date_time,aDate)
 		return true if @date_time == aDate
 		false
 	end
 	
-	def to_s
-		"ArbitraryTE"
-	end
+	def to_s;	"ArbitraryTE" end
 end
 
 

@@ -1,19 +1,18 @@
 #!/usr/bin/env ruby
 
-#Schedule.
-#  
-#  Author: Matthew Lipper
-
 module Runt
 	
 		
+  # Implementation of a <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
+  # for recurring calendar events created by Martin Fowler.
 	class Schedule
-		
-	
+			
 		def initialize
 			@elements = Array.new
 		end
 		
+		#For the given date range, returns an Array of TimePoint objects at which 
+		#the supplied event is scheduled to occur. 
 		def dates(event, date_range)
 		
 		end
@@ -24,6 +23,8 @@ module Runt
 		
 	end
 	
+	
+	private
 	class ScheduleElement
 		
 		def initialize(event, expression)
