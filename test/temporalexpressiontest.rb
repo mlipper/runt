@@ -22,20 +22,11 @@ class TemporalExpressionTest < Test::Unit::TestCase
   end
 
   def test_union_te
-    #Test before adding expressions
-    union_expr = UnionTE.new
-    assert(!union_expr.include?(Date.today))
-    #Everyday from midnight to 6:30am
-    expr1 = RangeEachDayTE.new(0,0,6,30)
-    #First Tuesday of the month
-    expr2 = DayInMonthTE.new(First,Tuesday)
-    union_expr.add(expr1).add(expr2)
-    #January 6th, 2004 (First Tuesday)
-    assert(union_expr.include?(TimePoint.day_of_month(2004,1,6)))
-    #4am (February, 8th, 1966 - ignored)
-    assert(union_expr.include?(TimePoint.hour_of_day(1966,2,8,4)))
-    #6:31am, July, 4th, 2030
-    assert(!union_expr.include?(TimePoint.minute(2030,7,4,6,31)))
+    #midnight to 6:30am AND/OR first Tuesday of the month
+    expr = (RangeEachDayTE.new(0,0,6,30) | DayInMonthTE.new(First,Tuesday))
+    assert(expr.include?(TimePoint.day_of_month(2004,1,6))) #January 6th, 2004 (First Tuesday)
+    assert(expr.include?(TimePoint.hour_of_day(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
+    assert(!expr.include?(TimePoint.minute(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
 
   def test_arbitrary_te

@@ -8,6 +8,46 @@ require 'runt/dateprecision'
 
 module Runt
 
+module TESugar
+
+  def or (arg)
+
+    if self.kind_of?(UnionTE)
+      self.add(arg)
+    else
+      yield UnionTE.new.add(self).add(arg)
+    end
+
+  end
+
+  def and (arg)
+
+    if self.kind_of?(IntersectionTE)
+      self.add(arg)
+    else
+      yield IntersectionTE.new.add(self).add(arg)
+    end
+
+  end
+
+  def minus (arg)
+      yield DifferenceTE.new(self,arg)
+  end
+
+  def | (expr)
+    self.or(expr){|adjusted| adjusted }
+  end
+
+  def & (expr)
+    self.and(expr){|adjusted| adjusted }
+  end
+
+  def - (expr)
+    self.minus(expr){|adjusted| adjusted }
+  end
+
+end
+
 # Base class for all TemporalExpression classes that will probably be scuttled
 # unless it proves itself useful in some fashion. Mostly a side-effect of many
 # years working with statically typed languages.
@@ -19,6 +59,9 @@ module Runt
 #
 # See also [tutorial_te.rdoc]
 class TemporalExpression
+
+  include TESugar
+
   # Returns true or false depending on whether this TemporalExpression includes the supplied
   # date expression.
   def include?(date_expr); false end
