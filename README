@@ -5,7 +5,7 @@ README for Runt version 0.0.1 (ALPHA)
 
 == INTRODUCTION
 
-It doesn't get much more alpha than this! 
+It doesn't get much more alpha than this!
 
 ---
 
@@ -15,19 +15,19 @@ It doesn't get much more alpha than this!
 
 *  cd $INSTALL_DIR/runt/
 
-*  execute: 
+*  execute:
 
    $ ruby setup.rb config
    $ ruby setup.rb setup
    $ ruby setup.rb install (may require root privilege)
 
-or 
+or
 
    $ ruby setup.rb --help
 
 for more options
 
-* this (should) install 
+* this (should) install
 
         RUBY_HOME/**/*
         +
@@ -55,7 +55,7 @@ for more options
 *  See http://chronicJ.org for better commented source
 
 
-Get in touch if you need help...
+Get in touch if you need help or if Runt causes your computer to burst into flames...
 
 Matt <matt@digitalclash.com>
 
@@ -64,7 +64,7 @@ Matt <matt@digitalclash.com>
 = Etc...
 
 Author::   Matthew Lipper <matt@digitalclash.com>
-Requires:: Ruby 1.8.0 or later
+Requires:: Ruby 1.8.0 or later, Date/DateTime classes
 License::  Copyright 2003 by Digital Clash LLC.
            Released under the Apache Software license (see LICENSE.txt)
            included in the distribution.
