@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'date'
-require 'runt/dateprecision'
+require 'runt/dprecision'
 
 #
 # Author:: Matthew Lipper
