@@ -14,49 +14,17 @@ module Runt
 	
 	module DatePrecision
 				
-		def DatePrecision.year(yr,*ignored)
-			TimePoint::civil( YEAR, yr, MONTH.min_value, DAY_OF_MONTH.min_value  )
-		end
-
-		def DatePrecision.month( yr,mon,*ignored )    
-			TimePoint::civil( MONTH, yr, mon, DAY_OF_MONTH.min_value  )
-		end
-
-		def DatePrecision.day_of_month( yr,mon,day,*ignored )
-			TimePoint::civil( DAY_OF_MONTH, yr, mon, day )			
-		end
-      
-		def DatePrecision.hour_of_day( yr,mon,day,hr=HOUR_OF_DAY.min_value,*ignored ) 
-			TimePoint::civil( HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)						
-		end
-  
-		def DatePrecision.minute( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,*ignored )  
-			TimePoint::civil( MINUTE, yr, mon, day,hr,min, SECOND.min_value)									
-		end
-  
-		def DatePrecision.second( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,sec=SECOND.min_value,*ignored ) 
-			TimePoint::civil( SECOND, yr, mon, day,hr,min, sec)									
-		end
-  
-		def DatePrecision.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
-			raise "Not implemented yet."
-		end
-
-		def DatePrecision.default(*args)  
-			TimePoint::civil(DEFAULT, *args)									
-		end
-
 		def DatePrecision.to_p(date,prec=DEFAULT)
 				case prec
-					when MINUTE then DatePrecision.minute(*DatePrecision.explode(date,prec))
-					when DAY_OF_MONTH then DatePrecision.day_of_month(*DatePrecision.explode(date,prec))
-					when HOUR_OF_DAY then DatePrecision.hour_of_day(*DatePrecision.explode(date,prec))
-					when MONTH then DatePrecision.month(*DatePrecision.explode(date,prec))
-					when YEAR then DatePrecision.year(*DatePrecision.explode(date,prec))
-					when SECOND then DatePrecision.second(*DatePrecision.explode(date,prec))
+					when MINUTE then TimePoint.minute(*DatePrecision.explode(date,prec))
+					when DAY_OF_MONTH then TimePoint.day_of_month(*DatePrecision.explode(date,prec))
+					when HOUR_OF_DAY then TimePoint.hour_of_day(*DatePrecision.explode(date,prec))
+					when MONTH then TimePoint.month(*DatePrecision.explode(date,prec))
+					when YEAR then TimePoint.year(*DatePrecision.explode(date,prec))
+					when SECOND then TimePoint.second(*DatePrecision.explode(date,prec))
 					when MILLISECOND then raise "Not implemented."
 					#~ else raise "Unknown precision #{prec}"						
-					else DatePrecision.default(*DatePrecision.explode(date,prec))						
+					else TimePoint.default(*DatePrecision.explode(date,prec))						
 				end
 		end
 		

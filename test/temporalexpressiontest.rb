@@ -3,8 +3,7 @@
 $:<<'../lib'
 
 require 'test/unit'
-require 'runt/dateprecision'
-require 'runt/temporalexpression'
+require 'runt'
 require 'date'
 
 =begin
@@ -88,7 +87,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		dt1 = Date.civil(1961,11,1)
 
 		#June, 1986
-		dt2 = DatePrecision::month(1986,6)
+		dt2 = TimePoint::month(1986,6)
 		
 		#November and December
 		expr1 = RangeEachYearTE.new(11,12)

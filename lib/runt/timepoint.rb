@@ -23,7 +23,7 @@ module Runt
 				if(args[0].instance_of?(DatePrecision::Precision))
 					precision = args.shift
 				else
-					return DatePrecision.second(*args)			
+					return TimePoint::second(*args)			
 				end
 				_civil = old_civil(*args)
 				_civil.date_precision = precision
@@ -36,18 +36,18 @@ module Runt
     	def + (n)
 			raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
       		case @date_precision
-				when DatePrecision::YEAR then 
+				when YEAR then 
 					return DatePrecision::to_p(TimePoint::civil(year+n,month,day),@date_precision)
-				when DatePrecision::MONTH then 
+				when MONTH then 
 					current_date = self.class.to_date(self)
 					return DatePrecision::to_p((current_date>>n),@date_precision)
-				when DatePrecision::DAY_OF_MONTH then 
+				when DAY_OF_MONTH then 
 					return new_self_plus(n)
-				when DatePrecision::HOUR_OF_DAY then 
+				when HOUR_OF_DAY then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }			
-				when DatePrecision::MINUTE then 
+				when MINUTE then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }		
-        		when DatePrecision::SECOND then 
+        		when SECOND then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
 			end
 		end
@@ -76,6 +76,38 @@ module Runt
 			return Date.new(timepoint.year,timepoint.month,timepoint.day)
 		end
 		
+		def TimePoint.year(yr,*ignored)
+			TimePoint.civil(YEAR, yr, MONTH.min_value, DAY_OF_MONTH.min_value  )
+		end
+
+		def TimePoint.month( yr,mon,*ignored )    
+			TimePoint.civil(MONTH, yr, mon, DAY_OF_MONTH.min_value  )
+		end
+
+		def TimePoint.day_of_month( yr,mon,day,*ignored )
+			TimePoint.civil(DAY_OF_MONTH, yr, mon, day )			
+		end
+      
+		def TimePoint.hour_of_day( yr,mon,day,hr=HOUR_OF_DAY.min_value,*ignored ) 
+			TimePoint.civil(HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)						
+		end
+  
+		def TimePoint.minute( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,*ignored )  
+			TimePoint.civil(MINUTE, yr, mon, day,hr,min, SECOND.min_value)									
+		end
+  
+		def TimePoint.second( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,sec=SECOND.min_value,*ignored ) 
+			TimePoint.civil(SECOND, yr, mon, day,hr,min, sec)									
+		end
+  
+		def TimePoint.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
+			raise "Not implemented yet."
+		end
+
+		def TimePoint.default(*args)  
+			TimePoint.civil(DEFAULT, *args)									
+		end
+	
 	end
 		
 end
