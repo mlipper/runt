@@ -19,7 +19,7 @@ module Runt
 class TemporalExpression
   # Returns true or false depending on whether this TemporalExpression includes the supplied
   # date expression.
-  def includes?(date_expr); false end
+  def include?(date_expr); false end
   def to_s; "TemporalExpression" end
 end
 
@@ -46,9 +46,9 @@ end
 # component expressions are true.
 class UnionTE < CollectionTE
 
-  def includes?(aDate)
+  def include?(aDate)
     @expressions.each do |expr|
-      return true if expr.includes?(aDate)
+      return true if expr.include?(aDate)
     end
     false
   end
@@ -60,11 +60,11 @@ end
 # component expressions are true.
 class IntersectionTE < CollectionTE
 
-  def includes?(aDate)
+  def include?(aDate)
 		#Handle @expressions.size==0
 		result = false
     @expressions.each do |expr|
-			return false unless (result = expr.includes?(aDate))
+			return false unless (result = expr.include?(aDate))
     end
 		result
   end
@@ -81,8 +81,8 @@ class DifferenceTE < TemporalExpression
     @expr2 = expr2
   end
 
-  def includes?(aDate)
-    return false unless (@expr1.includes?(aDate) && !@expr2.includes?(aDate))
+  def include?(aDate)
+    return false unless (@expr1.include?(aDate) && !@expr2.include?(aDate))
     true
   end
 
@@ -98,7 +98,7 @@ class ArbitraryTE < TemporalExpression
 
   # Will return true if the supplied object is == to that which was used to
   # create this instance
-  def includes?(date_expr)
+  def include?(date_expr)
     return true if @date_expr == date_expr
     false
   end
@@ -120,10 +120,7 @@ class ArbitraryRangeTE < TemporalExpression
 
 	# Will return true if the supplied object is included in the range used to
   # create this instance
-  def includes?(date_expr)
-		#~ if(date_expr.kind_of?(Range))
-			#~ return @date_expr.include?(date_expr.min)	&& @date_expr.include?(date_expr.max)
-		#~ end
+  def include?(date_expr)
 		return @date_expr.include?(date_expr)
   end
 
@@ -137,7 +134,7 @@ class DayInMonthTE < TemporalExpression
     @offset = offset
   end
 
-  def includes?(date)
+  def include?(date)
     ( day_matches?(date) ) && ( week_matches?(date) )
   end
 
@@ -182,7 +179,7 @@ class DayInMonthTE < TemporalExpression
 
   def print(date)
     puts "DayInMonthTE: #{date}"
-    puts "includes? == #{includes?(date)}"
+    puts "include? == #{include?(date)}"
     puts "day_matches? == #{day_matches?(date)}"
     puts "week_matches? == #{week_matches?(date)}"
     puts "week_from_start_matches? == #{week_from_start_matches?(date)}"
@@ -202,24 +199,10 @@ class RangeEachYearTE < TemporalExpression
     @end_day = end_day
   end
 
-  def includes?(date)
+  def include?(date)
     months_include?(date) ||
-      start_month_includes?(date) ||
-        end_month_includes?(date)
-  end
-
-  def months_include?(date)
-    (date.mon > @start_month) && (date.mon < @end_month)
-  end
-
-  def end_month_includes?(date)
-    return false unless (date.mon == @end_month)
-    (@end_day == 0)  || (date.day <= @end_day)
-  end
-
-  def start_month_includes?(date)
-    return false unless (date.mon == @start_month)
-    (@start_day == 0) || (date.day >= @start_day)
+      start_month_include?(date) ||
+        end_month_include?(date)
   end
 
   def to_s
@@ -228,12 +211,26 @@ class RangeEachYearTE < TemporalExpression
 
   def print(date)
     puts "DayInMonthTE: #{date}"
-    puts "includes? == #{includes?(date)}"
+    puts "include? == #{include?(date)}"
     puts "months_include? == #{months_include?(date)}"
-    puts "end_month_includes? == #{end_month_includes?(date)}"
-    puts "start_month_includes? == #{start_month_includes?(date)}"
+    puts "end_month_include? == #{end_month_include?(date)}"
+    puts "start_month_include? == #{start_month_include?(date)}"
   end
 
+	private
+  def months_include?(date)
+    (date.mon > @start_month) && (date.mon < @end_month)
+  end
+
+  def end_month_include?(date)
+    return false unless (date.mon == @end_month)
+    (@end_day == 0)  || (date.day <= @end_day)
+  end
+
+  def start_month_include?(date)
+    return false unless (date.mon == @start_month)
+    (@start_day == 0) || (date.day >= @start_day)
+  end
 end
 
 class RangeEachDayTE < TemporalExpression
@@ -256,7 +253,7 @@ class RangeEachDayTE < TemporalExpression
     @range = start_time..end_time
   end
 
-  def includes?(date)
+  def include?(date)
 		raise TypeError, 'expected date' unless date.kind_of?(Date)
 
     if(@spans_midnight&&date.hour<12) then
@@ -276,7 +273,7 @@ class RangeEachDayTE < TemporalExpression
 
   def print(date)
     puts "DayInMonthTE: #{date}"
-    puts "includes? == #{includes?(date)}"
+    puts "include? == #{include?(date)}"
   end
 
   def spans_midnight?(start_hour, end_hour)
