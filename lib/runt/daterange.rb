@@ -17,7 +17,7 @@ module Runt
 
     include DatePrecision
 
-    attr_reader :start_expr
+    attr_reader :start_expr, :end_expr
 
     def initialize(start_expr, end_expr,exclusive=false)
       super(start_expr, end_expr,exclusive)
@@ -29,13 +29,15 @@ module Runt
       return super(obj)
     end
 
-    def overlap?(range)
-      return (super(obj.min)  && !super(obj.max) )|| (!super(obj.min) && super(obj.max) )
+    def overlap?(obj)
+      return true if( include?(obj.min) || include?(obj.max) )
+			return true if( obj.kind_of?(Range) && obj.include?(self) )
+			false
     end
 
     def <=>(other)
       return @start_expr <=> other.start_expr if(@start_expr != other.start_expr)
-      return @end_expr <=> other.ebd_expr
+      return @end_expr <=> other.end_expr
     end
 
     def min; @start_expr  end
