@@ -17,25 +17,11 @@ module Runt
 # described by Martin Fowler. Essentially, they provide a pattern language for
 # specifying recurring events using set expressions.
 class TemporalExpression
-
   # Returns true or false depending on whether this TemporalExpression includes the supplied
-  # date.
-  def includes(aDate) #aDate can be Date, DateTime, or TimePoint
-    false
-  end
-
-  def log(expr, arg)
-    #~ puts "#{to_s}:  #{expr}==#{arg}? #{expr == arg}."
-  end
-
-  def to_s
-    "TemporalExpression"
-  end
-
-  protected :log
-
+  # date expression.
+  def includes?(date_expr); false end
+  def to_s; "TemporalExpression" end
 end
-
 
 # Base class for TemporalExpression classes that can be composed of other
 # TemporalExpression objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
@@ -47,8 +33,6 @@ class CollectionTE < TemporalExpression
   def initialize
     @expressions = Array.new
   end
-
-  def includes?(aDate); false end
 
   def add(anExpression)
     @expressions.push anExpression
@@ -77,9 +61,12 @@ end
 class IntersectionTE < CollectionTE
 
   def includes?(aDate)
+		#Handle @expressions.size==0
+		result = false
     @expressions.each do |expr|
-      return false unless expr.includes?(aDate)
+			return false unless (result = expr.includes?(aDate))
     end
+		result
   end
 
   def to_s; "IntersectionTE" end
@@ -90,7 +77,6 @@ end
 class DifferenceTE < TemporalExpression
 
   def initialize(expr1, expr2)
-    #super
     @expr1 = expr1
     @expr2 = expr2
   end
@@ -106,26 +92,47 @@ end
 # TemporalExpression that provides for inclusion of an arbitrary date.
 class ArbitraryTE < TemporalExpression
 
-  def initialize(aDate)
-    super()
-    @date_time = aDate
+  def initialize(date_expr)
+    @date_expr = date_expr
   end
 
   # Will return true if the supplied object is == to that which was used to
   # create this instance
-  def includes?(aDate)
-    return true if @date_time == aDate
+  def includes?(date_expr)
+    return true if @date_expr == date_expr
     false
   end
 
   def to_s; "ArbitraryTE" end
+
 end
 
+# TemporalExpression that provides a thin wrapper around built-in Ruby <tt>Range</tt> functionality
+# facilitating inclusion of an arbitrary range in a temporal expression.
+#
+#  See also: Range
+class ArbitraryRangeTE < TemporalExpression
+
+  def initialize(date_expr)
+		raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
+    @date_expr = date_expr
+  end
+
+	# Will return true if the supplied object is included in the range used to
+  # create this instance
+  def includes?(date_expr)
+		#~ if(date_expr.kind_of?(Range))
+			#~ return @date_expr.include?(date_expr.min)	&& @date_expr.include?(date_expr.max)
+		#~ end
+		return @date_expr.include?(date_expr)
+  end
+
+  def to_s; "ArbitraryRangeTE" end
+end
 
 class DayInMonthTE < TemporalExpression
 
   def initialize(offset, day_index)
-    super()
     @day_index = day_index
     @offset = offset
   end
@@ -190,13 +197,9 @@ class RangeEachYearTE < TemporalExpression
   def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
     super()
     @start_month = start_month
-    #~ puts "@start_month==#{@start_month}"
     @start_day = start_day
-    #~ puts "@start_day==#{@start_day}"
     @end_month = end_month
-    #~ puts "@end_month==#{@end_month}"
     @end_day = end_day
-    #~ puts "@end_day==#{@end_day}"
   end
 
   def includes?(date)
@@ -240,7 +243,6 @@ class RangeEachDayTE < TemporalExpression
   ANY_DATE=TimePoint.day_of_month(2002,8,CURRENT)
 
   def initialize(start_hour, start_minute, end_hour, end_minute)
-    super()
 
     start_time = TimePoint.minute(ANY_DATE.year,ANY_DATE.month,
               ANY_DATE.day,start_hour,start_minute)
@@ -255,8 +257,7 @@ class RangeEachDayTE < TemporalExpression
   end
 
   def includes?(date)
-	puts "--->#{date.class}"
-    raise TypeError, 'expected date' unless date.kind_of?(Date)
+		raise TypeError, 'expected date' unless date.kind_of?(Date)
 
     if(@spans_midnight&&date.hour<12) then
       #Assume next day
@@ -265,7 +266,6 @@ class RangeEachDayTE < TemporalExpression
 
     #Same day
     return @range.include?(get_current(date.hour,date.min))
-
   end
 
 

@@ -36,6 +36,8 @@ require "runt/dateprecision"
 require "runt/timepoint"
 require "runt/temporalexpression"
 require "runt/schedule"
+require "runt/daterange"
+
 #
 # The Runt module is the main namespace for all Runt modules and classes. Using
 # require statements, it makes the entire Runt library available.It also

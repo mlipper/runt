@@ -16,13 +16,13 @@ class TemporalExpressionTest < Test::Unit::TestCase
   def test_collection_te
     #base class that should always return false
     expr = CollectionTE.new
-    assert(!expr.includes(Date.today))
+    assert(!expr.includes?(Date.today))
   end
 
   def test_union_te
     #Test before adding expressions
     union_expr = UnionTE.new
-    assert(!union_expr.includes(Date.today))
+    assert(!union_expr.includes?(Date.today))
     #Everyday from midnight to 6:30am
     expr1 = RangeEachDayTE.new(0,0,6,30)
     #First Tuesday of the month
@@ -45,10 +45,36 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(!expr2.includes?(Date.new(2003,1,1)))
   end
 
+	def test_arbitrary_range_te
+
+		r_start = TimePoint.second(2004,2,29,16,24,12)
+    r_end = TimePoint.second(2004,3,2,4,22,58)
+		#inclusive range
+		expr1 = ArbitraryRangeTE.new(r_start..r_end)
+		assert(expr1.includes?(TimePoint.second(2004,2,29,16,24,12)))
+		assert(expr1.includes?(TimePoint.second(2004,3,2,4,22,58)))
+		assert(expr1.includes?(DateTime.new(2004,3,1,23,00)))
+    assert(!expr1.includes?(DateTime.new(2004,3,2,4,22,59)))
+    assert(!expr1.includes?(Date.new(2003,3,1)))
+		#exclusive range
+		expr2 = ArbitraryRangeTE.new(r_start...r_end)
+		assert(expr2.includes?(TimePoint.second(2004,2,29,16,24,12)))
+		assert(!expr2.includes?(TimePoint.second(2004,3,2,4,22,58)))
+		r_sub = DateRange.new( (r_start+10), (r_end-10) )
+		assert(expr1.includes?(r_sub))
+		#NOTE: although the following will also work:
+		#
+		#assert(expr1.includes?((r_start+10)..(r_end-10)))
+		#
+		#However, it takes a LONG time to evaluate if range is large
+		#and/or precision is small
+
+  end
+
   def test_intersection_te
     #Test before adding expressions
     intersect_expr  = IntersectionTE.new
-    assert(!intersect_expr.includes(Date.today))
+    assert(!intersect_expr.includes?(Date.today))
     #March through April
     expr1 = RangeEachYearTE.new(3,4)
     #First Sunday of any month

@@ -16,24 +16,35 @@ module Runt
   module DatePrecision
 
     def DatePrecision.to_p(date,prec=DEFAULT)
-        case prec
-          when MINUTE then TimePoint.minute(*DatePrecision.explode(date,prec))
-          when DAY_OF_MONTH then TimePoint.day_of_month(*DatePrecision.explode(date,prec))
-          when HOUR_OF_DAY then TimePoint.hour_of_day(*DatePrecision.explode(date,prec))
-          when MONTH then TimePoint.month(*DatePrecision.explode(date,prec))
-          when YEAR then TimePoint.year(*DatePrecision.explode(date,prec))
-          when SECOND then TimePoint.second(*DatePrecision.explode(date,prec))
-          when MILLISECOND then raise "Not implemented."
-          #~ else raise "Unknown precision #{prec}"
-          else TimePoint.default(*DatePrecision.explode(date,prec))
-        end
+
+			#Handle promotion of Dates to higher precision Objects..(Ouch!)
+			#~ if( !date.respond_to?("hour",false) && (prec > DAY_OF_MONTH) )
+				#~ new_args = (DatePrecision.explode(date, DAY_OF_MONTH)) <<0<<0<<0
+				#~ return DatePrecision.to_p(TimePoint.minute(*new_args),prec)
+			#~ end
+
+			case prec
+        when MINUTE then TimePoint.minute(*DatePrecision.explode(date,prec))
+				when DAY_OF_MONTH then TimePoint.day_of_month(*DatePrecision.explode(date,prec))
+        when HOUR_OF_DAY then TimePoint.hour_of_day(*DatePrecision.explode(date,prec))
+        when MONTH then TimePoint.month(*DatePrecision.explode(date,prec))
+        when YEAR then TimePoint.year(*DatePrecision.explode(date,prec))
+        when SECOND then TimePoint.second(*DatePrecision.explode(date,prec))
+        when MILLISECOND then raise "Not implemented."
+        #~ else raise "Unknown precision #{prec}"
+        else TimePoint.default(*DatePrecision.explode(date,prec))
+			end
     end
 
     def DatePrecision.explode(date,prec)
       result = [date.year,date.month,date.day]
-      if( prec > DAY_OF_MONTH )
-        result << date.hour << date.min << date.sec
-      end
+      #~ if( prec > DAY_OF_MONTH )
+				if(date.respond_to?("hour"))
+					result << date.hour << date.min << date.sec
+				else
+					result << 0 << 0 << 0
+				end
+			#~ end
       result
     end
 

@@ -55,7 +55,18 @@ class TimePointTest < Test::Unit::TestCase
     assert(TimePoint.minute(1999,12,31,21,57)==(@minute_prec-122))
     assert(TimePoint.second(2004,2,29,23,59,59)==(@second_prec-11))
   end
-
+  def test_spaceship_comparison_operator
+		sec_prec = TimePoint.second(2002,8,28,6,04,02)
+		assert(TimePoint.year(1998,12)<sec_prec)
+    assert(TimePoint.month(2002,9)>sec_prec)
+    assert(TimePoint.day_of_month(2002,8,28)==sec_prec)
+    assert(TimePoint.minute(1999,12,31,21,57)<sec_prec)
+    assert(DateTime.new(2002,8,28,6,04,02)==sec_prec)
+    assert(Date.new(2004,8,28)>sec_prec)
+	end
+  def test_succ
+    #~ fail("FIXME! Implement succ")
+	end
   def test_range
     #11:50 pm (:22 seconds ignored), February 2nd, 2004
     min1 = TimePoint.minute(2004,2,29,23,50,22)
@@ -63,13 +74,14 @@ class TimePointTest < Test::Unit::TestCase
     min2 = TimePoint.minute(2004,3,1,0,2)
     #Inclusive Range w/minute precision
     r_min = min1..min2
-
+    assert( r_min.include?(TimePoint.minute(2004,2,29,23,50,22)) )
+    assert( r_min.include?(TimePoint.minute(2004,3,1,0,2)) )
     assert( r_min.include?(TimePoint.minute(2004,3,1,0,0)) )
     assert( ! r_min.include?(TimePoint.minute(2004,3,1,0,3)) )
-
-    #~ r_min.each do |date|
-      #~ puts date.ctime
-    #~ end
+    #Exclusive Range w/minute precision
+    r_min = min1...min2
+    assert( r_min.include?(TimePoint.minute(2004,2,29,23,50,22)) )
+    assert( !r_min.include?(TimePoint.minute(2004,3,1,0,2)) )
   end
 
   def test_create_with_class_methods
