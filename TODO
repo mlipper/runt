@@ -6,11 +6,17 @@ Send suggestions, questions, threats, etc. for this list to Matt[mailto:matt@dig
 
 * Better RDoc's which include usage examples
 
+* More tutorials
+
 * Address performance issues due to implementation (in particular, TimePoint#<=>)
 
-* TemporalExpressions tutorial(s)
+* Test whether performance improves after declaring block params prior to invocation
 
 * Properly implement/test Range functionality in DateRange
+
+* Make Schedule a Module instead of a class
+
+* Use RDoc properly so Runt website and README don't cause DRY violations
 
 * Figure out why stupid IE downloads the runt-0.0.x.zip file using some f*'d up file name
 
