@@ -277,14 +277,14 @@ class RangeEachWeekTE < TemporalExpression
   end
 	
 	private
-	def validate(start_day,end_day)
+  def validate(start_day,end_day)
     unless start_day<=end_day
       raise ArgumentError, 'end day of week must be greater than start day'
     end
     unless VALID_RANGE.include?(start_day)&&VALID_RANGE.include?(end_day)
       raise ArgumentError, 'start and end day arguments must be in the range #{VALID_RANGE.to_s}.'
     end		
-	end
+  end
 end
 
 class RangeEachYearTE < TemporalExpression
