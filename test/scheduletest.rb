@@ -35,7 +35,7 @@ class ScheduleTest < Test::Unit::TestCase
 
   def setup
     #~ @elmo_party = Event.new("Elmo's Birthday Party")
-    @elmo_party_te = RangeEachDay.new(10,00,16,00)
-    @sesame_street_broadcast_te = RangeEachWeek.new(Monday,Friday) - RangeEachDay.new(9,00,10,00)
+    @elmo_party_te = RgEaDy.new(10,00,16,00)
+    @sesame_street_broadcast_te = RgEaWk.new(Monday,Friday) - RgEaDy.new(9,00,10,00)
   end
 end

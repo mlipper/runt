@@ -8,24 +8,26 @@ require 'runt/dateprecision'
 
 module Runt
 
-# Base class for all TemporalExpression classes that has proved itself usefull enough to
-# avoid O's Razor, but that may wind up as a module. Mostly a side-effect of many
-# years working with statically typed languages.
+# FKA = 'Formally Known As'
+
+
+# FKA: TemporalExpression
 #
-# TemporalExpressions are inspired by the recurring event
+# Base class for all TExpr classes that has proved itself usefull enough to
+# avoid O's Razor, but that may wind up as a module.
+#
+# 'TExpr' is short for 'TemporalExpression' and are inspired by the recurring event
 # <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
 # described by Martin Fowler. Essentially, they provide a pattern language for
 # specifying recurring events using set expressions.
 #
 # See also [tutorial_te.rdoc]
-class TemporalExpression
+class TExpr
 
-  #~ include RSugar
-
-  # Returns true or false depending on whether this TemporalExpression includes the supplied
+  # Returns true or false depending on whether this TExpr includes the supplied
   # date expression.
   def include?(date_expr); false end
-  def to_s; "TemporalExpression" end
+  def to_s; "TExpr" end
 
   def or (arg)
 
@@ -97,9 +99,9 @@ class TemporalExpression
 
 end
 
-# Base class for TemporalExpression classes that can be composed of other
-# TemporalExpression objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
-class Collection < TemporalExpression
+# Base class for TExpr classes that can be composed of other
+# TExpr objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
+class Collection < TExpr
 
   attr_reader :expressions
   protected :expressions
@@ -116,7 +118,7 @@ class Collection < TemporalExpression
   def to_s; "Collection:" + @expressions.to_s end
 end
 
-# Composite TemporalExpression that will be true if <b>any</b> of it's
+# Composite TExpr that will be true if <b>any</b> of it's
 # component expressions are true.
 class Union < Collection
 
@@ -130,7 +132,7 @@ class Union < Collection
   def to_s; "Union:" + @expressions.to_s end
 end
 
-# Composite TemporalExpression that will be true only if <b>all</b> it's
+# Composite TExpr that will be true only if <b>all</b> it's
 # component expressions are true.
 class Intersect < Collection
 
@@ -146,9 +148,9 @@ class Intersect < Collection
   def to_s; "Intersect:" + @expressions.to_s end
 end
 
-# TemporalExpression that will be true only if the first of
+# TExpr that will be true only if the first of
 # it's two contained expressions is true and the second is false.
-class Diff < TemporalExpression
+class Diff < TExpr
 
   def initialize(expr1, expr2)
     @expr1 = expr1
@@ -163,8 +165,8 @@ class Diff < TemporalExpression
   def to_s; "Diff" end
 end
 
-# TemporalExpression that provides for inclusion of an arbitrary date.
-class Arbitrary < TemporalExpression
+# TExpr that provides for inclusion of an arbitrary date.
+class Arbitrary < TExpr
 
   def initialize(date_expr)
     @date_expr = date_expr
@@ -181,11 +183,11 @@ class Arbitrary < TemporalExpression
 
 end
 
-# TemporalExpression that provides a thin wrapper around built-in Ruby <tt>Range</tt> functionality
+# TExpr that provides a thin wrapper around built-in Ruby <tt>Range</tt> functionality
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class ArbitraryRange < TemporalExpression
+class ArbitraryRange < TExpr
 
   def initialize(date_expr)
     raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
@@ -201,10 +203,10 @@ class ArbitraryRange < TemporalExpression
   def to_s; "ArbitraryRange" end
 end
 
-# TemporalExpression that provides support for building a temporal
+# TExpr that provides support for building a temporal
 # expression using the form:
 #
-#     DayInMonth.new(1,0)
+#     DyInMn.new(1,0)
 #
 # where the first argument is the week of the month and the second
 # argument is the wday of the week as defined by the 'wday' method
@@ -214,19 +216,19 @@ end
 # backwards from the end of the month. So, to match the last Saturday
 # of the month
 #
-#     DayInMonth.new(-1,6)
+#     DyInMn.new(-1,6)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DayInMonth.new(First,Sunday)
+#     DyInMn.new(First,Sunday)
 #
 # and the second as:
 #
-#     DayInMonth.new(Last,Saturday)
+#     DyInMn.new(Last,Saturday)
 #
 #  See also: Date, Runt
-class DayInMonth < TemporalExpression
+class DyInMn < TExpr
 
   def initialize(week_of_month_index,day_index)
     @day_index = day_index
@@ -238,11 +240,11 @@ class DayInMonth < TemporalExpression
   end
 
   def to_s
-    "DayInMonth"
+    "DyInMn"
   end
 
   def print(date)
-    puts "DayInMonth: #{date}"
+    puts "DyInMn: #{date}"
     puts "include? == #{include?(date)}"
     puts "day_matches? == #{day_matches?(date)}"
     puts "week_matches? == #{week_matches?(date)}"
@@ -259,21 +261,21 @@ class DayInMonth < TemporalExpression
 
 end
 
-# TemporalExpression that matches days of the week where the first argument
+# TExpr that matches days of the week where the first argument
 # is an integer denoting the ordinal day of the week. Valid values are 0..6 where
 # 0 == Sunday and 6==Saturday
 #
 # For example:
 #
-#     DayInWeek.new(0)
+#     DyInWk.new(0)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DayInWeek.new(Sunday)
+#     DyInWk.new(Sunday)
 #
 #  See also: Date, Runt
-class DayInWeek < TemporalExpression
+class DyInWk < TExpr
 
   VALID_RANGE = 0..6
 
@@ -290,17 +292,17 @@ class DayInWeek < TemporalExpression
 
 end
 
-# TemporalExpression that matches days of the week within one
+# TExpr that matches days of the week within one
 # week only.
 #
 # If start and end day are equal, the entire week will match true.
 #
 #  See also: Date
-class RangeEachWeek < TemporalExpression
+class RgEaWk < TExpr
 
   VALID_RANGE = 0..6
 
-	# Creates a RangeEachWeek using the supplied start
+	# Creates a RgEaWk using the supplied start
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
   # (6 => Saturday) is assumed.
@@ -320,7 +322,7 @@ class RangeEachWeek < TemporalExpression
   end
 
   def to_s
-    "RangeEachWeek"
+    "RgEaWk"
   end
 
 	private
@@ -334,7 +336,7 @@ class RangeEachWeek < TemporalExpression
   end
 end
 
-class RangeEachYear < TemporalExpression
+class RgEaYr < TExpr
 
   def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
     super()
@@ -351,11 +353,11 @@ class RangeEachYear < TemporalExpression
   end
 
   def to_s
-    "RangeEachYear"
+    "RgEaYr"
   end
 
   def print(date)
-    puts "DayInMonth: #{date}"
+    puts "DyInMn: #{date}"
     puts "include? == #{include?(date)}"
     puts "months_include? == #{months_include?(date)}"
     puts "end_month_include? == #{end_month_include?(date)}"
@@ -378,12 +380,12 @@ class RangeEachYear < TemporalExpression
   end
 end
 
-# TemporalExpression that matches periods of the day with minute
+# TExpr that matches periods of the day with minute
 # precision. If the start hour is greater than the end hour, than end hour
 # is assumed to be on the following day.
 #
 #  See also: Date
-class RangeEachDay < TemporalExpression
+class RgEaDy < TExpr
 
   CURRENT=28
   NEXT=29
@@ -416,11 +418,11 @@ class RangeEachDay < TemporalExpression
   end
 
   def to_s
-    "RangeEachDay"
+    "RgEaDy"
   end
 
   def print(date)
-    puts "DayInMonth: #{date}"
+    puts "DyInMn: #{date}"
     puts "include? == #{include?(date)}"
   end
 
@@ -440,12 +442,12 @@ class RangeEachDay < TemporalExpression
 
 end
 
-# TemporalExpression that matches the week in a month. For example:
+# TExpr that matches the week in a month. For example:
 #
-#     WeekInMonth.new(1)
+#     WkInMn.new(1)
 #
 #  See also: Date
-class WeekInMonth < TemporalExpression
+class WkInMn < TExpr
 
   VALID_RANGE = -2..5
 
