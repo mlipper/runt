@@ -12,6 +12,7 @@ task :default => [:test]
 Rake::RDocTask.new do |rd|
   rd.rdoc_dir="site/doc"
   rd.options << "-S"
+  rd.rdoc_files.exclude("test/*.rb")
   rd.rdoc_files.include("lib/**/*.rb")
   rd.rdoc_files.include("README")
 end

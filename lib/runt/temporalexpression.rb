@@ -249,26 +249,42 @@ class DayInWeekTE < TemporalExpression
 
 end
 
+# TemporalExpression that matches days of the week within one
+# week only. If the start day is greater than the end day, an
+# ArgumentError will be raised.
+#
+# If start and end day are equal, the entire week will match true.
+#
+#  See also: Date
 class RangeEachWeekTE < TemporalExpression
+
+  VALID_RANGE = 0..6
+
   def initialize(start_day,end_day=start_day)
-    super()
+		super()
+		validate(start_day,end_day)
     @start_day = start_day
     @end_day = end_day
   end
 
   def include?(date)
     return true if  @start_day==@end_day
-    return  if spans_week
     @start_day<=date.wday && @end_day>=date.wday
-  end
-
-  def spans_week
-    @start_day>@end_day
   end
 
   def to_s
     "RangeEachWeekTE"
   end
+	
+	private
+	def validate(start_day,end_day)
+    unless start_day<=end_day
+      raise ArgumentError, 'end day of week must be greater than start day'
+    end
+    unless VALID_RANGE.include?(start_day)&&VALID_RANGE.include?(end_day)
+      raise ArgumentError, 'start and end day arguments must be in the range #{VALID_RANGE.to_s}.'
+    end		
+	end
 end
 
 class RangeEachYearTE < TemporalExpression
@@ -315,6 +331,11 @@ class RangeEachYearTE < TemporalExpression
   end
 end
 
+# TemporalExpression that matches periods of the day with minute 
+# precision. If the start hour is greater than the end hour, than end hour 
+# is assumed to be on the following day.
+#
+#  See also: Date
 class RangeEachDayTE < TemporalExpression
 
   CURRENT=28

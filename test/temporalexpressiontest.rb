@@ -175,7 +175,18 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #12:01 am (January 28th, 2004 - ignored)
     assert(!expr2.include?(TimePoint.minute(2004,1,28,0,01)))
   end
-
+  def test_range_each_week_te
+		begin
+			expr = RangeEachWeekTE.new(10,4)
+			fail "ArgumentError expected"
+		rescue ArgumentError
+			#Expected, YAY! we passed! YAY!
+		end
+		#Sunday through Thursday
+		expr2 = RangeEachWeekTE.new(0,4)
+    assert(expr2.include?(TimePoint.minute(2004,2,19,23,59,59)))
+    assert(!expr2.include?(TimePoint.minute(2004,2,20,0,0,0)))		
+	end
   def test_combined_te
     #Tuesdays
     tuesdays = DayInWeekTE.new(Tuesday)
