@@ -17,21 +17,21 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
   def test_collection_te
     #base class that should always return false
-    expr = CollectionTE.new
+    expr = Collection.new
     assert(!expr.include?(Date.today))
   end
 
   def test_union_te
     #midnight to 6:30am AND/OR first Tuesday of the month
-    expr = RangeEachDayTE.new(0,0,6,30) | DayInMonthTE.new(First,Tuesday)
+    expr = RangeEachDay.new(0,0,6,30) | DayInMonth.new(First,Tuesday)
     assert(expr.include?(TimePoint.day_of_month(2004,1,6))) #January 6th, 2004 (First Tuesday)
     assert(expr.include?(TimePoint.hour_of_day(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
     assert(!expr.include?(TimePoint.minute(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
 
   def test_arbitrary_te
-    expr1 = ArbitraryTE.new(TimePoint.day_of_month(2003,12,30))
-    expr2 = ArbitraryTE.new(TimePoint.day_of_month(2004,1,1))
+    expr1 = Arbitrary.new(TimePoint.day_of_month(2003,12,30))
+    expr2 = Arbitrary.new(TimePoint.day_of_month(2004,1,1))
     assert(expr1.include?(Date.new(2003,12,30)))
     assert(!expr1.include?(Date.new(2003,12,31)))
     assert(expr2.include?(Date.new(2004,1,1)))
@@ -41,7 +41,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
   def test_arbitrary_range_te
     #NOTE:
     #Using standard range functionality like the following:
-    #...  expr1 = ArbitraryRangeTE.new(r_start..r_end)
+    #...  expr1 = ArbitraryRange.new(r_start..r_end)
     #...  assert(expr1.include?((r_start+10)..(r_end-10)))
     #will work. However, it takes a LONG time to evaluate if range is large
     #and/or precision is small. Use DateRange instead
@@ -49,14 +49,14 @@ class TemporalExpressionTest < Test::Unit::TestCase
     r_start = TimePoint.second(2004,2,29,16,24,12)
     r_end = TimePoint.second(2004,3,2,4,22,58)
     #inclusive range equivalent to r_start..r_end
-    expr1 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end))
+    expr1 = ArbitraryRange.new(DateRange.new(r_start,r_end))
     assert(expr1.include?(TimePoint.second(2004,2,29,16,24,12)))
     assert(expr1.include?(TimePoint.second(2004,3,2,4,22,58)))
     assert(expr1.include?(DateTime.new(2004,3,1,23,00)))
     assert(!expr1.include?(DateTime.new(2004,3,2,4,22,59)))
     assert(!expr1.include?(Date.new(2003,3,1)))
     #exclusive range equivalent to r_start...r_end
-    expr2 = ArbitraryRangeTE.new(DateRange.new(r_start,r_end,true))
+    expr2 = ArbitraryRange.new(DateRange.new(r_start,r_end,true))
     assert(expr2.include?(TimePoint.second(2004,2,29,16,24,12)))
     assert(!expr2.include?(TimePoint.second(2004,3,2,4,22,58)))
     r_sub = DateRange.new( (r_start+10), (r_end-10) )
@@ -65,14 +65,14 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
   def test_intersection_te
     #Should match the first Sunday of March and April
-    intersect_expr  = RangeEachYearTE.new(3,4) & DayInMonthTE.new(First,Sunday)
+    intersect_expr  = RangeEachYear.new(3,4) & DayInMonth.new(First,Sunday)
     assert(intersect_expr.include?(TimePoint.new(2004,3,7))) #Sunday, March 7th, 2004
     assert(!intersect_expr.include?(TimePoint.new(2004,4,1))) #First Sunday in February, 2004
   end
 
   def test_difference_te
     #Should match for 8:30 pm to 11:04 pm
-    diff_expr  = RangeEachDayTE.new(20,30,00,00) - RangeEachDayTE.new(23,04,6,20)
+    diff_expr  = RangeEachDay.new(20,30,00,00) - RangeEachDay.new(23,04,6,20)
     #8:45 pm (May 1st, 2003 - ignored)
     assert(diff_expr.include?(TimePoint.new(2003,5,1,20,45)))
     #11:05 pm (February 1st, 2004 - ignored)
@@ -87,9 +87,9 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #Friday, January 9th 2004
     dt2 = Date.civil(2004,1,9)
     #third Friday of the month
-    expr1 = DayInMonthTE.new(Third,Friday)
+    expr1 = DayInMonth.new(Third,Friday)
     #second Friday of the month
-    expr2 = DayInMonthTE.new(Second,Friday)
+    expr2 = DayInMonth.new(Second,Friday)
     assert(expr1.include?(dt1))
     assert(!expr1.include?(dt2))
     assert(expr2.include?(dt2))
@@ -97,13 +97,13 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #Sunday, January 25th 2004
     dt3 = Date.civil(2004,1,25)
     #last Sunday of the month
-    expr3 = DayInMonthTE.new(Last_of,Sunday)
+    expr3 = DayInMonth.new(Last_of,Sunday)
     assert(expr3.include?(dt3))
   end
 
   def test_day_in_week_te
     #Friday (woo-hoo!)
-    expr = DayInWeekTE.new(Friday)
+    expr = DayInWeek.new(Friday)
     #Friday, January 9th 2004
     assert(expr.include?(TimePoint.new(2004,1,9)))
     #Friday, January 16th 2004
@@ -112,12 +112,12 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(!expr.include?(TimePoint.new(2004,1,12)))
   end
   def test_week_in_month_te
-    expr = WeekInMonthTE.new(Third)
+    expr = WeekInMonth.new(Third)
     assert(expr.include?(TimePoint.day_of_month(2004,2,19)))
     assert(!expr.include?(TimePoint.day_of_month(2004,2,29)))
-    expr2 = WeekInMonthTE.new(Last_of)
+    expr2 = WeekInMonth.new(Last_of)
     assert(expr2.include?(TimePoint.day_of_month(2004,2,29)))
-    expr3 = WeekInMonthTE.new(Second_to_last)
+    expr3 = WeekInMonth.new(Second_to_last)
     assert(expr3.include?(TimePoint.day_of_month(2004,2,22)))
   end
 
@@ -127,14 +127,14 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #June, 1986
     dt2 = TimePoint::month(1986,6)
     #November and December
-    expr1 = RangeEachYearTE.new(11,12)
+    expr1 = RangeEachYear.new(11,12)
     #May 31st through  and September 6th
-    expr2 = RangeEachYearTE.new(5,31,9,6)
+    expr2 = RangeEachYear.new(5,31,9,6)
     assert(expr1.include?(dt1))
     assert(!expr1.include?(dt2))
     assert(expr2.include?(dt2))
     #August
-    expr3 = RangeEachYearTE.new(8)
+    expr3 = RangeEachYear.new(8)
     assert(!expr3.include?(dt1))
     assert(!expr3.include?(dt2))
     #August 6th, 2004
@@ -144,7 +144,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
   def test_range_each_day_te
     #noon to 4:30pm
-    expr1 = RangeEachDayTE.new(12,0,16,30)
+    expr1 = RangeEachDay.new(12,0,16,30)
     #3:15 pm (May 8th, 2012 - ignored)
     assert(expr1.include?(TimePoint.hour_of_day(2012,5,8,15,15)))
     #4:30 pm (April 18th, 1922 - ignored)
@@ -154,7 +154,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #3:15 am (May 8th, 2012 - ignored)
     assert(!expr1.include?(TimePoint.hour_of_day(2012,5,8,3,15)))
     #8:30pm to 12:00 midnite
-    expr2 = RangeEachDayTE.new(20,30,00,00)
+    expr2 = RangeEachDay.new(20,30,00,00)
     #9:00 pm (January 28th, 2004 - ignored)
     assert(expr2.include?(TimePoint.minute(2004,1,28,21,00)))
     #12:00 am (January 28th, 2004 - ignored)
@@ -164,13 +164,13 @@ class TemporalExpressionTest < Test::Unit::TestCase
   end
   def test_range_each_week_te
 		begin
-			expr = RangeEachWeekTE.new(10,4)
+			expr = RangeEachWeek.new(10,4)
 			fail "ArgumentError expected"
 		rescue ArgumentError
 			#Expected, YAY! we passed! YAY!
 		end
 		#Sunday through Thursday
-		expr2 = RangeEachWeekTE.new(0,4)
+		expr2 = RangeEachWeek.new(0,4)
     assert(expr2.include?(TimePoint.minute(2004,2,19,23,59,59)))
     assert(!expr2.include?(TimePoint.minute(2004,2,20,0,0,0)))
 	end
@@ -179,11 +179,11 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		#In the U.S., Memorial Day begins the last Monday of May
 		#
 		#The month of May
-		may=RangeEachYearTE.new(5)
+		may=RangeEachYear.new(5)
 		#Monday through Saturday
-		monday_to_saturday = RangeEachWeekTE.new(1,6)
+		monday_to_saturday = RangeEachWeek.new(1,6)
 		#Last week of (any) month
-		last_week_in = WeekInMonthTE.new(Last_of)
+		last_week_in = WeekInMonth.new(Last_of)
 		#So, to say 'starting from the last Monday in May',
     #we need to select just that last week of May begining with
     #the Monday of that week
@@ -196,14 +196,14 @@ class TemporalExpressionTest < Test::Unit::TestCase
     #In the U.S., Labor Day is the first Monday in September
     #
 		#The month of September
-		september=RangeEachYearTE.new(9)
+		september=RangeEachYear.new(9)
 		#First week of (any) month
-		first_week_in = WeekInMonthTE.new(First)
+		first_week_in = WeekInMonth.new(First)
     entire_first_week_of_september = september & first_week_in
     #To exclude everything in the first week which occurs on or after Monday.
     first_week_of_september=entire_first_week_of_september - monday_to_saturday
     #June through August
-		june_through_august=RangeEachYearTE.new(6,First,8)
+		june_through_august=RangeEachYear.new(6,First,8)
     assert(june_through_august.include?(TimePoint.day_of_month(2004,7,4)))
     #Finally!
     summer_time = last_week_of_may | first_week_of_september | june_through_august
@@ -220,9 +220,9 @@ class TemporalExpressionTest < Test::Unit::TestCase
   def test_nyc_parking_te
 
     #Monday, Wednesday, Friday
-    mon_wed_fri = (DayInWeekTE.new(Monday) | \
-                    DayInWeekTE.new(Wednesday) | \
-                      DayInWeekTE.new(Friday))
+    mon_wed_fri = (DayInWeek.new(Monday) | \
+                    DayInWeek.new(Wednesday) | \
+                      DayInWeek.new(Friday))
 
 
     #Wednesday (at 7:15pm - ignored)
@@ -232,16 +232,16 @@ class TemporalExpressionTest < Test::Unit::TestCase
     assert(!mon_wed_fri.include?(DateTime.new(2004,3,14,9,00)))
 
     #8am to 11am
-    eight_to_eleven = RangeEachDayTE.new(8,00,11,00)
+    eight_to_eleven = RangeEachDay.new(8,00,11,00)
 
     #=> Mon,Wed,Fri - 8am to 11am
     expr1 = mon_wed_fri & eight_to_eleven
 
     #Tuesdays, Thursdays
-    tues_thurs = (DayInWeekTE.new(Tuesday) | DayInWeekTE.new(Thursday))
+    tues_thurs = (DayInWeek.new(Tuesday) | DayInWeek.new(Thursday))
 
     #11:30am to 2pm
-    eleven_thirty_to_two = RangeEachDayTE.new(11,30,14,00)
+    eleven_thirty_to_two = RangeEachDay.new(11,30,14,00)
 
     #Noon (on Monday - ignored)
     assert(eleven_thirty_to_two.include?(DateTime.new(2004,3,8,12,00)))

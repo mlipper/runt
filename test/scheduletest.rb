@@ -28,14 +28,14 @@ class ScheduleTest < Test::Unit::TestCase
     tv_schedule = Schedule.new
     elmos_world = Event.new("Elmo's World",tv_schedule)
 
-    p @sesame_street_broadcast_te
+    #~ p @sesame_street_broadcast_te
     #schedule.add(
 
   end
 
   def setup
     #~ @elmo_party = Event.new("Elmo's Birthday Party")
-    @elmo_party_te = RangeEachDayTE.new(10,00,16,00)
-    @sesame_street_broadcast_te = IntersectionTE.new.add(RangeEachWeekTE.new(Monday,Friday)).add(RangeEachDayTE.new(9,00,10,00))
+    @elmo_party_te = RangeEachDay.new(10,00,16,00)
+    @sesame_street_broadcast_te = RangeEachWeek.new(Monday,Friday) - RangeEachDay.new(9,00,10,00)
   end
 end

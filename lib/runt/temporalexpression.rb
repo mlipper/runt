@@ -8,30 +8,47 @@ require 'runt/dateprecision'
 
 module Runt
 
-module TESugar
+# Base class for all TemporalExpression classes that has proved itself usefull enough to
+# avoid O's Razor, but that may wind up as a module. Mostly a side-effect of many
+# years working with statically typed languages.
+#
+# TemporalExpressions are inspired by the recurring event
+# <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
+# described by Martin Fowler. Essentially, they provide a pattern language for
+# specifying recurring events using set expressions.
+#
+# See also [tutorial_te.rdoc]
+class TemporalExpression
+
+  #~ include RSugar
+
+  # Returns true or false depending on whether this TemporalExpression includes the supplied
+  # date expression.
+  def include?(date_expr); false end
+  def to_s; "TemporalExpression" end
 
   def or (arg)
 
-    if self.kind_of?(UnionTE)
+    if self.kind_of?(Union)
       self.add(arg)
     else
-      yield UnionTE.new.add(self).add(arg)
+      yield Union.new.add(self).add(arg)
     end
 
   end
 
   def and (arg)
 
-    if self.kind_of?(IntersectionTE)
+    if self.kind_of?(Intersect)
       self.add(arg)
     else
-      yield IntersectionTE.new.add(self).add(arg)
+      yield Intersect.new.add(self).add(arg)
     end
 
   end
 
   def minus (arg)
-      yield DifferenceTE.new(self,arg)
+      yield Diff.new(self,arg)
   end
 
   def | (expr)
@@ -45,27 +62,6 @@ module TESugar
   def - (expr)
     self.minus(expr){|adjusted| adjusted }
   end
-
-end
-
-# Base class for all TemporalExpression classes that will probably be scuttled
-# unless it proves itself useful in some fashion. Mostly a side-effect of many
-# years working with statically typed languages.
-#
-# TemporalExpressions are inspired by the recurring event
-# <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
-# described by Martin Fowler. Essentially, they provide a pattern language for
-# specifying recurring events using set expressions.
-#
-# See also [tutorial_te.rdoc]
-class TemporalExpression
-
-  include TESugar
-
-  # Returns true or false depending on whether this TemporalExpression includes the supplied
-  # date expression.
-  def include?(date_expr); false end
-  def to_s; "TemporalExpression" end
 
   protected
   def week_in_month(day_in_month)
@@ -103,7 +99,7 @@ end
 
 # Base class for TemporalExpression classes that can be composed of other
 # TemporalExpression objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
-class CollectionTE < TemporalExpression
+class Collection < TemporalExpression
 
   attr_reader :expressions
   protected :expressions
@@ -117,12 +113,12 @@ class CollectionTE < TemporalExpression
     self
   end
 
-  def to_s; "CollectionTE" end
+  def to_s; "Collection:" + @expressions.to_s end
 end
 
 # Composite TemporalExpression that will be true if <b>any</b> of it's
 # component expressions are true.
-class UnionTE < CollectionTE
+class Union < Collection
 
   def include?(aDate)
     @expressions.each do |expr|
@@ -131,12 +127,12 @@ class UnionTE < CollectionTE
     false
   end
 
-  def to_s; "UnionTE" end
+  def to_s; "Union:" + @expressions.to_s end
 end
 
 # Composite TemporalExpression that will be true only if <b>all</b> it's
 # component expressions are true.
-class IntersectionTE < CollectionTE
+class Intersect < Collection
 
   def include?(aDate)
     #Handle @expressions.size==0
@@ -147,12 +143,12 @@ class IntersectionTE < CollectionTE
     result
   end
 
-  def to_s; "IntersectionTE" end
+  def to_s; "Intersect:" + @expressions.to_s end
 end
 
 # TemporalExpression that will be true only if the first of
 # it's two contained expressions is true and the second is false.
-class DifferenceTE < TemporalExpression
+class Diff < TemporalExpression
 
   def initialize(expr1, expr2)
     @expr1 = expr1
@@ -164,11 +160,11 @@ class DifferenceTE < TemporalExpression
     true
   end
 
-  def to_s; "DifferenceTE" end
+  def to_s; "Diff" end
 end
 
 # TemporalExpression that provides for inclusion of an arbitrary date.
-class ArbitraryTE < TemporalExpression
+class Arbitrary < TemporalExpression
 
   def initialize(date_expr)
     @date_expr = date_expr
@@ -181,7 +177,7 @@ class ArbitraryTE < TemporalExpression
     false
   end
 
-  def to_s; "ArbitraryTE" end
+  def to_s; "Arbitrary" end
 
 end
 
@@ -189,7 +185,7 @@ end
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class ArbitraryRangeTE < TemporalExpression
+class ArbitraryRange < TemporalExpression
 
   def initialize(date_expr)
     raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
@@ -202,13 +198,13 @@ class ArbitraryRangeTE < TemporalExpression
     return @date_expr.include?(date_expr)
   end
 
-  def to_s; "ArbitraryRangeTE" end
+  def to_s; "ArbitraryRange" end
 end
 
 # TemporalExpression that provides support for building a temporal
 # expression using the form:
 #
-#     DayInMonthTE.new(1,0)
+#     DayInMonth.new(1,0)
 #
 # where the first argument is the week of the month and the second
 # argument is the wday of the week as defined by the 'wday' method
@@ -218,19 +214,19 @@ end
 # backwards from the end of the month. So, to match the last Saturday
 # of the month
 #
-#     DayInMonthTE.new(-1,6)
+#     DayInMonth.new(-1,6)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DayInMonthTE.new(First,Sunday)
+#     DayInMonth.new(First,Sunday)
 #
 # and the second as:
 #
-#     DayInMonthTE.new(Last,Saturday)
+#     DayInMonth.new(Last,Saturday)
 #
 #  See also: Date, Runt
-class DayInMonthTE < TemporalExpression
+class DayInMonth < TemporalExpression
 
   def initialize(week_of_month_index,day_index)
     @day_index = day_index
@@ -242,11 +238,11 @@ class DayInMonthTE < TemporalExpression
   end
 
   def to_s
-    "DayInMonthTE"
+    "DayInMonth"
   end
 
   def print(date)
-    puts "DayInMonthTE: #{date}"
+    puts "DayInMonth: #{date}"
     puts "include? == #{include?(date)}"
     puts "day_matches? == #{day_matches?(date)}"
     puts "week_matches? == #{week_matches?(date)}"
@@ -269,15 +265,15 @@ end
 #
 # For example:
 #
-#     DayInWeekhTE.new(0)
+#     DayInWeek.new(0)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DayInWeekhTE.new(Sunday)
+#     DayInWeek.new(Sunday)
 #
 #  See also: Date, Runt
-class DayInWeekTE < TemporalExpression
+class DayInWeek < TemporalExpression
 
   VALID_RANGE = 0..6
 
@@ -300,11 +296,11 @@ end
 # If start and end day are equal, the entire week will match true.
 #
 #  See also: Date
-class RangeEachWeekTE < TemporalExpression
+class RangeEachWeek < TemporalExpression
 
   VALID_RANGE = 0..6
 
-	# Creates a RangeEachWeekTE using the supplied start
+	# Creates a RangeEachWeek using the supplied start
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
   # (6 => Saturday) is assumed.
@@ -324,7 +320,7 @@ class RangeEachWeekTE < TemporalExpression
   end
 
   def to_s
-    "RangeEachWeekTE"
+    "RangeEachWeek"
   end
 
 	private
@@ -338,7 +334,7 @@ class RangeEachWeekTE < TemporalExpression
   end
 end
 
-class RangeEachYearTE < TemporalExpression
+class RangeEachYear < TemporalExpression
 
   def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
     super()
@@ -355,11 +351,11 @@ class RangeEachYearTE < TemporalExpression
   end
 
   def to_s
-    "RangeEachYearTE"
+    "RangeEachYear"
   end
 
   def print(date)
-    puts "DayInMonthTE: #{date}"
+    puts "DayInMonth: #{date}"
     puts "include? == #{include?(date)}"
     puts "months_include? == #{months_include?(date)}"
     puts "end_month_include? == #{end_month_include?(date)}"
@@ -387,7 +383,7 @@ end
 # is assumed to be on the following day.
 #
 #  See also: Date
-class RangeEachDayTE < TemporalExpression
+class RangeEachDay < TemporalExpression
 
   CURRENT=28
   NEXT=29
@@ -420,11 +416,11 @@ class RangeEachDayTE < TemporalExpression
   end
 
   def to_s
-    "RangeEachDayTE"
+    "RangeEachDay"
   end
 
   def print(date)
-    puts "DayInMonthTE: #{date}"
+    puts "DayInMonth: #{date}"
     puts "include? == #{include?(date)}"
   end
 
@@ -446,10 +442,10 @@ end
 
 # TemporalExpression that matches the week in a month. For example:
 #
-#     WeekInMonthTE.new(1)
+#     WeekInMonth.new(1)
 #
 #  See also: Date
-class WeekInMonthTE < TemporalExpression
+class WeekInMonth < TemporalExpression
 
   VALID_RANGE = -2..5
 
