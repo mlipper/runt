@@ -35,30 +35,20 @@ class TimePointTest < Test::Unit::TestCase
 	
 	def test_plus		
 		assert(DatePrecision.year(2022,12)==(@year_prec+12))		
-		assert(DatePrecision.month(2005,1)==(@month_prec+6))		
+		assert(DatePrecision.month(2005,2)==(@month_prec+6))		
 		assert(DatePrecision.day_of_month(2004,2,1)==(@day_prec+7))				
 		assert(DatePrecision.minute(2000,1,1,0,0)==(@minute_prec+1))				
-		assert(DatePrecision.second(2004,2,29,23,59,59)==(@second_prec-11))				
+		assert(DatePrecision.second(2004,3,1,0,0,21)==(@second_prec+11))				
  	end
 	
 
 	def test_minus		
-		p DatePrecision.year(1998,12).ctime
-		p @year_prec.ctime		
-		temp = (@year_prec-12)
-		assert(DatePrecision.year(1998,12)==(@year_prec-12))		
-		
-		#~ month_prec = DatePrecision.month(2004,8)
-		#~ assert(DatePrecision.month(2005,1)==(month_prec+6))		
-
-		#~ day_prec = DatePrecision.day_of_month(2004,1,25,11,39)
-		#~ assert(DatePrecision.day_of_month(2004,2,1)==(day_prec+7))				
-		
-		#~ minute_prec = DatePrecision.minute(1999,12,31,23,59,4)
-		#~ assert(DatePrecision.minute(2000,1,1,0,0)==(minute_prec+1))				
-		
-		#~ second_prec = DatePrecision.second(2004,3,1,0,0,10)
-		#~ assert(DatePrecision.second(2004,2,29,23,59,59)==(second_prec-11))				
+		assert(DatePrecision.year(1998,12)==(@year_prec-12))				
+		assert(DatePrecision.month(2002,6)==(@month_prec-26))
+		#Hmmm...FIXME? @day_prec-26 == 12/31??
+		assert(DatePrecision.day_of_month(2003,12,30)==(@day_prec-26))						
+		assert(DatePrecision.minute(1999,12,31,21,57)==(@minute_prec-122))				
+		assert(DatePrecision.second(2004,2,29,23,59,59)==(@second_prec-11))				
  	end
 
 

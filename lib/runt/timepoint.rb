@@ -35,22 +35,14 @@ module Runt
 
     def + (n)
 			raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
-						
-      if(leap?) 
-				days_in_year = 365
-			else
-				days_in_year = 366
-			end
-			#FIXME!!!!
       case @date_precision
 				when DatePrecision::YEAR then 
-        #~ return new_self_plus(n){ |n| n = n*days_in_year }	
 					return DatePrecision::to_p(TimePoint::civil(year+n,month,day),@date_precision)
 				when DatePrecision::MONTH then 
-					return new_self_plus(n){ |n| n = (n*(days_in_year/12).to_i)} 
+					current_date = self.class.to_date(self)
+					return DatePrecision::to_p((current_date>>n),@date_precision)
 				when DatePrecision::DAY_OF_MONTH then 
-					#Default behaviour already in Date
-          return new_self_plus(n){ |n| n = n }			
+					return new_self_plus(n)
 				when DatePrecision::HOUR_OF_DAY then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }			
 				when DatePrecision::MINUTE then 
@@ -58,22 +50,32 @@ module Runt
         when DatePrecision::SECOND then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
 				end
-			end
+		end
         
-			def - (x)
+		def - (x)
 				case x
-					when Numeric; return self+(-x)
+					when Numeric then
+						return self+(-x)
 					#FIXME!!
 					when Date;    return @ajd - x.ajd
 				end
 				raise TypeError, 'expected numeric or date'
-			end
-			
-			def new_self_plus(n)		
-				if(block_given?)
-					n=yield(n) 
-				end
-				return DatePrecision::to_p(self.class.new0(@ajd + n, @of, @sg),@date_precision)
-			end
 		end
+			
+		def new_self_plus(n)		
+			if(block_given?)
+				n=yield(n) 
+			end
+			return DatePrecision::to_p(self.class.new0(@ajd + n, @of, @sg),@date_precision)
+		end
+		
+		def TimePoint.to_date(timepoint)
+			if( timepoint.date_precision > DatePrecision::DAY_OF_MONTH) then				
+				DateTime.new(timepoint.year,timepoint.month,timepoint.day,timepoint.hour,timepoint.min,timepoint.sec)
+			end			
+			return Date.new(timepoint.year,timepoint.month,timepoint.day)
+		end
+		
+	end
+		
 end
