@@ -2,8 +2,9 @@
 
 $:<<'../lib'
 
-#~ puts $:
-
+# All Runt unit tests
+#
+# Author:: Matthew Lipper
 require 'dateprecisiontest'
 require 'temporalexpressiontest'
 require 'timepointtest'
