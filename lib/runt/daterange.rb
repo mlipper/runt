@@ -16,7 +16,7 @@ module Runt
   # Author:: Matthew Lipper
   class DateRange < Range
 
-    include DatePrecision
+    include DPrecision
 
     attr_reader :start_expr, :end_expr
 
@@ -68,7 +68,7 @@ module Runt
     def to_s; @start_expr.to_s + " " + @end_expr.to_s end
 
 
-    EMPTY = DateRange.new(TimePoint.day_of_month(2004,2,2),TimePoint.day_of_month(2004,2,1))
+    EMPTY = DateRange.new(PDate.day_of_month(2004,2,2),PDate.day_of_month(2004,2,1))
 
   end
 end

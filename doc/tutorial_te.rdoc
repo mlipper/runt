@@ -7,11 +7,11 @@ developer can precisely describe recurring events without resorting to
 hacking out a big-ol' nasty enumerated list of dates.
 
 For example, say you wanted to schedule an event that occurred
-annually on the last Thursday of every August. You could, of course,
-do something like this:
+annually on the last Thursday of every August. You might start out by
+doing something like this:
 
   require 'date'
-  
+
   some_dates = [Date.new(2002,8,29),Date.new(2003,8,28),Date.new(2004,8,26)]
 
   ...etc.
@@ -20,122 +20,167 @@ This is fine for two or three years, but what about for thirty years?
 What if you want to say every Monday, Tuesday and Friday, between 3
 and 5pm for the next fifty years? *Ouch*.
 
-As Fowler notes in his paper, TemporalExpressions(<tt>TE</tt> for
-short) provide a reasonably straightforward pattern language for
-defining a given set of dates and/or times. They can be 'mixed-and-
-matched' as necessary, providing an incremental, modular and expanding
-expressive power.
+As Fowler notes in his paper, TemporalExpressions(<tt>TE</tt>s for
+short) provide a simple pattern language for defining a given set of
+dates and/or times. They can be 'mixed-and- matched' as necessary,
+providing an incremental, modular and expanding expressive power.
 
 Alrighty, then...less talkin', more tutorin'!
 
-=== Example 1 
+=== Example 1
 <b>Define An Expression That Says: 'the last Thursday in August'</b>
-  
-  1   require 'runt'      
-  2   require 'date'  
-  3 
-  4   last_thursday = DayInMonthTE.new(Last_of,Thursday)
-  5    
-  6  august = RangeEachYearTE.new(8)
-  7 
-  8  intersect_expr = IntersectionTE.new.add(last_thursday).add(august) 
-  9 
-  10  #Thursday, August 29th, 2002
-  11  intersect_expr.include?(Date.new(2002,8,29)) # => true
-  12
-  13  #Thursday, August 28th, 2003
-  14  intersect_expr.include?(Date.new(2003,8,28)) # => true
-  15
-  16  #Thursday, August 26th, 2004
-  17  intersect_expr.include?(Date.new(2004,8,26)) # => true
-  18    
-  19  #Friday, August 27th, 2004
-  20  intersect_expr.include?(Date.new(2004,8,27)) # => false
-  21        
-  22  #Thursday, March 18th, 2004
-  23  intersect_expr.include?(Date.new(2004,3,18)) # => true
 
-A couple things are worth noting before we try and get too fancy.
-IntersectionTE is a composite type that selects the intersection of
-its component expressions. Regarding implementation, composite TE's
-are generally subclasses of CollectionTE. As seen on line 7,
-CollectionTEs are built providing sub-expressions using the 
-<tt>#add</tt> method.
+  1   require 'runt'
+  2   require 'date'
+  3
+  4   last_thursday = DIMonth.new(Last_of,Thursday)
+  5
+  6   august = REYear.new(8)
+  7
+  8   expr = last_thursday & august
+  9
+  10  expr.include?(Date.new(2002,8,29)) #Thurs 8/29/02 => true
+  11  expr.include?(Date.new(2003,8,28)) #Thurs 8/28/03 => true
+  12  expr.include?(Date.new(2004,8,26)) #Thurs 8/26/04 => true
+  13  expr.include?(Date.new(2004,3,18)) #Thurs 3/18/04 => true
+  14
+  15  expr.include?(Date.new(2004,8,27)) #Fri 8/27/04 => false
 
-Now what? Beginning on line 10, you can see that calling the 
+A couple things are worth noting before we move on to more complicated
+expressions. 
+
+Clients use temporal expressions by creating specific instances
+(DIMonth == day in month, REYear == range each year) and then,
+optionally, combining them using various familiar operators 
+<tt>( & , | , - )</tt>.
+
+Semantically, the '&' operator on line 8 behaves much like the
+standard Ruby short-circuit operator '&&'. However, instead of
+returning a boolean value, a new composite <tt>TE</tt> is instead
+created and returned. This new expression is the logical
+intersection of everything matched by <b>both</b> arguments '&'.
+
+In the example above, line  4:
+
+
+    last_thursday = DIMonth.new(Last_of,Thursday)
+
+
+will match the last Thursday of <b>any</b> month and line 6:
+
+
+    august = REYear.new(8)
+
+
+will match <b>any</b> date or date range occurring within the month of
+August. Thus, combining them, you have 'the last Thursday' <b>AND</b>
+'the month of August'.
+
+By contrast:
+
+
+    expr = DIMonth.new(Last_of,Thursday) | REYear.new(8)
+
+
+will all match dates and ranges occurring within 'the last Thursday'
+<b>OR</b> 'the month of August'.
+
+
+Now what? Beginning on line 11, you can see that calling the
 <tt>#include?</tt> method will let you know whether the expression you've
 defined includes a given date (or, in some cases, a range, or another
 TE). This is much like the way you use the standard <tt>Range#include?</tt>.
 
-=== Example 2 
+=== Example 2
 <b>Define: 'Street Cleaning Rules/Alternate Side Parking in NYC'</b>
 
 In his paper[http://martinfowler.com/apsupp/recurring.pdf], Fowler
 uses Boston parking regulations to illustrate some examples. Since I'm
 from New York City, and Boston-related examples might cause an
 allergic reaction, I'll use NYC's street cleaning and parking
-calendar[http://www.nyc.gov/html/dot/html/motorist/scrintro.html#street] 
+calendar[http://www.nyc.gov/html/dot/html/motorist/scrintro.html#street]
 instead. Since I'm not <em>completely</em> insane, I'll only use a
-small subset of the actual rules.
+small subset of the City's actual rules.
 
 On my block, parking is prohibited on the north side of the street
 Monday, Wednesday, and Friday between the hours of 8am to 11am, and on
 Tuesday and Thursday from 11:30am to 2pm
 
-    #Monday, Wednesday, Friday
-    mon_wed_fri = UnionTE.new.add(DayInWeekTE.new(Monday)) \
-                    .add(DayInWeekTE.new(Wednesday)) \
-                      .add(DayInWeekTE.new(Friday))
+Hmmm...let's start by selecting days in the week.
 
-    #Wednesday (at 7:15pm - ignored)
-    mon_wed_fri.include?(DateTime.new(2004,3,10,19,15))      # => true
+Monday <b>OR</b> Wednesday <b>OR</b> Friday:
     
-    #Sunday (at 9:00am - ignored)
-    mon_wed_fri.include?(DateTime.new(2004,3,14,9,00))       # => false
-
-    #8am to 11am
-    eight_to_eleven = RangeEachDayTE.new(8,00,11,00)
-
-    #=> Mon,Wed,Fri - 8am to 11am
-    expr1 = IntersectionTE.new.add(mon_wed_fri).add(eight_to_eleven)
-
-    #Tuesdays, Thursdays
-    tues_thurs = UnionTE.new.add(DayInWeekTE.new(Tuesday)) \
-                   .add(DayInWeekTE.new(Thursday))
-
-    #11:30am to 2pm
-    eleven_thirty_to_two = RangeEachDayTE.new(11,30,14,00)      
+    mon_wed_fri = DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)
     
-    #Noon (on Monday - ignored)
-    eleven_thirty_to_two.include?(DateTime.new(2004,3,8,12,00))   # => true
-
-    #Midnite (on Thursday - ignored)
-    eleven_thirty_to_two.include?(DateTime.new(2004,3,11,00,00))  # => false
-
-
-    #=> Tues,Thurs - 11:30am to 2pm
-    expr2 = IntersectionTE.new.add(tues_thurs).add(eleven_thirty_to_two)
-
-    #
-    #Sigh...now if I can only get my dad to remember this...
-    #    
-    parking_ticket = UnionTE.new.add(expr1).add(expr2)
+    #Sanity check     
+    mon_wed_fri.include?( DateTime.new(2004,3,10,19,15) )     # Wed => true
+    mon_wed_fri.include?( DateTime.new(2004,3,14,9,00) )      # Sun => false
     
-    parking_ticket.include?(DateTime.new(2004,3,11,12,15))  # => true
-    parking_ticket.include?(DateTime.new(2004,3,10,9,15))   # => true
-    parking_ticket.include?(DateTime.new(2004,3,10,8,00))   # => true
+8am to 11am: 
+
+    eight_to_eleven = REDay.new(8,00,11,00)
+
+combine the two:
     
-    parking_ticket.include?(DateTime.new(2004,3,11,1,15))   # => false
+    expr1 = mon_wed_fri & eight_to_eleven
+
+and, logically speaking, we now have '(Mon <b>OR</b> Wed <b>OR</b> Fri) 
+<b>AND</b> (8am to 11am)'. We're halfway there. 
+
+Tuesdays and Thursdays:
+
+    tues_thurs = DIWeek.new(Tue) | DIWeek.new(Thu)
+
+11:30am to 2pm:
+    eleven_thirty_to_two = REDay.new(11,30,14,00)
+
+    #Sanity check
+    eleven_thirty_to_two.include?( DateTime.new(2004,3,8,12,00) )   # Noon => true
+    eleven_thirty_to_two.include?( DateTime.new(2004,3,11,00,00) )  # Midnite => false
+
+    expr2 = tues_thurs & eleven_thirty_to_two
+
+<tt>expr2</tt> says '(Tues <b>OR</b> Thurs) <b>AND</b> (11:30am to 2pm)'.
+
+and finally:
+
+    ticket = expr1 | expr2
 
 
-These are simple examples, but they demonstrate how
-TemporalExpressions can be used in place of a grocery list of date
-values to define patterns of recurrence. There are several other
-TemporalExpressions, and once you get the hang of it, it's easy to
-write your own.
+Or, logically, ((Mon <b>OR</b> Wed <b>OR</b> Fri) <b>AND</b> (8am to
+11am)) <b>OR</b> ((Tues OR Thurs) <b>AND</b> (11:30am to 2pm))
+
+
+Let's re-write this without all the noise:
+
+
+    expr1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+    
+    expr2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+    
+    ticket = expr1 | expr2
+
+
+    ticket.include?( DateTime.new(2004,3,11,12,15) )  # => true
+    
+    ticket.include?( DateTime.new(2004,3,10,9,15) )   # => true
+    
+    ticket.include?( DateTime.new(2004,3,10,8,00) )   # => true
+    
+    ticket.include?( DateTime.new(2004,3,11,1,15) )   # => false
+    
+
+Sigh...now if I can only get my dad to remember this...
+
+
+These are simple examples, but they demonstrate how temporal
+expressions can be used instead of an enumerated list of date values
+to define patterns of recurrence. There are many other temporal
+expressions, and, more importantly,  once you get the hang of it, it's
+easy to write your own.
 
 Fowler's paper[http://martinfowler.com/apsupp/recurring.pdf] also goes
-on to descibe another element of this pattern: the <tt>Schedule</tt>.
+on to describe another element of this pattern: the <tt>Schedule</tt>.
 See the schedule tutorial[schedule_te.rdoc] for details.
 
 <em>See Also:</em>

@@ -21,8 +21,8 @@ class ScheduleTest < Test::Unit::TestCase
     elmo_party_schedule = Schedule.new
     elmo_party = Event.new("Elmo's Birthday Party",elmo_party_schedule)
     elmo_party_schedule.add(elmo_party,@elmo_party_te)
-    assert(elmo_party_schedule.is_occurring?(elmo_party, TimePoint.new(2004,2,1,11,06)))
-    assert(elmo_party_schedule.is_occurring?(!elmo_party, TimePoint.new(2004,2,1,9,06)))
+    assert(elmo_party_schedule.is_occurring?(elmo_party, PDate.new(2004,2,1,11,06)))
+    assert(elmo_party_schedule.is_occurring?(!elmo_party, PDate.new(2004,2,1,9,06)))
     assert(elmo_party.schedule==elmo_party_schedule)
 
     tv_schedule = Schedule.new
@@ -35,7 +35,7 @@ class ScheduleTest < Test::Unit::TestCase
 
   def setup
     #~ @elmo_party = Event.new("Elmo's Birthday Party")
-    @elmo_party_te = RgEaDy.new(10,00,16,00)
-    @sesame_street_broadcast_te = RgEaWk.new(Monday,Friday) - RgEaDy.new(9,00,10,00)
+    @elmo_party_te = REDay.new(10,00,16,00)
+    @sesame_street_broadcast_te = REWeek.new(Monday,Friday) - REDay.new(9,00,10,00)
   end
 end

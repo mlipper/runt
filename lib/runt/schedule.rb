@@ -16,7 +16,7 @@ module Runt
       @elements.push(ScheduleElement.new(event, expression))
     end
 
-    # For the given date range, returns an Array of TimePoint objects at which
+    # For the given date range, returns an Array of PDate objects at which
     # the supplied event is scheduled to occur.
     def dates(event, date_range)
       result = Array.new

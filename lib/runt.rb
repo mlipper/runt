@@ -34,7 +34,7 @@
 require 'date'
 require 'date/format'
 require "runt/dateprecision"
-require "runt/timepoint"
+require "runt/pdate"
 require "runt/temporalexpression"
 require "runt/schedule"
 require "runt/daterange"
@@ -48,8 +48,6 @@ require "runt/daterange"
 # <b>See also</b> date.rb
 #
 module Runt
-
-  RUNTVERSION = 0
 
   #Yes it's true, I'm a big idiot!
   Sunday = Date::DAYNAMES.index("Sunday")

@@ -166,7 +166,7 @@ class Diff < TExpr
 end
 
 # TExpr that provides for inclusion of an arbitrary date.
-class Arbitrary < TExpr
+class Spec < TExpr
 
   def initialize(date_expr)
     @date_expr = date_expr
@@ -179,7 +179,7 @@ class Arbitrary < TExpr
     false
   end
 
-  def to_s; "Arbitrary" end
+  def to_s; "Spec" end
 
 end
 
@@ -187,7 +187,7 @@ end
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class ArbitraryRange < TExpr
+class RSpec < TExpr
 
   def initialize(date_expr)
     raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
@@ -200,13 +200,13 @@ class ArbitraryRange < TExpr
     return @date_expr.include?(date_expr)
   end
 
-  def to_s; "ArbitraryRange" end
+  def to_s; "RSpec" end
 end
 
 # TExpr that provides support for building a temporal
 # expression using the form:
 #
-#     DyInMn.new(1,0)
+#     DIMonth.new(1,0)
 #
 # where the first argument is the week of the month and the second
 # argument is the wday of the week as defined by the 'wday' method
@@ -216,19 +216,19 @@ end
 # backwards from the end of the month. So, to match the last Saturday
 # of the month
 #
-#     DyInMn.new(-1,6)
+#     DIMonth.new(-1,6)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DyInMn.new(First,Sunday)
+#     DIMonth.new(First,Sunday)
 #
 # and the second as:
 #
-#     DyInMn.new(Last,Saturday)
+#     DIMonth.new(Last,Saturday)
 #
 #  See also: Date, Runt
-class DyInMn < TExpr
+class DIMonth < TExpr
 
   def initialize(week_of_month_index,day_index)
     @day_index = day_index
@@ -240,11 +240,11 @@ class DyInMn < TExpr
   end
 
   def to_s
-    "DyInMn"
+    "DIMonth"
   end
 
   def print(date)
-    puts "DyInMn: #{date}"
+    puts "DIMonth: #{date}"
     puts "include? == #{include?(date)}"
     puts "day_matches? == #{day_matches?(date)}"
     puts "week_matches? == #{week_matches?(date)}"
@@ -267,15 +267,15 @@ end
 #
 # For example:
 #
-#     DyInWk.new(0)
+#     DIWeek.new(0)
 #
 # Using constants defined in the base Runt module, you can re-write
 # the first example above as:
 #
-#     DyInWk.new(Sunday)
+#     DIWeek.new(Sunday)
 #
 #  See also: Date, Runt
-class DyInWk < TExpr
+class DIWeek < TExpr
 
   VALID_RANGE = 0..6
 
@@ -298,11 +298,11 @@ end
 # If start and end day are equal, the entire week will match true.
 #
 #  See also: Date
-class RgEaWk < TExpr
+class REWeek < TExpr
 
   VALID_RANGE = 0..6
 
-	# Creates a RgEaWk using the supplied start
+	# Creates a REWeek using the supplied start
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
   # (6 => Saturday) is assumed.
@@ -322,7 +322,7 @@ class RgEaWk < TExpr
   end
 
   def to_s
-    "RgEaWk"
+    "REWeek"
   end
 
 	private
@@ -336,7 +336,7 @@ class RgEaWk < TExpr
   end
 end
 
-class RgEaYr < TExpr
+class REYear < TExpr
 
   def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
     super()
@@ -353,11 +353,11 @@ class RgEaYr < TExpr
   end
 
   def to_s
-    "RgEaYr"
+    "REYear"
   end
 
   def print(date)
-    puts "DyInMn: #{date}"
+    puts "DIMonth: #{date}"
     puts "include? == #{include?(date)}"
     puts "months_include? == #{months_include?(date)}"
     puts "end_month_include? == #{end_month_include?(date)}"
@@ -385,15 +385,15 @@ end
 # is assumed to be on the following day.
 #
 #  See also: Date
-class RgEaDy < TExpr
+class REDay < TExpr
 
   CURRENT=28
   NEXT=29
-  ANY_DATE=TimePoint.day_of_month(2002,8,CURRENT)
+  ANY_DATE=PDate.day_of_month(2002,8,CURRENT)
 
   def initialize(start_hour, start_minute, end_hour, end_minute)
 
-    start_time = TimePoint.minute(ANY_DATE.year,ANY_DATE.month,
+    start_time = PDate.minute(ANY_DATE.year,ANY_DATE.month,
               ANY_DATE.day,start_hour,start_minute)
 
     if(@spans_midnight = spans_midnight?(start_hour, end_hour)) then
@@ -418,11 +418,11 @@ class RgEaDy < TExpr
   end
 
   def to_s
-    "RgEaDy"
+    "REDay"
   end
 
   def print(date)
-    puts "DyInMn: #{date}"
+    puts "DIMonth: #{date}"
     puts "include? == #{include?(date)}"
   end
 
@@ -433,21 +433,21 @@ class RgEaDy < TExpr
 
   private
   def get_current(hour,minute)
-      TimePoint.minute(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
+      PDate.minute(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
   end
 
   def get_next(hour,minute)
-      TimePoint.minute(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
+      PDate.minute(ANY_DATE.year,ANY_DATE.month,NEXT,hour,minute)
   end
 
 end
 
 # TExpr that matches the week in a month. For example:
 #
-#     WkInMn.new(1)
+#     WIMonth.new(1)
 #
 #  See also: Date
-class WkInMn < TExpr
+class WIMonth < TExpr
 
   VALID_RANGE = -2..5
 

@@ -5,31 +5,31 @@ require 'date'
 
 module Runt
 
-  # :title:DatePrecision
-  # == DatePrecision
+  # :title:DPrecision
+  # == DPrecision
   #
   #
   # Inspired by a <tt>pattern</tt>[http://martinfowler.com/ap2/timePoint.html] by Martin Fowler.
   #
   #
   # Author:: Matthew Lipper
-  module DatePrecision
+  module DPrecision
 
-    def DatePrecision.to_p(date,prec=DEFAULT)
+    def DPrecision.to_p(date,prec=DEFAULT)
 
       case prec
-        when MINUTE then TimePoint.minute(*DatePrecision.explode(date,prec))
-        when DAY_OF_MONTH then TimePoint.day_of_month(*DatePrecision.explode(date,prec))
-        when HOUR_OF_DAY then TimePoint.hour_of_day(*DatePrecision.explode(date,prec))
-        when MONTH then TimePoint.month(*DatePrecision.explode(date,prec))
-        when YEAR then TimePoint.year(*DatePrecision.explode(date,prec))
-        when SECOND then TimePoint.second(*DatePrecision.explode(date,prec))
+        when MINUTE then PDate.minute(*DPrecision.explode(date,prec))
+        when DAY_OF_MONTH then PDate.day_of_month(*DPrecision.explode(date,prec))
+        when HOUR_OF_DAY then PDate.hour_of_day(*DPrecision.explode(date,prec))
+        when MONTH then PDate.month(*DPrecision.explode(date,prec))
+        when YEAR then PDate.year(*DPrecision.explode(date,prec))
+        when SECOND then PDate.second(*DPrecision.explode(date,prec))
         when MILLISECOND then raise "Not implemented."
-        else TimePoint.default(*DatePrecision.explode(date,prec))
+        else PDate.default(*DPrecision.explode(date,prec))
       end
     end
 
-    def DatePrecision.explode(date,prec)
+    def DPrecision.explode(date,prec)
       result = [date.year,date.month,date.day]
         if(date.respond_to?("hour"))
           result << date.hour << date.min << date.sec
@@ -118,7 +118,7 @@ module Runt
       end
 
       def to_s
-        "DatePrecision::#{LABEL[@precision]}"
+        "DPrecision::#{LABEL[@precision]}"
       end
   end
 
