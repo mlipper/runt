@@ -41,14 +41,7 @@ We created a temporal expression to match this time period, like so:
 
 
 
-    ticket.include?( DateTime.new(2004,3,11,12,15) )  # => true
-    
-    ticket.include?( DateTime.new(2004,3,10,9,15) )   # => true
-    
-    ticket.include?( DateTime.new(2004,3,10,8,00) )   # => true
-    
-    ticket.include?( DateTime.new(2004,3,11,1,15) )   # => false
-    
+=.....FINNISH ME!......
 
 
 <em>See Also:</em>
