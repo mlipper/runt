@@ -26,8 +26,8 @@ class DateRangeTest < Test::Unit::TestCase
   end
 
   def test_date
-		r_start = TimePoint.second(2004,2,29,16,24,12)
-    r_end = TimePoint.second(2004,3,2,4,22,58)
+		r_start = TimePoint.minute(1979,12,31,23,57)
+    r_end = TimePoint.minute(1980,1,1,0,2)
 		range = DateRange.new(r_start,r_end)
 		assert(range.min==r_start)
 		assert(range.max==r_end)
@@ -36,5 +36,8 @@ class DateRangeTest < Test::Unit::TestCase
 		sub_range = DateRange.new((r_start+1),(r_end-1))
 		assert(range.include?(sub_range))
   end
+
+  def test_spaceship_operator
+	end
 
 end
