@@ -48,23 +48,21 @@ module Runt
 
 		def DatePrecision.to_p(date,prec=DEFAULT)
 				case prec
-					when MINUTE then DatePrecision.minute(*DatePrecision.explode(date))
-					when DAY_OF_MONTH then DatePrecision.day_of_month(*DatePrecision.explode(date))
-					when HOUR_OF_DAY then DatePrecision.hour_of_day(*DatePrecision.explode(date))
-					when MONTH then DatePrecision.month(*DatePrecision.explode(date))
-					when YEAR then DatePrecision.year(*DatePrecision.explode(date))
-					when SECOND then DatePrecision.second(*DatePrecision.explode(date))
+					when MINUTE then DatePrecision.minute(*DatePrecision.explode(date,prec))
+					when DAY_OF_MONTH then DatePrecision.day_of_month(*DatePrecision.explode(date,prec))
+					when HOUR_OF_DAY then DatePrecision.hour_of_day(*DatePrecision.explode(date,prec))
+					when MONTH then DatePrecision.month(*DatePrecision.explode(date,prec))
+					when YEAR then DatePrecision.year(*DatePrecision.explode(date,prec))
+					when SECOND then DatePrecision.second(*DatePrecision.explode(date,prec))
 					when MILLISECOND then raise "Not implemented."
 					#~ else raise "Unknown precision #{prec}"						
-					else DatePrecision.default(*DatePrecision.explode(date))						
+					else DatePrecision.default(*DatePrecision.explode(date,prec))						
 				end
 		end
 		
-		def DatePrecision.explode(date)
+		def DatePrecision.explode(date,prec)
 			result = [date.year,date.month,date.day]
-			#~ if( date.instance_of? DateTime )			
-			#~ if( date.instance_of?(TimePoint) && date.date_precision > DAY_OF_MONTH )			
-			if( date.date_precision > DAY_OF_MONTH )			
+			if( prec > DAY_OF_MONTH )			
 				result << date.hour << date.min << date.sec					
 			end
 			result
