@@ -5,7 +5,6 @@ $:<<'../lib'
 require 'test/unit'
 require 'runt'
 require 'date'
-require 'date/format'
 
 $DEBUG=false
 
@@ -255,40 +254,50 @@ class TemporalExpressionTest < Test::Unit::TestCase
   end
   def test_nyc_parking_te
 
-    wed_nine_fifteen = DateTime.new(2004,3,10,9,15)
-    thurs_noon = DateTime.new(2004,3,11,12,00)
-
     #Monday, Wednesday, Friday
-    mon_wed_fri = UnionTE.new.add(DayInWeekTE.new(Monday)).add(DayInWeekTE.new(Wednesday)).add(DayInWeekTE.new(Friday))
+    mon_wed_fri = UnionTE.new.add(DayInWeekTE.new(Monday)) \
+                    .add(DayInWeekTE.new(Wednesday)) \
+                      .add(DayInWeekTE.new(Friday))
 
-    assert(mon_wed_fri.include?(wed_nine_fifteen))
-    assert(!mon_wed_fri.include?(thurs_noon))
+    #Wednesday (at 7:15pm - ignored)
+    assert(mon_wed_fri.include?(DateTime.new(2004,3,10,19,15)))
+
+    #Sunday (at 9:00am - ignored)
+    assert(!mon_wed_fri.include?(DateTime.new(2004,3,14,9,00)))
 
     #8am to 11am
     eight_to_eleven = RangeEachDayTE.new(8,00,11,00)
 
-    #Expr 1: Monday, Wednesday, Friday from 8am to 11am
+    #=> Mon,Wed,Fri - 8am to 11am
     expr1 = IntersectionTE.new.add(mon_wed_fri).add(eight_to_eleven)
 
-    assert(expr1.include?(DateTime.new(2004,3,10,9,15)))
-    assert(expr1.include?(DateTime.new(2004,3,10,8,00)))
-
     #Tuesdays, Thursdays
-    tues_thurs = UnionTE.new.add(DayInWeekTE.new(Tuesday)).add(DayInWeekTE.new(Thursday))
-
-    assert(tues_thurs.include?(thurs_noon))
-    assert(!tues_thurs.include?(wed_nine_fifteen))
+    tues_thurs = UnionTE.new.add(DayInWeekTE.new(Tuesday)) \
+                   .add(DayInWeekTE.new(Thursday))
 
     #11:30am to 2pm
     eleven_thirty_to_two = RangeEachDayTE.new(11,30,14,00)
 
-    assert(eleven_thirty_to_two.include?(thurs_noon))
+    #Noon (on Monday - ignored)
+    assert(eleven_thirty_to_two.include?(DateTime.new(2004,3,8,12,00)))
 
-    #Expr2:  Tuesdays, Thursdays from 11:30am to 2pm
+    #Midnite (on Thursday - ignored)
+    assert(!eleven_thirty_to_two.include?(DateTime.new(2004,3,11,00,00)))
+
+
+    #=> Tues,Thurs - 11:30am to 2pm
     expr2 = IntersectionTE.new.add(tues_thurs).add(eleven_thirty_to_two)
 
-    assert(expr2.include?(DateTime.new(2004,3,11,12,15)))
-    assert(!expr2.include?(DateTime.new(2004,3,11,1,15)))
+    #
+    #Sigh...now if I can only get my dad to remember this...
+    #
+    parking_ticket = UnionTE.new.add(expr1).add(expr2)
+
+    assert(parking_ticket.include?(DateTime.new(2004,3,11,12,15)))
+    assert(parking_ticket.include?(DateTime.new(2004,3,10,9,15)))
+    assert(parking_ticket.include?(DateTime.new(2004,3,10,8,00)))
+
+    assert(!parking_ticket.include?(DateTime.new(2004,3,11,1,15)))
 
  end
 
