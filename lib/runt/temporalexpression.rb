@@ -65,8 +65,9 @@ class UnionTE < CollectionTE
 
 	def includes?(aDate)
 		@expressions.each do |expr|
-			return true if expr == aDate 
+			return true if expr.includes?(aDate) 
 		end
+		false
 	end
 	
  	def to_s;	"UnionTE" end
@@ -78,7 +79,7 @@ class IntersectionTE < CollectionTE
 
 	def includes?(aDate)
 		@expressions.each do |expr|
-			return false unless expr == aDate
+			return false unless expr.includes?(aDate)
 		end
 	end
 
@@ -114,7 +115,6 @@ class ArbitraryTE < TemporalExpression
 	# Will return true if the supplied object is == to that which was used to
 	# create this instance	
 	def includes?(aDate)
-		log(@date_time,aDate)
 		return true if @date_time == aDate
 		false
 	end

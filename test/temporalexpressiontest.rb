@@ -23,32 +23,54 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		assert(!expr.includes(Date.today))	
 	
 	end
-  
+	
 	def test_union_te
-    
-		dt = Date.civil(2003,12,30)
-		
-		expr1 = ArbitraryTE.new(dt)
-  	
-		assert(expr1.includes?(dt))	
 	
-		dt2 = Date.civil(2003,12,31)
+		union_expr = UnionTE.new		
+		
+		#Everyday from midnight to 6:30am
+		expr1 = RangeEachDayTE.new(0,0,6,30)		
+		#First Tuesday of the month
+		expr2 = DayInMonthTE.new(First,Tuesday)
 
-		assert(!expr1.includes?(dt2))
-
-		expr2 = ArbitraryTE.new(dt2)
-  	
-		assert(expr2.includes?(dt2))
+		union_expr.add(expr1).add(expr2)
 		
-		union_expr = UnionTE.new
-		
-		union_expr.add(dt).add(dt2)
-		
-		assert(union_expr.includes?(dt))
-		
-		assert(union_expr.includes?(dt2))
-	
+		#January 6th, 2004 (First Tuesday)
+		assert(union_expr.includes?(TimePoint.day_of_month(2004,1,6)))		
+		#4am (February, 8th, 1966 - ignored)
+		assert(union_expr.includes?(TimePoint.hour_of_day(1966,2,8,4)))
+		#6:31am, July, 4th, 2030
+		assert(!union_expr.includes?(TimePoint.minute(2030,7,4,6,31)))
 	end
+	
+	def test_arbitrary_te	
+		expr1 = ArbitraryTE.new(TimePoint.day_of_month(2003,12,30))
+		expr2 = ArbitraryTE.new(TimePoint.day_of_month(2004,1,1))  	
+		assert(expr1.includes?(Date.new(2003,12,30)))	
+		assert(!expr1.includes?(Date.new(2003,12,31)))
+		assert(expr2.includes?(Date.new(2004,1,1)))
+		assert(!expr2.includes?(Date.new(2003,1,1)))
+	end
+	
+	def test_intersection_te
+	
+		#March through April
+		expr1 = RangeEachYearTE.new(3,4)
+
+		#First Sunday of any month
+		expr2 = DayInMonthTE.new(First,Sunday)
+		
+		#Should match the first Sunday of March and April
+		intersect_expr  = IntersectionTE.new
+		intersect_expr.add(expr1).add(expr2)
+		
+		#Sunday, March 7th, 2004
+		assert(intersect_expr.includes?(TimePoint.new(2004,3,7)))
+		#First Sunday in February, 2004
+		assert(!intersect_expr.includes?(TimePoint.new(2004,4,1)))
+
+
+  end
 	
 	def test_day_in_month_te
 
@@ -77,7 +99,7 @@ class TemporalExpressionTest < Test::Unit::TestCase
 		
 		#last Sunday of the month
 		expr3 = DayInMonthTE.new(Last_of,Sunday)
-		#~ expr3.print(dt3)
+		
 		assert(expr3.includes?(dt3))	
 	end
 
