@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
 
-
-=begin
-  Schedule.
-  
-  Author: Matthew Lipper
-=end
+#Schedule.
+#  
+#  Author: Matthew Lipper
 
 module Runt
 	
@@ -14,7 +11,7 @@ module Runt
 		
 	
 		def initialize
-			@elements = Hash.new
+			@elements = Array.new
 		end
 		
 		def dates(event, date_range)
@@ -22,22 +19,21 @@ module Runt
 		end
 		
 		def is_occurring?(event, date)
-			
-			return false unless @elements[event].nil? == false
-			
-			elements.each{|i| i.is_occurring?(event,date)}
+			elements.each { | element | element.is_occurring?(event, date) }
 		end
 		
 	end
 	
 	class ScheduleElement
 		
-		def initialize(expr)
-			@expression = expr
+		def initialize(event, expression)
+			@event = event
+			@expression = expression
 		end
 		
-		def is_occurring?(event, date)
-			@expression.includes?(date)
+		def is_occurring?(event, date)			
+			return false unless @event == event
+			@expression.includes?(date)			
 		end
 		
 	end
