@@ -33,9 +33,9 @@ module Runt
 		
 		class << self; alias_method :new, :civil end	
 
-    def + (n)
+    	def + (n)
 			raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
-      case @date_precision
+      		case @date_precision
 				when DatePrecision::YEAR then 
 					return DatePrecision::to_p(TimePoint::civil(year+n,month,day),@date_precision)
 				when DatePrecision::MONTH then 
@@ -47,9 +47,9 @@ module Runt
 					return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }			
 				when DatePrecision::MINUTE then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }		
-        when DatePrecision::SECOND then 
+        		when DatePrecision::SECOND then 
 					return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
-				end
+			end
 		end
         
 		def - (x)
