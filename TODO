@@ -1,0 +1,17 @@
+= Runt - Ruby Temporal Expressions -- To Do List
+
+Send suggestions, questions, threats, etc. for this list to Matt[mailto:matt@digitalclash.com]
+
+=== To Do
+
+* Better RDoc's which include usage examples
+
+* Address performance issues due to implementation (in particular, TimePoint#<=>)
+
+* TemporalExpressions tutorial(s)
+
+* Properly implement/test Range functionality in DateRange
+
+* Figure out why stupid IE downloads the runt-0.0.x.zip file using some f*'d up file name
+
+* The rest of this TODO list...

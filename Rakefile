@@ -28,7 +28,7 @@ TARGET_DIR = "target"
 task :default => [:test]
 task :clobber => [:clobber_build_dir]
 
-#Make the build directory
+# Make the build directory
 directory TARGET_DIR
 
 desc "Clobber the entire build directory."
@@ -40,9 +40,8 @@ end
 Rake::RDocTask.new do |rd|
   rd.rdoc_dir="#{TARGET_DIR}/doc"
   rd.options << "-S"
-  rd.rdoc_files.exclude('test/*.rb')
-  rd.rdoc_files.include('lib/**/*.rb', 'doc/**/*.rdoc')
-  rd.rdoc_files.include('README','LICENSE.txt')
+  rd.rdoc_files.include('lib/**/*.rb', 'doc/**/*.rdoc','[A-Z]*')
+  rd.rdoc_files.exclude('test/*.rb','[A-Z]*.ses','Rakefile')
 end
 
 Rake::TestTask.new do |t|
@@ -69,4 +68,9 @@ task :publish => [:rdoc,:copy_site,:clobber_package] do |t|
   publisher = Rake::CompositePublisher.new
 	publisher.add Rake::SshDirPublisher.new("mlipper@rubyforge.org", "/var/www/gforge-projects/runt",TARGET_DIR)
   publisher.upload
+end
+
+desc "Publish the Documentation to the build dir."
+task :test_publish => [:rerdoc,:copy_site,:clobber_package] do |t|
+  puts "YAY! We've published! YAY!"
 end

@@ -1,63 +1,46 @@
 = RUNT -- Ruby Temporal Expressions
 
-README for Runt version 0.0.1 (ALPHA)
-   This file last updated 2004-02-11
+* Runt is a Ruby[http://www.ruby-lang.org/en/] implementation of select Martin Fowler  patterns[http://www.martinfowler.com/articles].
 
-== INTRODUCTION
-
-It doesn't get much more alpha than this!
+* <em>TemporalExpression</em>s allow a developer to define patterns of date recurrence using set expressions.
 
 ---
 
-== INSTALL
+= INSTALL
 
-*  Unpack the Runt distribution
+* Unpack the Runt distribution.
 
-*  cd $INSTALL_DIR/runt/
+   $ tar -xzvf runt-<version>.tar.gz
 
-*  execute:
+* cd $UNPACK_DIR/runt/
+
+* execute:
 
    $ ruby setup.rb config
    $ ruby setup.rb setup
    $ ruby setup.rb install (may require root privilege)
 
-or
+  <b>or</b>
 
    $ ruby setup.rb --help
 
-for more options
-
-* this (should) install
-
-        RUBY_HOME/**/*
-        +
-        |
-        +--site_ruby/
-           +
-           |
-           +--runt.rb   <-- this module will include all files in runt/ automatically
-           |
-           `runt/
-            +
-            |
-            `--dateprecision.rb
-            |
-            `--etc...
+  for more options.
 
 ---
 
-== QUICK START
+= QUICK START
 
-*  require 'runt'
+* require 'runt'
 
-*  See $INSTALL_DIR/runt/test for example usage.
+* See http://runt.rubyforge.org/doc/index.html
 
-*  See http://chronicJ.org for better commented source
+* See $UNPACK_DIR/runt/test/*.rb for example usage.
 
+* See http://www.chronicj.org/apidocs/index.html for better commented source (JavaDoc)
 
-Get in touch if you need help or if Runt causes your computer to burst into flames...
+Get in touch if you have questions or if Runt causes your computer to burst into flames...
 
-Matt <matt@digitalclash.com>
+Matt[mailto:matt@digitalclash.com]
 
 ---
 
@@ -69,7 +52,7 @@ License::  Copyright 2003 by Digital Clash LLC.
            Released under the Apache Software license (see LICENSE.txt)
            included in the distribution.
 
-== Warranty
+= Warranty
 
 This software is provided "as is" and without any express or
 implied warranties, including, without limitation, the implied

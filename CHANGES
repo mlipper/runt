@@ -1,0 +1,16 @@
+= Runt Changelog
+
+== Version 0.0.4
+
+* Improved Rake[http://rake.rubyforge.org] support
+* Better documentation: README, TODO, CHANGES, etc.
+* More Ruby-like source code layout and code organization inspired by Rake[http://rake.rubyforge.org] distribution
+* Dropped the obviously superfluous 'alpha' from versioning
+
+== Version 0.0.1
+
+* Learned Ruby (or began trying, at any rate...)
+* RubyForge project setup
+* Basic implementation of the Java-based chronicJ[http://chronicJ.org] functionality in Ruby
+
+
