@@ -1,0 +1,58 @@
+= Schedule Tutorial
+
+If you haven't done so already, took a look the temporal expression 
+tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_te_rdoc.html].
+
+So, you've defined some temporal expressions, now what? In his 
+paper[http://martinfowler.com/apsupp/recurring.pdf] about recurring events, 
+Martin Fowler also discusses a simple schedule API which is used, surprisingly
+enough, to build a schedule.
+
+We're not going to cover the pattern itself in this tutorial as Fowler already 
+does a nice job. Luckily, because it is such a simple pattern (once you invent 
+it!), you'll be able understand it even if you decide not to skim the 
+aforementioned paper[http://martinfowler.com/apsupp/recurring.pdf].
+
+In the last tutorial we learned about the exciting world of NYC street cleaning 
+regulations. For the uptown side of my block, the sign says:
+    
+    #############################
+    #                           #
+    #       NO PARKING          #
+    #                           #
+    #  Mon, Wed, Fri 8am-11am   #
+    #                           #
+    #   T,Th 11:30am-2:00pm     #
+    #                           #
+    #  Violators will be towed! #
+    #                           #
+    #############################
+               # #
+               # #
+               # #
+ 
+We created a temporal expression to match this time period, like so: 
+
+    expr1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+    
+    expr2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+    
+    ticket = expr1 | expr2
+
+
+
+    ticket.include?( DateTime.new(2004,3,11,12,15) )  # => true
+    
+    ticket.include?( DateTime.new(2004,3,10,9,15) )   # => true
+    
+    ticket.include?( DateTime.new(2004,3,10,8,00) )   # => true
+    
+    ticket.include?( DateTime.new(2004,3,11,1,15) )   # => false
+    
+
+
+<em>See Also:</em>
+
+* Fowler's recurring event pattern[http://martinfowler.com/apsupp/recurring.pdf]
+
+* Other temporal patterns[http://martinfowler.com/ap2/timeNarrative.html]

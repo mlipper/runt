@@ -181,7 +181,7 @@ easy to write your own.
 
 Fowler's paper[http://martinfowler.com/apsupp/recurring.pdf] also goes
 on to describe another element of this pattern: the <tt>Schedule</tt>.
-See the schedule tutorial[schedule_te.rdoc] for details.
+See the schedule tutorial[http://runt.rubyforge.org/doc/files/doc/schedule_te.html] for details.
 
 <em>See Also:</em>
 

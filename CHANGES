@@ -1,5 +1,10 @@
 = Runt Changelog
 
+== Version 0.2.0
+
+* RAA deployment
+* GEM deployment
+
 == Version 0.1.0
 
 * Inspired by suggestions[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/95465] on c.l.r., did massive renaming and refactoring to make source more Ruby-esque:

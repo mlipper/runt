@@ -4,20 +4,14 @@ Send suggestions, questions, threats, etc. for this list to Matt[mailto:matt@dig
 
 === To Do
 
-* Complete general refactoring/renaming so that unit tests are readable by humans
-
-* RAA deployment
-
-* GEM deployment
-
-* Better RDoc's which include usage examples, particularly for TE's
-
-* More tutorials, particularly for Schedule API
+* Schedule tutorial
 
 * Make Schedule a Module instead of a class
 
-* Address performance issues due to implementation (in particular, PDate#<=>)
+* Better RDoc's which include usage examples
 
 * Properly implement/test Range functionality in DateRange
+
+* Address performance issues due to implementation (in particular, PDate#<=>)
 
 * Use RDoc properly so Runt website and README don't cause DRY violations

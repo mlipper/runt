@@ -1,16 +1,24 @@
 # Rakefile for runt        -*- ruby -*-
+
+begin
+  require 'rubygems'
+  require 'rake/gempackagetask'
+rescue Exception
+  nil
+end
 require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/rdoctask'
-require 'rake/packagetask'
+#require 'rake/packagetask'
+
 require 'rake/contrib/sshpublisher'
 require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
 
 # Build Settings
-PKG_VERSION = "0.1.0"
-
+PKG_VERSION = "0.2.0"
+#  'gem_install_bin.rb',
 # Files to be included in Runt distribution
 PKG_FILES = FileList[
   'setup.rb',
@@ -73,4 +81,37 @@ end
 desc "Publish the Documentation to the build dir."
 task :test_publish => [:rerdoc,:copy_site,:clobber_package] do |t|
   puts "YAY! We've tested publish! YAY!"
+end
+
+
+if ! defined?(Gem)
+  puts "Package Target requires RubyGEMs"
+else
+  spec = Gem::Specification.new do |s|
+    s.platform = Gem::Platform::RUBY
+    s.summary = "Ruby Temporal Expressions."
+    s.name = 'runt'
+    s.version = PKG_VERSION
+    s.requirements << 'none'
+    s.require_path = 'lib'
+    s.autorequire = 'runt'
+    s.files = PKG_FILES.to_a
+    s.author = 'Matthew Lipper'
+    s.email = 'matt@digitalclash.com'
+    s.homepage = 'http://runt.rubyforge.org'
+    s.has_rdoc = true
+#    s.rdoc_files = rd.rdoc_files
+#    s.rdoc_options = rd.option_list
+    s.rubyforge_project = 'runt'
+    s.description = <<EOF
+Runt is a Ruby version of temporal patterns by
+Martin Fowler. Runt provides an API for scheduling
+ recurring events using set-like semantics. 
+EOF
+  end
+  
+  Rake::GemPackageTask.new(spec) do |pkg|
+    pkg.need_zip = true
+    pkg.need_tar = true
+  end
 end
