@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-
+require 'runt'
 require 'date'
 
 =begin
@@ -11,6 +11,8 @@ require 'date'
 =end
 
 class Date
+	
+	include Runt
 
 	attr_accessor :date_precision
   
@@ -22,7 +24,8 @@ class Date
 			if(args[0].instance_of?(Runt::DatePrecision::Precision))
 				precision = args.shift
 			else
-				precision = nil
+				return Runt::DatePrecision.day_of_month(*args)
+				#precision = nil
 			end
       _civil = old_civil(*args)
       _civil.date_precision = precision
@@ -43,7 +46,8 @@ class DateTime
 			if(args[0].instance_of?(Runt::DatePrecision::Precision))
 				precision = args.shift
 			else
-				precision = nil
+				return Runt::DatePrecision.minute(*args)			
+				#precision = nil
 			end
       _civil = old_civil(*args)
       _civil.date_precision = precision
@@ -68,15 +72,15 @@ module Runt
 			Date::civil( DAY_OF_MONTH, yr, mon, day )			
 		end
       
-		def DatePrecision.hour_of_day( yr,mon,day,hr,*ignored ) 
+		def DatePrecision.hour_of_day( yr,mon,day,hr=HOUR_OF_DAY.min_value,*ignored ) 
 			DateTime::civil( HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)						
 		end
   
-		def DatePrecision.minute( yr,mon,day,hr,min,*ignored )  
+		def DatePrecision.minute( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,*ignored )  
 			DateTime::civil( MINUTE, yr, mon, day,hr,min, SECOND.min_value)									
 		end
   
-		def DatePrecision.second( yr,mon,day,hr,min,sec,*ignored ) 
+		def DatePrecision.second( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,sec=SECOND.min_value,*ignored ) 
 			DateTime::civil( SECOND, yr, mon, day,hr,min, sec)									
 		end
   

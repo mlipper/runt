@@ -36,7 +36,7 @@ class DatePrecisionTest < Test::Unit::TestCase
 		#December 12th, 1968
 		no_prec = Date.civil(1968,12,12)
 		#December 12th, 1968 (at 11:15 am - ignored)
-		day_prec = DatePrecision.day_of_month(1968,12,12,11,15)
+		day_prec = DatePrecision.day_of_month(1968,12,12,11,15)		
 		assert(no_prec==day_prec, "Date instance does not equal precisioned instance.")	
 		#December 2004 (24th - ignored)
 		month_prec1 = DatePrecision.month(2004,12,24)
@@ -61,7 +61,7 @@ class DatePrecisionTest < Test::Unit::TestCase
 
 		#11:59:59 am, February 29th, 2004
 		no_prec_datetime = DateTime.civil(2004,2,29,23,59,59)
-		#~ puts no_prec_datetime.ctime
+		#puts "-->#{no_prec_datetime.date_precision}<--"
 		assert(month_prec==DatePrecision.to_p(no_prec_datetime,DatePrecision::MONTH))
 
 	end	

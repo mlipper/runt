@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'date'
+require 'runt/dateprecision'
+
 =begin
   Author: Matthew Lipper
 =end
@@ -7,13 +10,13 @@
 module Runt
 
 class TemporalExpression
-
+	
 	def includes(aDate)
 		false
 	end
   
 	def log(expr, arg)
-		puts "#{to_s}:  #{expr}==#{arg}? #{expr == arg}."
+		#~ puts "#{to_s}:  #{expr}==#{arg}? #{expr == arg}."
 	end
   
 	def to_s
@@ -113,6 +116,102 @@ class ArbitraryTE < TemporalExpression
 	def to_s
 		"ArbitraryTE"
 	end
+end
+
+
+class DayInMonthTE < TemporalExpression
+
+	def initialize(offset, day_index)
+		super()
+		@day_index = day_index
+		@offset = offset
+	end
+	
+	def includes?(date)
+		( day_matches?(date) ) && ( week_matches?(date) )
+	end
+	
+	def day_matches?(date)
+		@day_index == date.wday
+	end
+	
+	def week_matches?(date)
+		if(@offset > 0) 
+			return week_from_start_matches?(date)
+		else
+			return week_from_end_matches?(date)
+		end		
+	end
+	
+	def week_from_start_matches?(date)
+		week_in_month(date.day)==@offset
+	end
+	
+	def week_from_end_matches?(date)
+		n = days_left_in_month(date) + 1
+		week_in_month(n) == @offset.abs
+	end
+	
+	def week_in_month(day_in_month)
+		((day_in_month - 1) / 7) + 1
+	end
+	
+	def days_left_in_month(date)
+		return max_day_of_month(date) - date.day
+	end
+	
+	def max_day_of_month(date)
+		result = 1
+		date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }		
+		result
+	end
+	
+	def to_s
+		"DayInMonthTE"
+	end
+	
+	def print(date)
+		puts "DayInMonthTE: #{date}"
+		puts "includes? == #{includes?(date)}"
+		puts "day_matches? == #{day_matches?(date)}"
+		puts "week_matches? == #{week_matches?(date)}"
+		puts "week_from_start_matches? == #{week_from_start_matches?(date)}"
+		puts "week_from_end_matches? == #{week_from_end_matches?(date)}"
+		puts "days_left_in_month == #{days_left_in_month(date)}"
+		puts "max_day_of_month == #{max_day_of_month(date)}"
+	end
+end
+
+class RangeEachYearTE < TemporalExpression
+
+	def initialize(start_month, end_month=start_month, start_day=0, end_day=0)
+		super()
+		@start_month = start_month
+		@end_month = end_month
+		@start_day = start_day
+		@end_month = end_day
+	end
+	
+	def includes?(date)
+		months_include?(date) || 
+			start_month_includes?(date) || 
+				end_month_includes?(date)
+	end
+	
+	def months_include?(date)
+		(date.mon > @start_month) && (date.mon < @end_month)
+	end
+
+  def end_month_includes?(date)
+		return false unless (date.mon == @end_month) 
+		(@end_day == 0)  || (date.day <= @end_day)
+	end
+	
+  def start_month_includes?(date)
+		return false unless (date.mon == @start_month)		
+		(@start_day == 0) || (date.day >= @start_day)
+	end
+	
 end
 
 end
