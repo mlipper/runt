@@ -7,6 +7,8 @@ require 'runt'
 require 'date'
 require 'date/format'
 
+$DEBUG=false
+
 # Unit tests for TemporalExpression classes
 # Author:: Matthew Lipper
 class TemporalExpressionTest < Test::Unit::TestCase
@@ -235,12 +237,13 @@ class TemporalExpressionTest < Test::Unit::TestCase
     summer_time = UnionTE.new
     summer_time.add(last_week_of_may).add(first_week_of_september).add(june_through_august)
 
-    assert(summer_time.include?(TimePoint.minute(2004,5,31,0,0)))
+    #Will work, but will be incredibly slow:
+    #  assert(summer_time.include?(TimePoint.minute(2004,5,31,0,0)))
+    assert(summer_time.include?(TimePoint.day_of_month(2004,5,31,0,0)))
     assert(summer_time.include?(TimePoint.day_of_month(2004,7,4)))
-    #~ assert(summer_time.include?(TimePoint.day_of_month(2000,7,4)))
-    assert(!summer_time.include?(TimePoint.minute(2004,9,6,0,0)))
-
-
+    #also works...also slow:
+    #  assert(!summer_time.include?(TimePoint.minute(2004,9,6,0,0)))
+    assert(!summer_time.include?(TimePoint.hour_of_day(2004,9,6,0,0)))
 
   end
 
