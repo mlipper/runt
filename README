@@ -1,17 +1,15 @@
-Runt - Ruby Temporal Expressions
+= Runt -- Ruby Temporal Expressions
 
-README for Runt version 0.1 (ALPHA)
-   Released under the Apache Software license (see LICENSE.txt)
-   This file last updated 2004-02-05
+README for Runt version 0.0.1 (ALPHA)
+   This file last updated 2004-02-11
 
---------------------------------------------------------------------
-INTRODUCTION
+== INTRODUCTION
 
 It doesn't get much more alpha than this! 
 
+---
 
---------------------------------------------------------------------
-INSTALL
+== INSTALL
 
 *  Unpack the Runt distribution
 
@@ -21,7 +19,7 @@ INSTALL
 
    $ ruby setup.rb config
    $ ruby setup.rb setup
-   # ruby setup.rb install (may require root privilege)
+   $ ruby setup.rb install (may require root privilege)
 
 or 
 
@@ -31,23 +29,24 @@ for more options
 
 * this (should) install 
 
-RUBY_HOME/**/*
-+
-|
-+--site_ruby/
-   +
-   |
-   +--runt.rb   <-- this module will include all files in runt/ automatically
-   |
-   `runt/
-    +
-    |
-    `--dateprecision.rb
-    |
-    `--etc...
+        RUBY_HOME/**/*
+        +
+        |
+        +--site_ruby/
+           +
+           |
+           +--runt.rb   <-- this module will include all files in runt/ automatically
+           |
+           `runt/
+            +
+            |
+            `--dateprecision.rb
+            |
+            `--etc...
 
---------------------------------------------------------------------
-QUICK START
+---
+
+== QUICK START
 
 *  require 'runt'
 
@@ -56,9 +55,25 @@ QUICK START
 *  See http://chronicJ.org for better commented source
 
 
-
 Get in touch if you need help...
 
-Matt
+Matt <matt@digitalclash.com>
 
-matt@digitalclash.com
+---
+
+= Etc...
+
+Author::   Matthew Lipper <matt@digitalclash.com>
+Requires:: Ruby 1.8.0 or later
+License::  Copyright 2003 by Digital Clash LLC.
+           Released under the Apache Software license (see LICENSE.txt)
+           included in the distribution.
+
+== Warranty
+
+This software is provided "as is" and without any express or
+implied warranties, including, without limitation, the implied
+warranties of merchantibility and fitness for a particular
+purpose.
+
+link://../dcl-small.gif
