@@ -29,23 +29,23 @@ class TemporalExpressionTest < Test::Unit::TestCase
 
 		expr1 = ArbitraryTE.new(dt)
   	
-		assert(expr1.includes(dt))	
+		assert(expr1.includes?(dt))	
 	
 		dt2 = Date.new(2003,12,31)
 
-		assert(!expr1.includes(dt2))
+		assert(!expr1.includes?(dt2))
 
 		expr2 = ArbitraryTE.new(dt2)
   	
-		assert(expr2.includes(dt2))
+		assert(expr2.includes?(dt2))
 		
 		union_expr = UnionTE.new
 		
 		union_expr.add(dt).add(dt2)
 		
-		assert(union_expr.includes(dt))
+		assert(union_expr.includes?(dt))
 		
-		assert(union_expr.includes(dt2))
+		assert(union_expr.includes?(dt2))
 	
 	end
 

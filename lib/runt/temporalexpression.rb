@@ -34,7 +34,7 @@ class CollectionTE < TemporalExpression
 		@expressions = Array.new
 	end
   
-	def includes(aDate)
+	def includes?(aDate)
 		false
 	end
   
@@ -50,7 +50,7 @@ end
 
 class UnionTE < CollectionTE
 
-	def includes(aDate)
+	def includes?(aDate)
 		@expressions.each do |expr|
 			log(expr,aDate)
 			return true if expr == aDate 
@@ -64,7 +64,7 @@ end
 
 class IntersectionTE < CollectionTE
 
-	def includes(aDate)
+	def includes?(aDate)
 		@expressions.each do |expr|
 		log(expr,aDate)
 		return false unless expr == aDate 
@@ -86,7 +86,7 @@ class DifferenceTE < TemporalExpression
 		@expr2 = expr2	
 	  end
   
-	def includes(aDate)
+	def includes?(aDate)
 		log(expr,aDate)
 		return false unless (@expr1.includes(aDate) && !expr2.includes(aDate))  
 	end
@@ -104,7 +104,7 @@ class ArbitraryTE < TemporalExpression
 		@date_time = aDate
 	end
 	
-	def includes(aDate)
+	def includes?(aDate)
 		log(@date_time,aDate)
 		return true if @date_time == aDate
 		false
