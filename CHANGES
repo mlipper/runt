@@ -1,5 +1,10 @@
 = Runt Changelog
 
+== Version 0.0.6
+* TE Tutorial
+* Website beautification
+* Credits
+
 == Version 0.0.4
 
 * Improved Rake[http://rake.rubyforge.org] support

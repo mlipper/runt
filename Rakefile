@@ -60,13 +60,13 @@ end
 desc "Copy html files for the Runt website to the build directory."
 file "copy_site" => TARGET_DIR
 file "copy_site" do
-    cp_r Dir["site/*.{html,gif,png}"], TARGET_DIR
+    cp_r Dir["site/*.{html,gif,png,css}"], TARGET_DIR
 end
 
 desc "Publish the Documentation to RubyForge."
 task :publish => [:rdoc,:copy_site,:clobber_package] do |t|
   publisher = Rake::CompositePublisher.new
-	publisher.add Rake::SshDirPublisher.new("mlipper@rubyforge.org", "/var/www/gforge-projects/runt",TARGET_DIR)
+        publisher.add Rake::SshDirPublisher.new("mlipper@rubyforge.org", "/var/www/gforge-projects/runt",TARGET_DIR)
   publisher.upload
 end
 
