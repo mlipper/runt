@@ -6,3 +6,5 @@ puts $:
 
 require 'dateprecisiontest'
 require 'temporalexpressiontest'
+require 'timepointtest'
+require 'scheduletest'
