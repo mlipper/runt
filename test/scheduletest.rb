@@ -10,10 +10,11 @@ require 'date'
 # Author:: Matthew Lipper
 class ScheduleTest < Test::Unit::TestCase
 
-  include Runt
+ include Runt
 
-  def test_create_new
-    schedule = Schedule.new
-    assert(!schedule.nil?,"Call to Schedule.new returned NULL reference")
-  end
+ def test_create_new
+   schedule = Schedule.new
+   assert(!schedule.nil?,"Call to Schedule.new returned NULL reference")
+ end
+ 
 end

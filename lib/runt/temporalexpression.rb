@@ -18,7 +18,7 @@ module Runt
 # specifying recurring events using set expressions.
 class TemporalExpression
 
-        # Returns true or false depending on whether this TemporalExpression includes the supplied
+  # Returns true or false depending on whether this TemporalExpression includes the supplied
   # date.
   def includes(aDate) #aDate can be Date, DateTime, or TimePoint
     false
