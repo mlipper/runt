@@ -7,7 +7,7 @@ module Runt
 
   # :title:DPrecision
   # == DPrecision
-  #
+  # Module providing automatic precisioning of Date, DateTime, and PDate classes.
   #
   # Inspired by a <tt>pattern</tt>[http://martinfowler.com/ap2/timePoint.html] by Martin Fowler.
   #

@@ -264,7 +264,7 @@ class TExprTest < Test::Unit::TestCase
 
     assert(!parking_ticket.include?(DateTime.new(2004,3,11,1,15)))
 
-    # Simplify
+    # Simplified
     e1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     e2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     ticket = expr1 | expr2

@@ -9,7 +9,7 @@ require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
 
 # Build Settings
-PKG_VERSION = "0.0.8"
+PKG_VERSION = "0.1.0"
 
 # Files to be included in Runt distribution
 PKG_FILES = FileList[

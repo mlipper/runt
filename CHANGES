@@ -1,6 +1,20 @@
 = Runt Changelog
 
+== Version 0.1.0
+
+* Inspired by suggestions[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/95465] on c.l.r., did massive renaming and refactoring to make source more Ruby-esque:
+
+  - TemporalExpression class => TExpr
+  - DatePrecision module => DPrecision (file name changed also)
+  - TimePoint class => PDate (file name changed also)
+  - Added transparent use of bitwise set operators ( & , | ) for building composite expressions
+  - Added transparent use of - operator for diff expressions
+
+* Updated TE Tutorial to reflect new and improved syntax usage
+* Skipped several version numbers to celebrate
+
 == Version 0.0.6
+
 * TE Tutorial
 * Website beautification
 * Credits

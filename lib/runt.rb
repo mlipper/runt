@@ -33,7 +33,7 @@
 
 require 'date'
 require 'date/format'
-require "runt/dateprecision"
+require "runt/dprecision"
 require "runt/pdate"
 require "runt/temporalexpression"
 require "runt/schedule"

@@ -44,13 +44,13 @@ module Runt
         when MONTH then
           current_date = self.class.to_date(self)
           return DPrecision::to_p((current_date>>n),@date_precision)
-        when DAY_OF_MONTH then
+        when DAY then
           return new_self_plus(n)
-        when HOUR_OF_DAY then
+        when HOUR then
           return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }
-        when MINUTE then
+        when MIN then
           return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }
-            when SECOND then
+            when SEC then
           return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
       end
     end
@@ -83,35 +83,35 @@ module Runt
       return DPrecision::to_p(self.class.new0(@ajd + n, @of, @sg),@date_precision)
     end
 
-    def PDate.to_date(timepoint)
-      if( timepoint.date_precision > DPrecision::DAY_OF_MONTH) then
-        DateTime.new(timepoint.year,timepoint.month,timepoint.day,timepoint.hour,timepoint.min,timepoint.sec)
+    def PDate.to_date(pdate)
+      if( pdate.date_precision > DPrecision::DAY) then
+        DateTime.new(pdate.year,pdate.month,pdate.day,pdate.hour,pdate.min,pdate.sec)
       end
-      return Date.new(timepoint.year,timepoint.month,timepoint.day)
+      return Date.new(pdate.year,pdate.month,pdate.day)
     end
 
     def PDate.year(yr,*ignored)
-      PDate.civil(YEAR, yr, MONTH.min_value, DAY_OF_MONTH.min_value  )
+      PDate.civil(YEAR, yr, MONTH.min_value, DAY.min_value  )
     end
 
     def PDate.month( yr,mon,*ignored )
-      PDate.civil(MONTH, yr, mon, DAY_OF_MONTH.min_value  )
+      PDate.civil(MONTH, yr, mon, DAY.min_value  )
     end
 
     def PDate.day_of_month( yr,mon,day,*ignored )
-      PDate.civil(DAY_OF_MONTH, yr, mon, day )
+      PDate.civil(DAY, yr, mon, day )
     end
 
-    def PDate.hour_of_day( yr,mon,day,hr=HOUR_OF_DAY.min_value,*ignored )
-      PDate.civil(HOUR_OF_DAY, yr, mon, day,hr,MINUTE.min_value, SECOND.min_value)
+    def PDate.hour_of_day( yr,mon,day,hr=HOUR.min_value,*ignored )
+      PDate.civil(HOUR, yr, mon, day,hr,MIN.min_value, SEC.min_value)
     end
 
-    def PDate.minute( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,*ignored )
-      PDate.civil(MINUTE, yr, mon, day,hr,min, SECOND.min_value)
+    def PDate.minute( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,*ignored )
+      PDate.civil(MIN, yr, mon, day,hr,min, SEC.min_value)
     end
 
-    def PDate.second( yr,mon,day,hr=HOUR_OF_DAY.min_value,min=MINUTE.min_value,sec=SECOND.min_value,*ignored )
-      PDate.civil(SECOND, yr, mon, day,hr,min, sec)
+    def PDate.second( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,sec=SEC.min_value,*ignored )
+      PDate.civil(SEC, yr, mon, day,hr,min, sec)
     end
 
     def PDate.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )

@@ -7,6 +7,6 @@ $:<<'../lib'
 # Author:: Matthew Lipper
 require 'dateprecisiontest'
 require 'temporalexpressiontest'
-require 'timepointtest'
+require 'pdatetest'
 require 'scheduletest'
 require 'daterangetest'
