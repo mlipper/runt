@@ -23,13 +23,13 @@ class DPrecisionTest < Test::Unit::TestCase
   end
 
   def test_pseudo_singleton_instance
-    assert(DPrecision::YEAR.id==DPrecision::YEAR.id, "Object Id's not equal.")
-    assert(DPrecision::MONTH.id==DPrecision::MONTH.id, "Object Id's not equal.")
-    assert(DPrecision::DAY.id==DPrecision::DAY.id, "Object Id's not equal.")
-    assert(DPrecision::HOUR.id==DPrecision::HOUR.id, "Object Id's not equal.")
-    assert(DPrecision::MIN.id==DPrecision::MIN.id, "Object Id's not equal.")
-    assert(DPrecision::SEC.id==DPrecision::SEC.id, "Object Id's not equal.")
-    assert(DPrecision::MILLI.id==DPrecision::MILLI.id, "Object Id's not equal.")
+    assert(DPrecision::YEAR.object_id==DPrecision::YEAR.object_id, "Object Id's not equal.")
+    assert(DPrecision::MONTH.object_id==DPrecision::MONTH.object_id, "Object Id's not equal.")
+    assert(DPrecision::DAY.object_id==DPrecision::DAY.object_id, "Object Id's not equal.")
+    assert(DPrecision::HOUR.object_id==DPrecision::HOUR.object_id, "Object Id's not equal.")
+    assert(DPrecision::MIN.object_id==DPrecision::MIN.object_id, "Object Id's not equal.")
+    assert(DPrecision::SEC.object_id==DPrecision::SEC.object_id, "Object Id's not equal.")
+    assert(DPrecision::MILLI.object_id==DPrecision::MILLI.object_id, "Object Id's not equal.")
   end
 
   def test_to_precision
