@@ -9,6 +9,7 @@ require 'date'
 # Unit tests for DPrecision class
 #
 # Author:: Matthew Lipper
+
 class DPrecisionTest < Test::Unit::TestCase
 
   include Runt

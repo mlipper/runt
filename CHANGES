@@ -1,5 +1,10 @@
 = Runt Changelog
 
+== Version 0.3.0
+
+* Changed usage of Object#id in dprecisiontest.rb to use Object#object_id
+
+
 == Version 0.2.0
 
 * Fixed Schedule class
