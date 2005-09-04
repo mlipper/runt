@@ -149,7 +149,7 @@ class Intersect < Collection
 end
 
 # TExpr that will be true only if the first of
-# it's two contained expressions is true and the second is false.
+# its two contained expressions is true and the second is false.
 class Diff < TExpr
 
   def initialize(expr1, expr2)
@@ -302,16 +302,16 @@ class REWeek < TExpr
 
   VALID_RANGE = 0..6
 
-	# Creates a REWeek using the supplied start
+  # Creates a REWeek using the supplied start
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
   # (6 => Saturday) is assumed.
   #
   # If the start day is greater than the end day, an
-	# ArgumentError will be raised
-	def initialize(start_day,end_day=6)
-		super()
-		validate(start_day,end_day)
+  # ArgumentError will be raised
+  def initialize(start_day,end_day=6)
+    super()
+    validate(start_day,end_day)
     @start_day = start_day
     @end_day = end_day
   end
@@ -325,7 +325,7 @@ class REWeek < TExpr
     "REWeek"
   end
 
-	private
+  private
   def validate(start_day,end_day)
     unless start_day<=end_day
       raise ArgumentError, 'end day of week must be greater than start day'

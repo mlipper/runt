@@ -10,15 +10,17 @@ require 'rake'
 require 'rake/clean'
 require 'rake/testtask'
 require 'rake/rdoctask'
-#require 'rake/packagetask'
-
 require 'rake/contrib/sshpublisher'
 require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
 
+#####################################################################
+# Constants
+#####################################################################
+
 # Build Settings
 PKG_VERSION = "0.2.0"
-#  'gem_install_bin.rb',
+
 # Files to be included in Runt distribution
 PKG_FILES = FileList[
   'setup.rb',
@@ -30,11 +32,14 @@ PKG_FILES = FileList[
 ].exclude("*.ses")
 
 PKG_EXEC_TAR = true unless RUBY_PLATFORM =~ /win32/i
-#puts "#{self.PKG_EXEC_TAR}"
+
 # build directory
 TARGET_DIR = "target"
 
+#####################################################################
 # Targets
+#####################################################################
+
 task :default => [:test]
 task :clobber => [:clobber_build_dir]
 
@@ -57,12 +62,12 @@ end
 Rake::TestTask.new do |t|
   t.libs << "test"
   t.pattern = 'test/alltests.rb'
-  t.verbose = true
+  t.verbose = false	
 end
 
 Rake::PackageTask.new("runt", PKG_VERSION) do |p|
   p.package_dir="#{TARGET_DIR}/#{p.package_dir}"
-  p.need_tar = true unless RUBY_PLATFORM =~ /win32/i
+  p.need_tar = PKG_EXEC_TAR
   p.need_zip = true
   p.package_files.include(PKG_FILES)
 end
@@ -115,6 +120,6 @@ EOF
   Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_zip = true
     pkg.need_tar = false
-    #pkg.need_tar = PKG_EXEC_TAR
+    pkg.need_tar = PKG_EXEC_TAR
   end
 end

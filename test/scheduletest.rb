@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$:<<'../lib'
+$: << '../lib'
 
 require 'test/unit'
 require 'runt'
