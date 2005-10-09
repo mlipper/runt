@@ -8,13 +8,6 @@ require 'runt/dprecision'
 
 module Runt
 
-# FKA = 'Formally Known As'
-
-
-# FKA: TemporalExpression
-#
-# Base class for all TExpr classes that has proved itself usefull enough to
-# avoid O's Razor, but that may wind up as a module.
 #
 # 'TExpr' is short for 'TemporalExpression' and are inspired by the recurring event
 # <tt>pattern</tt>[http://martinfowler.com/apsupp/recurring.pdf]
@@ -22,11 +15,24 @@ module Runt
 # specifying recurring events using set expressions.
 #
 # See also [tutorial_te.rdoc]
-class TExpr
+module TExpr
+
+#  include TExprUtils
 
   # Returns true or false depending on whether this TExpr includes the supplied
   # date expression.
   def include?(date_expr); false end
+  
+  # Returns true if and only if the underlying expression is a Range and a
+  # Range that overlaps with the supplied argument
+  def overlap?(date_expr)
+    if block_given?
+      yield date_expr
+    else
+      include?(date_expr) 
+    end
+  end
+  
   def to_s; "TExpr" end
 
   def or (arg)
@@ -65,44 +71,14 @@ class TExpr
     self.minus(expr){|adjusted| adjusted }
   end
 
-  protected
-  def week_in_month(day_in_month)
-    ((day_in_month - 1) / 7) + 1
-  end
-
-  def days_left_in_month(date)
-    return max_day_of_month(date) - date.day
-  end
-
-  def max_day_of_month(date)
-    result = 1
-    date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }
-    result
-  end
-
-  def week_matches?(index,date)
-    if(index > 0)
-      return week_from_start_matches?(index,date)
-    else
-      return week_from_end_matches?(index,date)
-    end
-  end
-
-  def week_from_start_matches?(index,date)
-    week_in_month(date.day)==index
-  end
-
-  def week_from_end_matches?(index,date)
-    n = days_left_in_month(date) + 1
-    week_in_month(n)==index.abs
-  end
-
 end
 
 # Base class for TExpr classes that can be composed of other
 # TExpr objects imlpemented using the <tt>Composite(GoF)</tt> pattern.
-class Collection < TExpr
-
+class Collection 
+  
+  include TExpr
+  
   attr_reader :expressions
   protected :expressions
 
@@ -137,7 +113,6 @@ end
 class Intersect < Collection
 
   def include?(aDate)
-    #Handle @expressions.size==0
     result = false
     @expressions.each do |expr|
       return false unless (result = expr.include?(aDate))
@@ -150,7 +125,9 @@ end
 
 # TExpr that will be true only if the first of
 # its two contained expressions is true and the second is false.
-class Diff < TExpr
+class Diff 
+
+  include TExpr
 
   def initialize(expr1, expr2)
     @expr1 = expr1
@@ -165,32 +142,15 @@ class Diff < TExpr
   def to_s; "Diff" end
 end
 
-# TExpr that provides for inclusion of an arbitrary date.
-class Spec < TExpr
-
-  def initialize(date_expr)
-    @date_expr = date_expr
-  end
-
-  # Will return true if the supplied object is == to that which was used to
-  # create this instance
-  def include?(date_expr)
-    return true if @date_expr == date_expr
-    false
-  end
-
-  def to_s; "Spec" end
-
-end
-
 # TExpr that provides a thin wrapper around built-in Ruby <tt>Range</tt> functionality
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class RSpec < TExpr
+class RSpec 
+
+  include TExpr
 
   def initialize(date_expr)
-    raise TypeError, 'expected range' unless date_expr.kind_of?(Range)
     @date_expr = date_expr
   end
 
@@ -199,8 +159,51 @@ class RSpec < TExpr
   def include?(date_expr)
     return @date_expr.include?(date_expr)
   end
+  
+  # Will return true if the supplied object overlaps with the range used to
+  # create this instance
+  def overlap?(date_expr)
+    @date_expr.overlap?(date_expr)
+  end
 
   def to_s; "RSpec" end
+end
+
+#######################################################################
+# Utility methods common to some expressions
+
+module TExprUtils
+  def week_in_month(day_in_month)
+    ((day_in_month - 1) / 7) + 1
+  end
+
+  def days_left_in_month(date)
+    return max_day_of_month(date) - date.day
+  end
+
+  def max_day_of_month(date)
+    result = 1
+    date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }
+    result
+  end
+
+  def week_matches?(index,date)
+    if(index > 0)
+      return week_from_start_matches?(index,date)
+    else
+      return week_from_end_matches?(index,date)
+    end
+  end
+
+  def week_from_start_matches?(index,date)
+    week_in_month(date.day)==index
+  end
+
+  def week_from_end_matches?(index,date)
+    n = days_left_in_month(date) + 1
+    week_in_month(n)==index.abs
+  end
+
 end
 
 # TExpr that provides support for building a temporal
@@ -228,7 +231,10 @@ end
 #     DIMonth.new(Last,Saturday)
 #
 #  See also: Date, Runt
-class DIMonth < TExpr
+class DIMonth 
+
+  include TExpr
+  include TExprUtils
 
   def initialize(week_of_month_index,day_index)
     @day_index = day_index
@@ -275,7 +281,9 @@ end
 #     DIWeek.new(Sunday)
 #
 #  See also: Date, Runt
-class DIWeek < TExpr
+class DIWeek 
+
+  include TExpr
 
   VALID_RANGE = 0..6
 
@@ -298,7 +306,9 @@ end
 # If start and end day are equal, the entire week will match true.
 #
 #  See also: Date
-class REWeek < TExpr
+class REWeek 
+
+  include TExpr
 
   VALID_RANGE = 0..6
 
@@ -310,7 +320,6 @@ class REWeek < TExpr
   # If the start day is greater than the end day, an
   # ArgumentError will be raised
   def initialize(start_day,end_day=6)
-    super()
     validate(start_day,end_day)
     @start_day = start_day
     @end_day = end_day
@@ -336,10 +345,11 @@ class REWeek < TExpr
   end
 end
 
-class REYear < TExpr
+class REYear 
 
+  include TExpr
+  
   def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
-    super()
     @start_month = start_month
     @start_day = start_day
     @end_month = end_month
@@ -385,7 +395,9 @@ end
 # is assumed to be on the following day.
 #
 #  See also: Date
-class REDay < TExpr
+class REDay 
+
+  include TExpr
 
   CURRENT=28
   NEXT=29
@@ -431,7 +443,6 @@ class REDay < TExpr
     return end_hour <= start_hour
   end
 
-  private
   def get_current(hour,minute)
       PDate.min(ANY_DATE.year,ANY_DATE.month,CURRENT,hour,minute)
   end
@@ -447,7 +458,10 @@ end
 #     WIMonth.new(1)
 #
 #  See also: Date
-class WIMonth < TExpr
+class WIMonth 
+
+  include TExpr
+  include TExprUtils
 
   VALID_RANGE = -2..5
 

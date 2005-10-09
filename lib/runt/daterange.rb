@@ -31,9 +31,9 @@ module Runt
     end
 
     def overlap?(obj)
-      return true if( include?(obj.min) || include?(obj.max) )
-			return true if( obj.kind_of?(Range) && obj.include?(self) )
-			false
+      return true if( member?(obj) || include?(obj.min) || include?(obj.max) )
+      return true if( obj.kind_of?(Range) && obj.include?(self) )
+      false
     end
 
     def empty?

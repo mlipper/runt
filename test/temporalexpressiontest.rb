@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$:<<'../lib'
+#$:<<'../lib'
 
 require 'test/unit'
 require 'runt'
@@ -10,6 +10,7 @@ $DEBUG=false
 
 # Unit tests for TExpr classes
 # Author:: Matthew Lipper
+
 class TExprTest < Test::Unit::TestCase
 
   include Runt
@@ -27,15 +28,6 @@ class TExprTest < Test::Unit::TestCase
     assert(expr.include?(PDate.day(2004,1,6))) #January 6th, 2004 (First Tuesday)
     assert(expr.include?(PDate.hour(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
     assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
-  end
-
-  def test_arbitrary_te
-    expr1 = Spec.new(PDate.day(2003,12,30))
-    expr2 = Spec.new(PDate.day(2004,1,1))
-    assert(expr1.include?(Date.new(2003,12,30)))
-    assert(!expr1.include?(Date.new(2003,12,31)))
-    assert(expr2.include?(Date.new(2004,1,1)))
-    assert(!expr2.include?(Date.new(2003,1,1)))
   end
 
   def test_arbitrary_range_te
