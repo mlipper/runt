@@ -92,3 +92,19 @@ module Runt
   Second_to_last = Last[Second]
 
 end
+
+#
+# Add precision +Runt::DPrecision+ to standard library classes Date and DateTime 
+# (which is a subclass of Date). 
+#
+class Date
+
+  include Runt::DPrecision
+
+  attr_accessor :date_precision
+
+  def date_precision
+    return @date_precision unless @date_precision.nil? 
+    return Runt::DPrecision::DEFAULT 
+  end 	  
+end

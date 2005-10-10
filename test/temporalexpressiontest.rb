@@ -158,6 +158,18 @@ class TExprTest < Test::Unit::TestCase
     #12:01 am (January 28th, 2004 - ignored)
     assert(!expr2.include?(PDate.min(2004,1,28,0,01)))
   end
+
+  def test_range_each_day_te_again
+    dr = DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))
+    red = REDay.new(8,0,10,0)
+    result = false
+    dr.each do |interval|
+      result = red.include?(interval)
+      break if result
+    end      
+    assert(result)
+  end
+
   def test_range_each_week_te
 
     assert_raises(ArgumentError){ expr = REWeek.new(10,4) }

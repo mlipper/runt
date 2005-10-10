@@ -2,6 +2,7 @@
 
 require 'date'
 require 'runt/dprecision'
+require 'runt/pdate'
 
 #
 # Author:: Matthew Lipper
@@ -22,16 +23,6 @@ module TExpr
   # Returns true or false depending on whether this TExpr includes the supplied
   # date expression.
   def include?(date_expr); false end
-  
-  # Returns true if and only if the underlying expression is a Range and a
-  # Range that overlaps with the supplied argument
-  def overlap?(date_expr)
-    if block_given?
-      yield date_expr
-    else
-      include?(date_expr) 
-    end
-  end
   
   def to_s; "TExpr" end
 
@@ -90,6 +81,16 @@ class Collection
     @expressions.push anExpression
     self
   end
+
+  # Will return true if the supplied object overlaps with the range used to
+  # create this instance
+  def overlap?(date_expr)
+    @expressions.each do | interval |
+      return true if date_expr.overlap?(interval)      
+    end
+    false    
+  end
+
 
   def to_s; "Collection:" + @expressions.to_s end
 end
@@ -163,7 +164,10 @@ class RSpec
   # Will return true if the supplied object overlaps with the range used to
   # create this instance
   def overlap?(date_expr)
-    @date_expr.overlap?(date_expr)
+    @date_expr.each do | interval |
+      return true if date_expr.include?(interval)      
+    end
+    false    
   end
 
   def to_s; "RSpec" end
@@ -418,8 +422,9 @@ class REDay
   end
 
   def include?(date)
-    raise TypeError, 'expected date' unless date.kind_of?(Date)
-
+    # If precision is day or greater, then the result is always true
+    return true if date.date_precision <= DPrecision::DAY
+    
     if(@spans_midnight&&date.hour<12) then
       #Assume next day
       return @range.include?(get_next(date.hour,date.min))
@@ -431,11 +436,6 @@ class REDay
 
   def to_s
     "REDay"
-  end
-
-  def print(date)
-    puts "DIMonth: #{date}"
-    puts "include? == #{include?(date)}"
   end
 
   private

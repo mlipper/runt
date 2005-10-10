@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$:<<'../lib'
+$: << '../lib'
 
 # All Runt unit tests
 #
@@ -10,4 +10,3 @@ require 'temporalexpressiontest'
 require 'pdatetest'
 require 'scheduletest'
 require 'daterangetest'
-#require 'timespantest'
