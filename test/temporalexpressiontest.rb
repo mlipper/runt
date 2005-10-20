@@ -30,6 +30,15 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
 
+  def test_arbitrary_te
+    expr1 = Spec.new(PDate.day(2003,12,30))
+    expr2 = Spec.new(PDate.day(2004,1,1))
+    assert(expr1.include?(Date.new(2003,12,30)))
+    assert(!expr1.include?(Date.new(2003,12,31)))
+    assert(expr2.include?(Date.new(2004,1,1)))
+    assert(!expr2.include?(Date.new(2003,1,1)))
+  end
+
   def test_arbitrary_range_te
     #NOTE:
     #Using standard range functionality like the following:

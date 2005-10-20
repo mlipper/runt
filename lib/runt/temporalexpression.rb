@@ -143,6 +143,26 @@ class Diff
   def to_s; "Diff" end
 end
 
+# TExpr that provides for inclusion of an arbitrary date.
+class Spec
+  
+  include TExpr
+  
+  def initialize(date_expr)
+    @date_expr = date_expr
+  end
+
+  # Will return true if the supplied object is == to that which was used to
+  # create this instance
+  def include?(date_expr)
+    return true if @date_expr == date_expr
+    false
+  end
+
+  def to_s; "Spec" end
+
+end
+
 # TExpr that provides a thin wrapper around built-in Ruby <tt>Range</tt> functionality
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
