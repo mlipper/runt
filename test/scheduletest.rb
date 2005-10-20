@@ -52,30 +52,27 @@ class ScheduleTest < Test::Unit::TestCase
     assert_equal(expected,dates)
   end
 
-  def test_non_conflicting_schedule
+  def test_using_a_schedule
         
     # September 18th - 19th, 2005, 8am - 10am 
     expr1=RSpec.new(DateRange.new(PDate.day(2005,9,18),PDate.day(2005,9,19))) & REDay.new(8,0,10,0)
-
     assert(expr1.include?(PDate.min(2005,9,18,8,15)))
-
     # September 19th - 20th, 2005, 9am - 11am 
     expr2=RSpec.new(DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))) & REDay.new(9,0,11,0) 
-
+    # Quick sanuty check
     assert(expr1.overlap?(expr2))
-
     # Setup a schedule w/first expression
     sched = Schedule.new
-    event = Event.new "Snafubar Opening"  
-    sched.add(event,expr1)
+    sched.add(Event.new("Snafubar Opening"),expr1)
     resource = Resource.new(sched)
     # Add a another overlapping event 
-    resource.add_event(event,expr2)
-
-  end
-
-  def test_conflicting_schedule
-    
+    resource.add_event(Event.new("Yodeling Lesson"),expr2)
+    # Create a new resource using the same schedule
+    resource2 = Resource.new(sched)
+    # Add a another overlapping event and pass a block which should complain
+    #resource.add_event(Event.new("Yodeling Lesson"),expr2) \
+    #{|e,s| raise "Resource not available at requested time(s)." \
+    #  if (@schedule.overlap?(s))} 
   end
 end
 
@@ -84,7 +81,10 @@ class Resource
     @schedule=schedule
   end
   def add_event(event,expr)
-    raise "Resource not available at requested time(s)." if (@schedule.include? event,expr)
-    @schedule.add(event,expr) 
+    if(block_given?) 
+      yield(event,expr) 
+    else
+      @schedule.add(event,expr) 
+    end
   end
 end

@@ -283,4 +283,18 @@ class TExprTest < Test::Unit::TestCase
     assert(!ticket.include?(DateTime.new(2004,3,11,1,15)))
  end
 
+ def test_re_month_te
+   # October 22nd, 2005
+   dt1 = Date.civil(2005,10,22)
+   # The 20th through the 29th of any month
+   expr1 = REMonth.new(20,29)
+   assert(expr1.include?(dt1))
+   assert(!expr1.include?(PDate.new(2010,12,12)))
+   # August 17th, 1975
+   dt2 = Date.civil(1975,8,17)
+   # The 17th of any month
+   expr2 = REMonth.new(17)
+   assert(expr2.include?(dt2))
+   assert(!expr2.include?(dt1))
+  end
 end

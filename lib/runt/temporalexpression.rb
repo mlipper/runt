@@ -253,17 +253,6 @@ class DIMonth
     "DIMonth"
   end
 
-  def print(date)
-    puts "DIMonth: #{date}"
-    puts "include? == #{include?(date)}"
-    puts "day_matches? == #{day_matches?(date)}"
-    puts "week_matches? == #{week_matches?(date)}"
-    puts "week_from_start_matches? == #{week_from_start_matches?(date)}"
-    puts "week_from_end_matches? == #{week_from_end_matches?(date)}"
-    puts "days_left_in_month == #{days_left_in_month(date)}"
-    puts "max_day_of_month == #{max_day_of_month(date)}"
-  end
-
   private
   def day_matches?(date)
     @day_index == date.wday
@@ -370,14 +359,6 @@ class REYear
     "REYear"
   end
 
-  def print(date)
-    puts "DIMonth: #{date}"
-    puts "include? == #{include?(date)}"
-    puts "months_include? == #{months_include?(date)}"
-    puts "end_month_include? == #{end_month_include?(date)}"
-    puts "start_month_include? == #{start_month_include?(date)}"
-  end
-
   private
   def months_include?(date)
     (date.mon > @start_month) && (date.mon < @end_month)
@@ -474,6 +455,33 @@ class WIMonth
 
   def include?(date)
     week_matches?(@ordinal,date)
+  end
+
+end
+
+# TExpr that matches a range of dates within a month. For example:
+# 
+#     REMonth.(12,28)
+#
+# matches from the 12th thru the 28th of any month. If end_day==0
+# or is not given, start_day will define the range with that single day.
+# 
+#  See also: Date
+class REMonth
+
+  include TExpr
+
+  def initialize(start_day, end_day=0)
+    end_day=start_day if end_day==0
+    @range = start_day..end_day
+  end
+
+  def include?(date)
+    @range.include? date.mday
+  end
+
+  def to_s
+    "REMonth"
   end
 
 end
