@@ -31,8 +31,12 @@ PKG_FILES = FileList[
   'site/**/*'
 ].exclude("*.ses")
 
-PKG_EXEC_TAR = true unless RUBY_PLATFORM =~ /win32/i
-
+if(RUBY_PLATFORM =~ /win32/i)
+  PKG_EXEC_TAR = true 
+else
+  PKG_EXEC_TAR = false 
+end
+  
 # build directory
 TARGET_DIR = "target"
 
@@ -119,7 +123,7 @@ EOF
   
   Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_zip = true
-    pkg.need_tar = false
+    #pkg.need_tar = false
     pkg.need_tar = PKG_EXEC_TAR
   end
 end
