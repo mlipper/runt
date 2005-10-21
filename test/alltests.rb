@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-$: << '../lib'
-
 # All Runt unit tests
 #
 # Author:: Matthew Lipper

@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-$: << '../lib'
-
 require 'test/unit'
 require 'runt'
 require 'date'

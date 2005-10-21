@@ -1,6 +1,4 @@
-  #!/usr/bin/env ruby
-
-$: << '../lib'
+#!/usr/bin/env ruby
 
 require 'test/unit'
 require 'date'

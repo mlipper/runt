@@ -32,9 +32,9 @@ PKG_FILES = FileList[
 ].exclude("*.ses")
 
 if(RUBY_PLATFORM =~ /win32/i)
-  PKG_EXEC_TAR = true 
+  PKG_EXEC_TAR = false
 else
-  PKG_EXEC_TAR = false 
+  PKG_EXEC_TAR = true 
 end
   
 # build directory
@@ -111,6 +111,7 @@ else
     s.email = 'matt@digitalclash.com'
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
+    s.test_files = Dir['test/*test.rb']
 #    s.rdoc_files = rd.rdoc_files
 #    s.rdoc_options = rd.option_list
     s.rubyforge_project = 'runt'
@@ -123,7 +124,6 @@ EOF
   
   Rake::GemPackageTask.new(spec) do |pkg|
     pkg.need_zip = true
-    #pkg.need_tar = false
     pkg.need_tar = PKG_EXEC_TAR
   end
 end
