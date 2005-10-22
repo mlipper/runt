@@ -2,7 +2,25 @@
 
 == Version 0.3.0
 
-* Changed usage of Object#id in dprecisiontest.rb to use Object#object_id
+* TExpr (finally!) becomes a Module instead of a superclass 
+
+* Added overlap? method for all temporal expressions and DateRange
+
+* Added REMonth expression which matches a range of dates each month
+ 
+* Contributed by Emmett Shear: TExpr#dates method which returns an array of dates occurring within the supplied DateRange
+
+* Rakefile fixes:
+  - test path allow gem to be installed with -t switch
+  - usage of gzip which will break on Win32
+
+* Removed and then subsequently restored SpecTE
+
+* General clean-up, including:
+  - renamed several methods on PDate
+  - renamed 'dateprecisiontest.rb' to 'dprecisiontest.rb'
+
+* Fixed Object.id deprecation warning
 
 
 == Version 0.2.0

@@ -14,6 +14,7 @@ class TExprTest < Test::Unit::TestCase
   include Runt
   include DPrecision
 
+
   def test_collection_te
     #base class that should always return false
     expr = Collection.new
@@ -178,18 +179,15 @@ class TExprTest < Test::Unit::TestCase
   end
 
   def test_range_each_week_te
-
     assert_raises(ArgumentError){ expr = REWeek.new(10,4) }
-
     expr1 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
     assert(!expr1.include?(PDate.new(2004,5,1,8,06)))
-
-
     #Sunday through Thursday
     expr2 = REWeek.new(0,4)
     assert(expr2.include?(PDate.min(2004,2,19,23,59,59)))
     assert(!expr2.include?(PDate.min(2004,2,20,0,0,0)))
   end
+
   def test_combined_te
     #This is a hack.....
     #In the U.S., Memorial Day begins the last Monday of May
@@ -303,5 +301,102 @@ class TExprTest < Test::Unit::TestCase
    expr2 = REMonth.new(17)
    assert(expr2.include?(dt2))
    assert(!expr2.include?(dt1))
+  end
+  
+  ###
+  # Dates functionality & tests contributed by Emmett Shear
+  ###
+  def test_day_in_month_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
+    expr = DIMonth.new(First, Tuesday)
+    dates = expr.dates(date_range)
+    assert dates.size == 12
+    dates.each do |d|
+      assert d.wday == 2 # tuesday
+      assert d.day < 8 # in the first week
+    end
+    expr2 = DIMonth.new(Last, Friday)
+    dates2 = expr2.dates(date_range)
+    assert dates2.size == 12
+    dates2.each do |d|
+      assert d.wday == 5 # friday
+      assert d.day > month_days[d.month-1] - 8 # last week
+    end
+  end
+
+  def test_day_in_week_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
+    expr = DIWeek.new(Sunday)
+    dates = expr.dates(date_range)
+    assert( dates.size == 5 )
+    assert( dates.include?( Date.civil(2005, 1, 16) ) )
+    assert( dates.include?( Date.civil(2005, 1, 30) ) )
+  end
+
+  def test_union_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
+    expr = DIMonth.new(Last, Friday) | DIMonth.new(1, Tuesday)
+    dates = expr.dates(date_range)
+    assert dates.size == 24
+    dates.each do |d|
+      unless (d.wday == 2 and d.day < 8) or \
+	(d.wday == 5 and d.day > month_days[d.month-1] - 8)
+        assert false, d.to_s 
+      end
+    end
+  end
+
+  def test_intersection_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
+    expr = DIWeek.new(Sunday) & DIMonth.new(Second, Sunday)
+    dates = expr.dates(date_range)
+    assert( dates.size == 12 )
+    other_dates = DIMonth.new(Second, Sunday).dates(date_range)
+    dates.each { |d| assert( other_dates.include?(d) ) }
+  end
+
+  def test_range_each_week_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
+    expr = REWeek.new(3, 5)
+    dates = expr.dates(date_range)
+    assert dates.size == 12
+  end
+
+  def test_range_each_year_dates
+    date_range = Date.civil(2004, 5, 1)..Date.civil(2006, 5, 4)
+    expr = REYear.new(4, 28, 5, 6)
+    dates = expr.dates(date_range)
+    assert dates.size == 22, dates.size
+  end
+
+  def test_week_in_month_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 2, 28)
+    expr = WIMonth.new(2)
+    dates = expr.dates(date_range)
+    assert dates.size == 14, dates.size
+    assert dates.first.mday == 8
+    assert dates.last.mday == 14
+    expr_2 = WIMonth.new(Last)
+    dates_2 = expr_2.dates(date_range)
+    assert dates_2.size == 14, dates_2.size
+    assert dates_2.first.mday == 25
+    assert dates_2.last.mday == 28
+  end
+
+  def test_range_each_month_dates
+    date_range = Date.civil(2005, 1, 7)..Date.civil(2005, 1, 15)
+    expr = REMonth.new(5, 9)
+    dates = expr.dates(date_range)
+    assert dates.size == 3, dates.size
+    assert false if dates.include? Date.civil(2005, 1, 6)
+  end
+  
+  def test_diff_dates
+    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
+    expr = REYear.new(1, 1, 1, 31) - REMonth.new(7, 15)
+    dates = expr.dates(date_range)
+    assert dates.size == 22, dates.size
   end
 end

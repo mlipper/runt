@@ -84,11 +84,12 @@ module Runt
       @negate.call(arg)
     end
   end
+  LastProc = ApplyLast.new
 
   public
-  Last = ApplyLast.new
-  Last_of = Last[First]
-  Second_to_last = Last[Second]
+  Last = LastProc[First]
+  Last_of = LastProc[First]
+  Second_to_last = LastProc[Second]
 
 end
 

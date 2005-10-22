@@ -18,8 +18,6 @@ module Runt
 # See also [tutorial_te.rdoc]
 module TExpr
 
-#  include TExprUtils
-
   # Returns true or false depending on whether this TExpr includes the supplied
   # date expression.
   def include?(date_expr); false end
@@ -60,6 +58,17 @@ module TExpr
 
   def - (expr)
     self.minus(expr){|adjusted| adjusted }
+  end
+
+  # Contributed by Emmett Shear:
+  # Returns an Array of Date-like objects which occur within the supplied
+  # DateRange.
+  def dates(date_range)
+    result = []
+    date_range.each do |date|
+      result << date if self.include? date
+    end
+    result
   end
 
 end
@@ -207,7 +216,13 @@ module TExprUtils
 
   def max_day_of_month(date)
     result = 1
-    date.step( Date.new(date.year,date.mon+1,1), 1 ){ |d| result=d.day unless d.day < result }
+    next_month = nil
+    if(date.mon==12)
+      next_month = Date.new(date.year+1,1,1)
+    else
+      next_month = Date.new(date.year,date.mon+1,1)
+    end
+    date.step(next_month,1){ |d| result=d.day unless d.day < result }
     result
   end
 

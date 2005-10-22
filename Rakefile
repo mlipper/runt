@@ -69,13 +69,6 @@ Rake::TestTask.new do |t|
   t.verbose = false	
 end
 
-Rake::PackageTask.new("runt", PKG_VERSION) do |p|
-  p.package_dir="#{TARGET_DIR}/#{p.package_dir}"
-  p.need_tar = PKG_EXEC_TAR
-  p.need_zip = true
-  p.package_files.include(PKG_FILES)
-end
-
 desc "Copy html files for the Runt website to the build directory."
 file "copy_site" => TARGET_DIR
 file "copy_site" do
@@ -90,7 +83,7 @@ task :publish => [:rdoc,:copy_site,:clobber_package] do |t|
 end
 
 desc "Publish the Documentation to the build dir."
-task :test_publish => [:rerdoc,:copy_site,:clobber_package] do |t|
+task :test_publish => [:rdoc,:copy_site,:clobber_package] do |t|
   puts "YAY! We've tested publish! YAY!"
 end
 
@@ -112,8 +105,6 @@ else
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
     s.test_files = Dir['test/*test.rb']
-#    s.rdoc_files = rd.rdoc_files
-#    s.rdoc_options = rd.option_list
     s.rubyforge_project = 'runt'
     s.description = <<EOF
 Runt is a Ruby version of temporal patterns by
