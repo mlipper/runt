@@ -399,4 +399,19 @@ class TExprTest < Test::Unit::TestCase
     dates = expr.dates(date_range)
     assert dates.size == 22, dates.size
   end
+
+  def test_day_interval_te
+    date1 = Date.civil(2005,10,28)
+    # Match every 8 days
+    expr = DayIntervalTE.new(date1, 8)
+    assert expr.include?((date1 + 8))
+    assert expr.include?((date1 + 16))
+    assert expr.include?((date1 + 64))
+    # Now use DateTime
+    date2 = DateTime.now
+    # Match every 6 days
+    expr2 = DayIntervalTE.new(date2, 6)
+    assert expr2.include?((date2 + 12))
+    assert expr2.include?((date2 + 24))
+  end
 end

@@ -1,5 +1,9 @@
 = Runt Changelog
 
+== Version 0.4.0
+
+* Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date
+
 == Version 0.3.0
 
 * TExpr (finally!) becomes a Module instead of a superclass 

@@ -8,6 +8,10 @@
 
 = INSTALL
 
+* gem install runt
+
+  <b>or</b>
+
 * Unpack the Runt distribution.
 
    $ tar -xzvf runt-<version>.tar.gz
@@ -32,7 +36,7 @@
 
 * require 'runt'
 
-* See Runt website[http://runt.rubyforge.org/doc/index.html].
+* See Runt website[http://runt.rubyforge.org].
 
 * See $UNPACK_DIR/runt/test/*.rb for example usage.
 
@@ -67,6 +71,8 @@ The ruby-nyc user's group for their suggestions and feedback.
 BlueRobot[http://www.bluerobot.com/web/layouts/] for the CSS used to prettify the Runt website.
 
 Emmett Shear for contributed TExpr#dates code and several thought-provoking feature requests.
+
+Ira Burton for contributed DayIntervalTE class.
 
 The number 12, and the letters E, J, and B.
 

@@ -521,4 +521,21 @@ class REMonth
 
 end
 
+# Using day precision dates, matches every n number of days after a  given 
+# base date. All date arguments are converted to DPrecision::DAY precision. 
+#
+# Contributed by Ira Burton
+class DayIntervalTE
+
+  def initialize(base_date,n)
+    @base_date = DPrecision.to_p(base_date,DPrecision::DAY)
+    @interval = n
+  end
+
+  def include?(date)
+    return ((DPrecision.to_p(date,DPrecision::DAY) - @base_date).to_i % @interval == 0)   
+  end
+
+end
+
 end
