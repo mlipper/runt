@@ -538,4 +538,19 @@ class DayIntervalTE
 
 end
 
+# Simple expression which returns true if the supplied arguments
+# occur within the given year.
+#
+class YearTE
+
+  def initialize(year)
+    @year = year
+  end
+
+  def include?(date)
+    return date.year == @year
+  end
+
+end
+
 end

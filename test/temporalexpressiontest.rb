@@ -414,4 +414,19 @@ class TExprTest < Test::Unit::TestCase
     assert expr2.include?((date2 + 12))
     assert expr2.include?((date2 + 24))
   end
+
+  def test_year_te
+    # second sun of any month 
+    second_sun = DIMonth.new(Second, Sunday)
+    # simple year matching expression which will return true for
+    # any date in 2005
+    year_te = YearTE.new(2005)
+    # Second Sunday of a month in 2002
+    dt_in_2002 = Date.civil(2002,9,8)
+    # Second Sunday of a month in 2005
+    dt_in_2005 = Date.civil(2005,12,11)
+    assert(year_te.include?(dt_in_2005))
+    assert(!year_te.include?(dt_in_2002))
+  end
+  
 end
