@@ -38,6 +38,7 @@ require "runt/pdate"
 require "runt/temporalexpression"
 require "runt/schedule"
 require "runt/daterange"
+require "runt/context"
 
 #
 # The Runt module is the main namespace for all Runt modules and classes. Using
@@ -48,6 +49,18 @@ require "runt/daterange"
 # <b>See also</b> date.rb
 #
 module Runt
+  # Add class methods to the Runt module for accessing tthe expression context
+  class << self
+   def context
+    @context ||= Runt::Context.new
+   end 
+   def context=(ctx)
+     @context = ctx
+   end
+   def push(expr)
+     context.push expr
+   end
+  end
 
   #Yes it's true, I'm a big idiot!
   Sunday = Date::DAYNAMES.index("Sunday")

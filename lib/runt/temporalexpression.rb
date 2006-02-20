@@ -3,6 +3,7 @@
 require 'date'
 require 'runt/dprecision'
 require 'runt/pdate'
+require 'pp'
 
 #
 # Author:: Matthew Lipper
@@ -23,6 +24,11 @@ module TExpr
   def include?(date_expr); false end
   
   def to_s; "TExpr" end
+
+  # Add a TExpr instance to the Context
+  def push
+    Runt.push self
+  end
 
   def or (arg)
 
@@ -100,8 +106,16 @@ class Collection
     false    
   end
 
-
   def to_s; "Collection:" + @expressions.to_s end
+
+  def display
+    puts "I am a #{self.class} containing:"
+    @expressions.each do |ex| 
+      pp "#{ex.class}"
+    end
+  end
+
+  
 end
 
 # Composite TExpr that will be true if <b>any</b> of it's

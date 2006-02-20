@@ -14,6 +14,17 @@ class TExprTest < Test::Unit::TestCase
   include Runt
   include DPrecision
 
+  def test_context
+    mon = DIWeek.new(Monday)
+    wed = DIWeek.new(Wednesday)
+    fri = DIWeek.new(Friday)
+    mon_wed = mon | wed
+    mon_wed_fri = mon | wed | fri
+    mon_wed_6to10 = mon_wed & REDay.new(6,0,10,0)
+    #pp mon_wed_6to10
+    
+  end
+  
 
   def test_collection_te
     #base class that should always return false
