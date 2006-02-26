@@ -298,7 +298,7 @@ class DIMonth
   end
 
   def to_s
-    "#{Runt.ordinalize(@week_of_month_index)} #{Runt.dayname(@day_index)} of the month"
+    "#{Runt.ordinalize(@week_of_month_index)} #{Runt.day_name(@day_index)} of the month"
   end
 
   private
@@ -340,7 +340,7 @@ class DIWeek
   end
 
   def to_s
-    "#{Runt.dayname(@ordinal_weekday)}"
+    "#{Runt.day_name(@ordinal_weekday)}"
   end
 
 end
@@ -377,7 +377,7 @@ class REWeek
 
   def to_s
     return "all week" if all_week?
-    "#{Runt.dayname(@start_day)} through #{Runt.dayname(@end_day)}" 
+    "#{Runt.day_name(@start_day)} through #{Runt.day_name(@end_day)}" 
   end
 
   private
@@ -414,7 +414,8 @@ class REYear
   end
 
   def to_s
-    "REYear"
+    "#{Runt.month_name(@start_month)} #{Runt.ordinalize(@start_day)} " +
+      "through #{Runt.month_name(@end_month)} #{Runt.ordinalize(@end_day)}"
   end
 
   private
@@ -474,7 +475,7 @@ class REDay
   end
 
   def to_s
-    "REDay"
+    "from #{Runt.time_of_day(@range.begin)} to #{Runt.time_of_day(@range.end)} daily"
   end
 
   private
@@ -515,6 +516,10 @@ class WIMonth
     week_matches?(@ordinal,date)
   end
 
+  def to_s
+    "#{Runt.ordinalize(@ordinal)} week of any month"
+  end
+
 end
 
 # TExpr that matches a range of dates within a month. For example:
@@ -539,7 +544,7 @@ class REMonth
   end
 
   def to_s
-    "REMonth"
+    "from the #{Runt.ordinalize(@range.begin)} to the #{Runt.ordinalize(@range.end)} monthly"
   end
 
 end

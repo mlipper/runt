@@ -117,8 +117,7 @@ class TExprTest < Test::Unit::TestCase
   end
   
   def test_day_in_month_te_to_s
-    last_sunday_of_the_month = DIMonth.new(Last_of,Sunday)
-    assert_equal 'last Sunday of the month', last_sunday_of_the_month.to_s
+    assert_equal 'last Sunday of the month', DIMonth.new(Last_of,Sunday).to_s
   end
   
   def test_day_in_week_te
@@ -133,8 +132,7 @@ class TExprTest < Test::Unit::TestCase
   end
   
   def test_day_in_week_te
-    friday = DIWeek.new(Friday)
-    assert_equal 'Friday', friday.to_s
+    assert_equal 'Friday', DIWeek.new(Friday).to_s
   end
     
   def test_week_in_month_te
@@ -167,7 +165,11 @@ class TExprTest < Test::Unit::TestCase
     dt3 = Date::new(2004,8,6)
     assert(expr3.include?(dt3))
   end
-
+  
+  def test_range_each_year_te_to_s
+    assert_equal 'June 1st through July 2nd', REYear.new(6, 1, 7, 2).to_s
+  end
+  
   def test_range_each_day_te
     #noon to 4:30pm
     expr1 = REDay.new(12,0,16,30)
@@ -199,7 +201,11 @@ class TExprTest < Test::Unit::TestCase
     end      
     assert(result)
   end
-
+  
+  def test_range_each_day_te_to_s
+    assert_equal 'from 11:10PM to 01:20AM daily', REDay.new(23,10,1,20).to_s
+  end
+  
   def test_range_each_week_te
     assert_raises(ArgumentError){ expr = REWeek.new(10,4) }
     expr1 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
@@ -211,10 +217,8 @@ class TExprTest < Test::Unit::TestCase
   end
   
   def test_range_each_week_te_to_s
-    all_week = REWeek.new(Tuesday,Tuesday)
-    assert_equal 'all week', all_week.to_s
-    thursday_through_saturday = REWeek.new(Thursday,Saturday)
-    assert_equal 'Thursday through Saturday', thursday_through_saturday.to_s
+    assert_equal 'all week', REWeek.new(Tuesday,Tuesday).to_s
+    assert_equal 'Thursday through Saturday', REWeek.new(Thursday,Saturday).to_s
   end
 
   def test_combined_te
@@ -414,12 +418,20 @@ class TExprTest < Test::Unit::TestCase
     assert dates_2.last.mday == 28
   end
 
+  def test_week_in_month_to_s
+    assert_equal 'last week of any month', WIMonth.new(Last).to_s
+  end
+
   def test_range_each_month_dates
     date_range = Date.civil(2005, 1, 7)..Date.civil(2005, 1, 15)
     expr = REMonth.new(5, 9)
     dates = expr.dates(date_range)
     assert dates.size == 3, dates.size
     assert false if dates.include? Date.civil(2005, 1, 6)
+  end
+  
+  def test_range_each_month_to_s
+    assert_equal 'from the 2nd to the 5th monthly',REMonth.new(2,5).to_s
   end
   
   def test_diff_dates

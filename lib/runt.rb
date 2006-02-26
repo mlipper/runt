@@ -51,8 +51,16 @@ module Runt
   
   class << self
     
-    def dayname(number)
+    def day_name(number)
       Date::DAYNAMES[number]
+    end
+    
+    def month_name(number)
+      Date::MONTHNAMES[number]
+    end
+
+    def time_of_day(date)
+      date.strftime('%I:%M%p')
     end
     
     #

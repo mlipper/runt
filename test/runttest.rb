@@ -28,5 +28,25 @@ class RuntModuleTest < Test::Unit::TestCase
     assert_equal 'second to last', Runt.ordinalize(-2)
     assert_equal 'last', Runt.ordinalize(-1)
   end
+
+  def test_day_name
+    i=0
+    Date::DAYNAMES.each do |n|
+      assert_equal Date::DAYNAMES[i], Runt.day_name(i)
+      i=i+1
+    end
+  end
   
+  def test_month_name
+    i=0
+    Date::MONTHNAMES.each do |n|
+      assert_equal Date::MONTHNAMES[i], Runt.month_name(i)
+      i=i+1
+    end
+  end
+
+  def test_strftime
+    d=DateTime.new(2006,2,26,14,45)
+    assert_equal '02:45PM', Runt.time_of_day(d)
+  end
 end
