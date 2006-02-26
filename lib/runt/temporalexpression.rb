@@ -25,11 +25,6 @@ module TExpr
   
   def to_s; "TExpr" end
 
-  # Add a TExpr instance to the Context
-  def push
-    Runt.push self
-  end
-
   def or (arg)
 
     if self.kind_of?(Union)
@@ -182,7 +177,9 @@ class Spec
     false
   end
 
-  def to_s; "Spec" end
+  def to_s
+    @date_expr.to_s
+  end
 
 end
 
@@ -213,7 +210,9 @@ class RSpec
     false    
   end
 
-  def to_s; "RSpec" end
+  def to_s
+    @date_expr.to_s
+  end
 end
 
 #######################################################################
@@ -299,7 +298,7 @@ class DIMonth
   end
 
   def to_s
-    "DIMonth"
+    "#{Runt.ordinalize(@week_of_month_index)} #{Runt.dayname(@day_index)} of the month"
   end
 
   private
@@ -340,6 +339,10 @@ class DIWeek
     @ordinal_weekday == date.wday
   end
 
+  def to_s
+    "#{Runt.dayname(@ordinal_weekday)}"
+  end
+
 end
 
 # TExpr that matches days of the week within one
@@ -368,15 +371,21 @@ class REWeek
   end
 
   def include?(date)
-    return true if  @start_day==@end_day
+    return true if all_week?
     @start_day<=date.wday && @end_day>=date.wday
   end
 
   def to_s
-    "REWeek"
+    return "all week" if all_week?
+    "#{Runt.dayname(@start_day)} through #{Runt.dayname(@end_day)}" 
   end
 
   private
+  
+  def all_week?
+    return true if  @start_day==@end_day
+  end
+    
   def validate(start_day,end_day)
     unless start_day<=end_day
       raise ArgumentError, 'end day of week must be greater than start day'
@@ -541,6 +550,8 @@ end
 # Contributed by Ira Burton
 class DayIntervalTE
 
+  include TExpr
+
   def initialize(base_date,n)
     @base_date = DPrecision.to_p(base_date,DPrecision::DAY)
     @interval = n
@@ -556,6 +567,8 @@ end
 # occur within the given year.
 #
 class YearTE
+
+  include TExpr
 
   def initialize(year)
     @year = year

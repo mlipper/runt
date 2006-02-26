@@ -14,18 +14,6 @@ class TExprTest < Test::Unit::TestCase
   include Runt
   include DPrecision
 
-  def test_context
-    mon = DIWeek.new(Monday)
-    wed = DIWeek.new(Wednesday)
-    fri = DIWeek.new(Friday)
-    mon_wed = mon | wed
-    mon_wed_fri = mon | wed | fri
-    mon_wed_6to10 = mon_wed & REDay.new(6,0,10,0)
-    #pp mon_wed_6to10
-    
-  end
-  
-
   def test_collection_te
     #base class that should always return false
     expr = Collection.new
@@ -40,7 +28,7 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
 
-  def test_arbitrary_te
+  def test_spec_te_include
     expr1 = Spec.new(PDate.day(2003,12,30))
     expr2 = Spec.new(PDate.day(2004,1,1))
     assert(expr1.include?(Date.new(2003,12,30)))
@@ -49,7 +37,13 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr2.include?(Date.new(2003,1,1)))
   end
 
-  def test_arbitrary_range_te
+  def test_spec_te_to_s
+    pdate = PDate.day(2003,12,30)
+    expr1 = Spec.new(pdate)
+    assert_equal expr1.to_s, pdate.to_s
+  end
+
+  def test_rspec_te
     #NOTE:
     #Using standard range functionality like the following:
     #...  expr1 = RSpec.new(r_start..r_end)
@@ -73,7 +67,13 @@ class TExprTest < Test::Unit::TestCase
     r_sub = DateRange.new( (r_start+10), (r_end-10) )
     assert(expr1.include?(r_sub))
   end
-
+  
+  def test_rspec_te_to_s
+    range = DateRange.new(PDate.new(2006,2,25),PDate.new(2006,4,8))
+    expr = RSpec.new(range)
+    assert_equal expr.to_s, range.to_s 
+  end
+  
   def test_intersection_te
     #Should match the first Sunday of March and April
     expr1  = REYear.new(3,4) & DIMonth.new(First,Sunday)
@@ -115,7 +115,12 @@ class TExprTest < Test::Unit::TestCase
     expr3 = DIMonth.new(Last_of,Sunday)
     assert(expr3.include?(dt3))
   end
-
+  
+  def test_day_in_month_te_to_s
+    last_sunday_of_the_month = DIMonth.new(Last_of,Sunday)
+    assert_equal 'last Sunday of the month', last_sunday_of_the_month.to_s
+  end
+  
   def test_day_in_week_te
     #Friday (woo-hoo!)
     expr = DIWeek.new(Friday)
@@ -126,6 +131,12 @@ class TExprTest < Test::Unit::TestCase
     #Monday, January 12th 2004
     assert(!expr.include?(PDate.new(2004,1,12)))
   end
+  
+  def test_day_in_week_te
+    friday = DIWeek.new(Friday)
+    assert_equal 'Friday', friday.to_s
+  end
+    
   def test_week_in_month_te
     expr = WIMonth.new(Third)
     assert(expr.include?(PDate.day(2004,2,19)))
@@ -197,6 +208,13 @@ class TExprTest < Test::Unit::TestCase
     expr2 = REWeek.new(0,4)
     assert(expr2.include?(PDate.min(2004,2,19,23,59,59)))
     assert(!expr2.include?(PDate.min(2004,2,20,0,0,0)))
+  end
+  
+  def test_range_each_week_te_to_s
+    all_week = REWeek.new(Tuesday,Tuesday)
+    assert_equal 'all week', all_week.to_s
+    thursday_through_saturday = REWeek.new(Thursday,Saturday)
+    assert_equal 'Thursday through Saturday', thursday_through_saturday.to_s
   end
 
   def test_combined_te

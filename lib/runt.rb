@@ -38,7 +38,6 @@ require "runt/pdate"
 require "runt/temporalexpression"
 require "runt/schedule"
 require "runt/daterange"
-require "runt/context"
 
 #
 # The Runt module is the main namespace for all Runt modules and classes. Using
@@ -49,17 +48,32 @@ require "runt/context"
 # <b>See also</b> date.rb
 #
 module Runt
-  # Add class methods to the Runt module for accessing tthe expression context
+  
   class << self
-   def context
-    @context ||= Runt::Context.new
-   end 
-   def context=(ctx)
-     @context = ctx
-   end
-   def push(expr)
-     context.push expr
-   end
+    
+    def dayname(number)
+      Date::DAYNAMES[number]
+    end
+    
+    #
+    # Cut and pasted from activesupport-1.2.5/lib/inflector.rb
+    #
+    def ordinalize(number)
+      if (number.to_i==-1)
+	'last'
+      elsif (number.to_i==-2)
+	'second to last'  
+      elsif (11..13).include?(number.to_i % 100)
+	"#{number}th"
+      else
+	case number.to_i % 10
+	  when 1: "#{number}st"
+	  when 2: "#{number}nd"
+	  when 3: "#{number}rd"
+	  else    "#{number}th"
+	end
+      end
+    end
   end
 
   #Yes it's true, I'm a big idiot!
@@ -90,7 +104,7 @@ module Runt
 
   private
   class ApplyLast #:nodoc:
-    def initialize()
+    def initialize
       @negate=Proc.new{|n| n*-1}
     end
     def [](arg)
