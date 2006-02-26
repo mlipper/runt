@@ -566,6 +566,10 @@ class DayIntervalTE
     return ((DPrecision.to_p(date,DPrecision::DAY) - @base_date).to_i % @interval == 0)   
   end
 
+  def to_s
+    "every #{Runt.ordinalize(@interval)} day after #{Runt.format_date(@base_date)}"
+  end
+
 end
 
 # Simple expression which returns true if the supplied arguments
@@ -581,6 +585,10 @@ class YearTE
 
   def include?(date)
     return date.year == @year
+  end
+
+  def to_s
+    "during the year #{@year}"
   end
 
 end

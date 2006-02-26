@@ -455,7 +455,14 @@ class TExprTest < Test::Unit::TestCase
     assert expr2.include?((date2 + 12))
     assert expr2.include?((date2 + 24))
   end
+  
+  def test_day_interval_te_to_s
+    every_four_days = DayIntervalTE.new(Date.new(2006,2,26), 4)
+    assert_equal "every 4th day after #{Runt.format_date(Date.new(2006,2,26))}", every_four_days.to_s
+    
 
+  end
+  
   def test_year_te
     # second sun of any month 
     second_sun = DIMonth.new(Second, Sunday)
@@ -468,6 +475,10 @@ class TExprTest < Test::Unit::TestCase
     dt_in_2005 = Date.civil(2005,12,11)
     assert(year_te.include?(dt_in_2005))
     assert(!year_te.include?(dt_in_2002))
+  end
+
+  def test_year_te
+    assert_equal 'during the year 1934', YearTE.new(1934).to_s
   end
   
 end

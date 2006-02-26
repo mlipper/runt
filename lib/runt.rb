@@ -62,6 +62,10 @@ module Runt
     def time_of_day(date)
       date.strftime('%I:%M%p')
     end
+
+    def format_date(date)
+      date.ctime
+    end
     
     #
     # Cut and pasted from activesupport-1.2.5/lib/inflector.rb
