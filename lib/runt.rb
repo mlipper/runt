@@ -59,7 +59,7 @@ module Runt
       Date::MONTHNAMES[number]
     end
 
-    def time_of_day(date)
+    def format_time(date)
       date.strftime('%I:%M%p')
     end
 

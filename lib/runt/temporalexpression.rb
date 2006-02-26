@@ -475,7 +475,7 @@ class REDay
   end
 
   def to_s
-    "from #{Runt.time_of_day(@range.begin)} to #{Runt.time_of_day(@range.end)} daily"
+    "from #{Runt.format_time(@range.begin)} to #{Runt.format_time(@range.end)} daily"
   end
 
   private

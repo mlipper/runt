@@ -47,6 +47,6 @@ class RuntModuleTest < Test::Unit::TestCase
 
   def test_strftime
     d=DateTime.new(2006,2,26,14,45)
-    assert_equal '02:45PM', Runt.time_of_day(d)
+    assert_equal '02:45PM', Runt.format_time(d)
   end
 end
