@@ -81,7 +81,7 @@ class Collection
   include TExpr
   
   attr_reader :expressions
-  protected :expressions
+  #protected :expressions
 
   def initialize
     @expressions = Array.new
@@ -101,7 +101,22 @@ class Collection
     false    
   end
 
-  def to_s; "Collection:" + @expressions.to_s end
+  def to_s
+    if !@expressions.empty?
+      first_expr, next_exprs = yield
+      result = '' 
+      @expressions.map do |expr|
+	if @expressions.first===expr
+	  result = first_expr + expr.to_s
+	else
+	 result = result + next_exprs + expr.to_s
+	end 
+      end
+      result
+    else
+      'empty'
+    end
+  end
 
   def display
     puts "I am a #{self.class} containing:"

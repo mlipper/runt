@@ -19,6 +19,22 @@ class TExprTest < Test::Unit::TestCase
     expr = Collection.new
     assert(!expr.include?(Date.today))
   end
+  
+
+  def test_collection_te_to_s
+    assert_equal 'empty', Collection.new.to_s
+    assert_equal 'empty', Collection.new.to_s{['b','oo']}
+    expr = Collection.new
+    dim = DIMonth.new(First,Tuesday)
+    expr.expressions << dim
+    assert_equal 'ff' + dim.to_s, expr.to_s{['ff','nn']}
+    red = REDay.new(0,0,6,30)
+    expr.expressions << red
+    assert_equal 'ff' + dim.to_s + 'nn' + red.to_s, expr.to_s{['ff','nn']}
+    wim = WIMonth.new(Second_to_last)
+    expr.expressions << wim
+    assert_equal 'ff' + dim.to_s + 'nn' + red.to_s + 'nn' + wim.to_s, expr.to_s{['ff','nn']}
+  end
 
   def test_union_te
     #midnight to 6:30am AND/OR first Tuesday of the month
@@ -26,6 +42,10 @@ class TExprTest < Test::Unit::TestCase
     assert(expr.include?(PDate.day(2004,1,6))) #January 6th, 2004 (First Tuesday)
     assert(expr.include?(PDate.hour(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
     assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
+  end
+  
+  def test_union_te_to_s
+    expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
   end
 
   def test_spec_te_include
