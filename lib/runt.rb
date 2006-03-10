@@ -134,13 +134,18 @@ end
 
 #
 # Add precision +Runt::DPrecision+ to standard library classes Date and DateTime 
-# (which is a subclass of Date). 
+# (which is a subclass of Date). Also, add an inlcude? method for interoperability
+# with +Runt::TExpr+ classes
 #
 class Date
 
   include Runt::DPrecision
 
   attr_accessor :date_precision
+
+  def include?(expr)
+    eql?(expr)
+  end
 
   def date_precision
     return @date_precision unless @date_precision.nil? 

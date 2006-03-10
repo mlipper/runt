@@ -188,6 +188,7 @@ class Spec
   # Will return true if the supplied object is == to that which was used to
   # create this instance
   def include?(date_expr)
+    return date_expr.include?(@date_expr) if date_expr.respond_to?(:include?)
     return true if @date_expr == date_expr
     false
   end

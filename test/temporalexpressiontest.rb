@@ -116,6 +116,23 @@ class TExprTest < Test::Unit::TestCase
     assert(!diff_expr.include?(PDate.new(2003,5,1,20,00)))
   end
 
+  def test_memorial_day
+    # Monday through Friday, from 9am to 5pm
+    job = REWeek.new(Mon,Fri) & REDay.new(9,00,17,00)
+    # Memorial Day (U.S.)
+    memorial_day = REYear.new(5) & DIMonth.new(Last,Monday)
+    # May 29th, 2006
+    last_monday_in_may = PDate.min(2006,5,29,10,12)
+    # Before 
+    assert job.include?(last_monday_in_may)
+    assert job.include?(PDate.min(20006,5,30,14,00))
+    # Add Diff expression
+    job_with_holiday = job - last_monday_in_may
+    assert !job_with_holiday.include?(last_monday_in_may)
+    # Still have to work on Tuesday
+    assert job.include?(PDate.min(20006,5,30,14,00))
+  end
+  
   def test_day_in_month_te
     #Friday, January 16th 2004
     dt1 = Date.civil(2004,1,16)
