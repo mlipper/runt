@@ -36,6 +36,13 @@ class TExprTest < Test::Unit::TestCase
     assert_equal 'ff' + dim.to_s + 'nn' + red.to_s + 'nn' + wim.to_s, expr.to_s{['ff','nn']}
   end
 
+  def test_union_te_to_s
+    dim = DIMonth.new(First,Tuesday) 
+    red = REDay.new(0,0,6,30)
+    expr = dim | red
+    assert_equal 'every ' + dim.to_s + ' and ' + red.to_s, expr.to_s
+  end
+  
   def test_union_te
     #midnight to 6:30am AND/OR first Tuesday of the month
     expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
@@ -44,17 +51,15 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
   end
   
-  def test_union_te_to_s
-    expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
-  end
-
   def test_spec_te_include
     expr1 = Spec.new(PDate.day(2003,12,30))
     expr2 = Spec.new(PDate.day(2004,1,1))
-    assert(expr1.include?(Date.new(2003,12,30)))
-    assert(!expr1.include?(Date.new(2003,12,31)))
-    assert(expr2.include?(Date.new(2004,1,1)))
-    assert(!expr2.include?(Date.new(2003,1,1)))
+    assert expr1.include?(Date.new(2003,12,30))
+    assert !expr1.include?(Date.new(2003,12,31))
+    assert expr2.include?(Date.new(2004,1,1))
+    assert !expr2.include?(Date.new(2003,1,1))
+    expr3 = Spec.new(DateTime.civil(2006,3,11,8,30))
+    assert expr3.include?(DateTime.civil(2006,3,11,8,30))
   end
 
   def test_spec_te_to_s
@@ -115,6 +120,14 @@ class TExprTest < Test::Unit::TestCase
     #8:00 pm (May 1st, 2003 - ignored)
     assert(!diff_expr.include?(PDate.new(2003,5,1,20,00)))
   end
+
+  def test_diff_to_s
+    rey1 = REYear.new 3,1,6,2
+    rey2 = REYear.new 4,15,5,20
+    expr = rey1 - rey2
+    assert_equal rey1.to_s + ' except for ' + rey2.to_s, expr.to_s
+  end
+    
 
   def test_memorial_day
     # Monday through Friday, from 9am to 5pm
@@ -189,7 +202,7 @@ class TExprTest < Test::Unit::TestCase
     dt2 = PDate::month(1986,6)
     #November and December
     expr1 = REYear.new(11,12)
-    #May 31st through  and September 6th
+    #May 31st through September 6th
     expr2 = REYear.new(5,31,9,6)
     assert(expr1.include?(dt1))
     assert(!expr1.include?(dt2))

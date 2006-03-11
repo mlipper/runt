@@ -102,7 +102,7 @@ class Collection
   end
 
   def to_s
-    if !@expressions.empty?
+    if !@expressions.empty? && block_given?
       first_expr, next_exprs = yield
       result = '' 
       @expressions.map do |expr|
@@ -139,7 +139,9 @@ class Union < Collection
     false
   end
 
-  def to_s; "Union:" + @expressions.to_s end
+  def to_s
+    super {['every ',' and ']}
+  end
 end
 
 # Composite TExpr that will be true only if <b>all</b> it's
@@ -173,7 +175,9 @@ class Diff
     true
   end
 
-  def to_s; "Diff" end
+  def to_s
+    @expr1.to_s + ' except for ' + @expr2.to_s
+  end
 end
 
 # TExpr that provides for inclusion of an arbitrary date.
@@ -427,6 +431,10 @@ class REYear
     months_include?(date) ||
       start_month_include?(date) ||
         end_month_include?(date)
+  end
+
+  def save
+    "Runt::REYear.new(#{@start_month}, #{@start_day}, #{@end_month}, #{@end_day})"
   end
 
   def to_s
