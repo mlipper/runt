@@ -40,7 +40,7 @@ class TExprTest < Test::Unit::TestCase
     dim = DIMonth.new(First,Tuesday) 
     red = REDay.new(0,0,6,30)
     expr = dim | red
-    assert_equal 'every ' + dim.to_s + ' and ' + red.to_s, expr.to_s
+    assert_equal 'every ' + dim.to_s + ' or ' + red.to_s, expr.to_s
   end
   
   def test_union_te
@@ -108,6 +108,13 @@ class TExprTest < Test::Unit::TestCase
     assert(expr2.include?( PDate.new(2004,5,4,8,06)))
     assert(!expr2.include?(PDate.new(2004,5,1,8,06)))
     assert(!expr2.include?(PDate.new(2004,5,3,9,06)))
+  end
+  
+  def test_intersection_te_to_s
+    dim = DIMonth.new(First,Tuesday) 
+    red = REDay.new(0,0,6,30)
+    expr = dim & red
+    assert_equal 'every ' + dim.to_s + ' and ' + red.to_s, expr.to_s
   end
 
   def test_difference_te

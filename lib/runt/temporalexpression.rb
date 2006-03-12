@@ -140,7 +140,7 @@ class Union < Collection
   end
 
   def to_s
-    super {['every ',' and ']}
+    super {['every ',' or ']}
   end
 end
 
@@ -156,7 +156,9 @@ class Intersect < Collection
     result
   end
 
-  def to_s; "Intersect:" + @expressions.to_s end
+  def to_s 
+    super {['every ', ' and ']}  
+  end
 end
 
 # TExpr that will be true only if the first of
