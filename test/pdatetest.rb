@@ -23,6 +23,15 @@ class PDateTest < Test::Unit::TestCase
     @second_prec = PDate.sec(2004,3,1,0,0,10)
   end
 
+  def test_marshal
+    # Thanks to Jodi Showers for finding/fixing this bug
+    pdate=PDate.new(2004,2,29,22,13,2)
+    assert_not_nil pdate.date_precision
+    data=Marshal.dump pdate
+    obj=Marshal.load data
+    assert_not_nil obj.date_precision
+  end
+
   def test_include
     pdate = PDate.new(2006,3,10)
     assert(pdate.include?(Date.new(2006,3,10)))
