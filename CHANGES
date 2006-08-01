@@ -6,6 +6,8 @@
 
 * Added include? method to Standard Library Date class allowing Spec class better interaction with other expressions
 
+* Applied patch to fix PDate serialization bug contributed by Jodi Showers
+
 == Version 0.4.0
 
 * Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date
