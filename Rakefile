@@ -101,7 +101,7 @@ else
     s.autorequire = 'runt'
     s.files = PKG_FILES.to_a
     s.author = 'Matthew Lipper'
-    s.email = 'matt@digitalclash.com'
+    s.email = 'mlipper@gmail.com'
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
     s.test_files = Dir['test/*test.rb']

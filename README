@@ -4,8 +4,6 @@
 
 * <em>TemporalExpression</em>s allow a developer to define patterns of date recurrence using set expressions.
 
----
-
 = INSTALL
 
 * gem install runt
@@ -30,8 +28,6 @@
 
   for more options.
 
----
-
 = QUICK START
 
 * require 'runt'
@@ -46,9 +42,7 @@
 
 Get in touch if you have questions or if Runt causes your computer to burst into flames...
 
-Matt[mailto:matt@digitalclash.com]
-
----
+Matt[mailto:mlipper@gmail.com]
 
 == Credits
 
@@ -76,11 +70,9 @@ Ira Burton for contributed DayIntervalTE class.
 
 The number 12, and the letters E, J, and B.
 
----
-
 = Etc...
 
-Author::   Matthew Lipper <matt@digitalclash.com>
+Author::   Matthew Lipper <mlipper@gmail.com>
 Requires:: Ruby 1.8.0 or later, Date/DateTime classes
 License::  Copyright 2004 by Digital Clash LLC.
            Released under the Apache Software license (see LICENSE.txt)

@@ -20,7 +20,7 @@
 # project called <tt>ChronicJ</tt>[http://chronicj.org].
 #
 # ---
-# Author::    Matthew Lipper (mailto:info@digitalclash.com)
+# Author::    Matthew Lipper (mailto:mlipper@gmail.com)
 # Copyright:: Copyright (c) 2004 Digital Clash, LLC
 # License::   See LICENSE.txt
 #
