@@ -2,6 +2,8 @@
 
 == Version 0.5.0
 
+* Added time-related shortcuts to Runt module contributed by Ara T. Howard
+
 * Added ability to work with Time class contributed by Paul Wright
 
 * Implemented meaningful to_s methods for TExpr classes

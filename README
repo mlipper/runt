@@ -68,6 +68,14 @@ Emmett Shear for contributed TExpr#dates code and several thought-provoking feat
 
 Ira Burton for contributed DayIntervalTE class.
 
+Jodi Showers for serialization bug fix.
+
+Pat Maddox for YearTE.
+
+Paul Wright for Time class compatibility.
+
+Ara T. Howard for Numeric class extensions.
+
 The number 12, and the letters E, J, and B.
 
 = Etc...
