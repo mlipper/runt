@@ -537,5 +537,15 @@ class TExprTest < Test::Unit::TestCase
   def test_year_te
     assert_equal 'during the year 1934', YearTE.new(1934).to_s
   end
+
+  def test_use_time_class
+    monday = DIWeek.new(Mon) & REDay.new(9,30,17,30)
+    tues_to_fri = REWeek.new(Tue, Fri) & REDay.new(9,00,17,30)
+    exp =  monday | tues_to_fri
+    assert(!exp.include?(Time.parse('Monday 06 November 2006 07:38')))
+    assert(exp.include?(Time.parse('Monday 06 November 2006 13:37')))
+    assert(exp.include?(Time.parse('Friday 10 November 2006 16:59')))
+    assert(!exp.include?(Time.parse('Friday 10 November 2006 17:31')))
+  end
   
 end

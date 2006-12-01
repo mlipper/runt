@@ -2,6 +2,8 @@
 
 == Version 0.5.0
 
+* Added ability to work with Time class contributed by Paul Wright
+
 * Implemented meaningful to_s methods for TExpr classes
 
 * Added include? method to Standard Library Date class allowing Spec class better interaction with other expressions

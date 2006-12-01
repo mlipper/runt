@@ -152,3 +152,20 @@ class Date
     return Runt::DPrecision::DEFAULT 
   end 	  
 end
+
+#
+# Add the ability to use Time class 
+#
+# Contributed by Paul Wright
+#
+class Time
+  
+  include Runt::DPrecision
+
+  attr_accessor :date_precision
+
+  def date_precision
+    return @date_precision unless @date_precision.nil?
+    return Runt::DPrecision::DEFAULT
+  end
+end
