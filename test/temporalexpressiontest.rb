@@ -3,6 +3,7 @@
 require 'test/unit'
 require 'runt'
 require 'date'
+require 'time'
 
 $DEBUG=false
 

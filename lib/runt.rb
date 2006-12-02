@@ -31,6 +31,7 @@
 # warranties of merchantibility and fitness for a particular
 # purpose.
 
+require 'time'
 require 'date'
 require 'date/format'
 require "runt/dprecision"
