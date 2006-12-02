@@ -177,7 +177,7 @@ end
 # Contributed by Ara T. Howard who is pretty sure he got the idea from 
 # somewhere else. :-)
 #
-class Numeric
+class Numeric #:nodoc:
   def microseconds() Float(self  * (10 ** -6)) end
   def milliseconds() Float(self  * (10 ** -3)) end
   def seconds() self end
@@ -188,7 +188,7 @@ class Numeric
   def months() 30 * days end
   def years() 365 * days end
   def decades() 10 * years end
-
+  # This causes RDoc to hurl:  
   %w[
   microseconds milliseconds seconds minutes hours days weeks months years decades
   ].each{|m| alias_method m.chop, m}
