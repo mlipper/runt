@@ -13,6 +13,10 @@ module Runt
     end
 
     #  Schedule event to occur using the given expression.
+    #  NOTE: version 0.5.0 no longer uses an Array of ScheduleElements 
+    #  internally to hold data. This would only matter to clients if they
+    #  they depended on the ability to call add multiple times for the same
+    #  event. Use the update method instead.
     def add(event, expression)
       @elems[event]=expression
     end
@@ -20,7 +24,7 @@ module Runt
     # For the given date range, returns an Array of PDate objects at which
     # the supplied event is scheduled to occur.
     def dates(event, date_range)
-      result = Array.new
+      result=[]
       date_range.each do |date|
         result.push date if include?(event,date)
       end
@@ -34,6 +38,9 @@ module Runt
       return 0<(self.select{|ev,xpr| ev.eql?(event)&&xpr.include?(date);}).size
     end
 
+    #
+    # Returns all Events whose Tempoarl Expression includes the given date/expression
+    #
     def events(date)
       self.select{|ev,xpr| xpr.include?(date);}
     end
@@ -51,6 +58,14 @@ module Runt
       result
     end
 
+    #
+    # Call the supplied block/Proc with the currently configured 
+    # TemporalExpression associated with the supplied Event.
+    #
+    def update(event,&block)
+      block.call(@elems[event])
+    end
+
   end
 
   class Event
@@ -59,13 +74,13 @@ module Runt
 
     def initialize(id)
       raise Exception, "id argument cannot be nil" unless !id.nil?
-      @id = id
+      @id=id
     end
 
     def to_s; @id.to_s end
 
     def == (other)
-      return true if other.kind_of?(Event) && @id == other.id
+      return true if other.kind_of?(Event) && @id==other.id
     end
 
   end

@@ -47,7 +47,7 @@ class ScheduleTest < Test::Unit::TestCase
   end
 
   def test_select_none
-    # select none
+      # select none
     assert((@sched.select {|ev,xpr| false; }).size==0)
   end
 
@@ -65,6 +65,23 @@ class ScheduleTest < Test::Unit::TestCase
     assert !some.include?(@oobi)
   end
 
+  def test_events
+    events=@sched.events(PDate.new(2006,12,4,11,15))
+    assert_equal 0,events.size
+    # The Barney power hour which overlaps with Elmo
+    barney=Event.new("Barney")
+    @sched.add(barney,REDay.new(7,30,8,30))
+    events=@sched.events(PDate.new(2006,12,4,8,15))
+    assert_equal 2,events.size
+    assert events.include?(barney)
+    assert events.include?(@elmo)
+  end
+
+  def test_update
+    @sched.update(Event.new("aaa")){|ev|assert_nil(ev)}
+    @sched.update(@elmo){|ev|assert_equal(@elmo_broadcast,ev)}
+    @sched.update(@oobi){|ev|assert_equal(@oobi_broadcast,ev)}
+  end
 
   def test_select_old
     @sched=Schedule.new
@@ -81,16 +98,13 @@ class ScheduleTest < Test::Unit::TestCase
   end
 
   def test_dates
-
     # range: May 1st, 2004 to May 31st, 2004
     d_range = DateRange.new(PDate.day(2004,5,1), PDate.day(2004,5,31))
     @sched = Schedule.new
     event = Event.new("Visit Ernie")
-
     # First and last Friday of the month
     expr1 = DIMonth.new(1,Fri) |  DIMonth.new(-1,Fri)
     @sched.add(event,expr1)
-
     dates = @sched.dates(event,d_range)
     expected = [PDate.day(2004,5,7), PDate.day(2004,5,28)]
     assert_equal(expected,dates)
