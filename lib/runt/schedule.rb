@@ -14,13 +14,7 @@ module Runt
 
     #  Schedule event to occur using the given expression.
     def add(event, expression)
-
-      if @elems.include?(event)
-        @elems[event].push(ScheduleElement.new(event, expression))        
-      else
-        @elems[event] = [ScheduleElement.new(event, expression)]
-      end
-
+      @elems[event]=expression
     end
 
     # For the given date range, returns an Array of PDate objects at which
@@ -37,36 +31,28 @@ module Runt
     # given date.
     def include?(event, date)
       return false unless @elems.include?(event)
-      result = Array.new
-      @elems[event].each{|element| result << element.include?(event, date) }
-      result.inject{|x,y| x && y}
+      return 0<(self.select{|ev,xpr| ev.eql?(event)&&xpr.include?(date);}).size
     end
 
-    private 
-    def add_element
-    end
-  end
-
-  private
-  class ScheduleElement
-
-    def initialize(event, expression)
-      @event = event
-      @expression = expression
+    def events(date)
+      self.select{|ev,xpr| xpr.include?(date);}
     end
 
-    def include?(event, date)
-      return false unless @event == event
-      @expression.include?(date)
-    end
-    
-    def to_s
-      "event: #{@event} expr: #{@expression}"
+    #
+    # Selects events using the user supplied block/Proc. The Proc must accept 
+    # two parameters: an Event and a TemporalExpression. It will be called 
+    # with each existing Event-expression pair at which point it can choose
+    # to include the Event in the final result by returning true or to filter 
+    # it by returning false.
+    #
+    def select(&block)
+      result=[]
+      @elems.each_pair{|event,xpr| result.push(event) if block.call(event,xpr);}
+      result
     end
 
   end
 
-  public
   class Event
 
     attr_reader :schedule, :id
@@ -76,7 +62,6 @@ module Runt
       @id = id
     end
 
-
     def to_s; @id.to_s end
 
     def == (other)
@@ -84,6 +69,5 @@ module Runt
     end
 
   end
-
 
 end
