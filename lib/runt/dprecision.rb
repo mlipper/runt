@@ -60,9 +60,9 @@ module Runt
         MONTH_PREC => "MONTH",
         DAY_PREC => "DAY",
         HOUR_PREC => "HOUR",
-        MIN_PREC => "MIN",
-        SEC_PREC => "SEC",
-        MILLI_PREC => "MILLI"}
+        MIN_PREC => "MINUTE",
+        SEC_PREC => "SECOND",
+        MILLI_PREC => "MILLISECOND"}
 
       #Minimun values that precisioned fields get set to
       FIELD_MIN = { YEAR_PREC => 1,
@@ -118,7 +118,11 @@ module Runt
       end
 
       def to_s
-        "DPrecision::#{LABEL[@precision]}"
+        "DPrecision::#{self.label}"
+      end
+
+      def label
+	LABEL[@precision]
       end
   end
 

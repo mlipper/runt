@@ -517,8 +517,6 @@ class TExprTest < Test::Unit::TestCase
   def test_day_interval_te_to_s
     every_four_days = DayIntervalTE.new(Date.new(2006,2,26), 4)
     assert_equal "every 4th day after #{Runt.format_date(Date.new(2006,2,26))}", every_four_days.to_s
-    
-
   end
   
   def test_year_te
@@ -548,5 +546,23 @@ class TExprTest < Test::Unit::TestCase
     assert(exp.include?(Time.parse('Friday 10 November 2006 16:59')))
     assert(!exp.include?(Time.parse('Friday 10 November 2006 17:31')))
   end
+
+  def test_every_te
+    # Match every 2 minutes
+    xpr=EveryTE.new(PDate.min(2006,12,5,5,54), 2)
+    assert !xpr.include?(PDate.min(2006,12,4,5,54))
+    assert xpr.include?(PDate.min(2006,12,5,5,54))
+    assert xpr.include?(PDate.min(2006,12,5,5,56))
+    assert xpr.include?(PDate.sec(2006,12,5,5,58,03))
+    assert xpr.include?(PDate.min(2006,12,5,6,00))
+    assert !xpr.include?(PDate.min(2006,12,5,5,59))
+  end
+  
+  def test_every_te_to_s
+    date=PDate.new(2006,12,5,6,0,0)
+    every_thirty_seconds=EveryTE.new(date, 30)
+    assert_equal "every 30 seconds starting #{Runt.format_date(date)}", every_thirty_seconds.to_s
+  end
+  
   
 end

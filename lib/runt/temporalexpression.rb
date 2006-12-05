@@ -575,6 +575,36 @@ class REMonth
 
 end
 
+# 
+# Using the precision from the supplied start argument and the its date value,
+# matches every n number of time units thereafter.
+#
+class EveryTE
+
+  include TExpr
+
+  def initialize(start,n)
+    @start=start
+    @interval=n
+  end
+
+  def include?(date)
+    i=@start
+    # Use the precision of the start date
+    d=DPrecision.to_p(date,@start.date_precision)
+    while i<=d
+      return true if i.eql?(d)
+      i=i+@interval
+    end
+    false
+  end
+
+  def to_s
+    "every #{@interval} #{@start.date_precision.label.downcase!}s starting #{Runt.format_date(@start)}"
+  end
+
+end
+
 # Using day precision dates, matches every n number of days after a  given 
 # base date. All date arguments are converted to DPrecision::DAY precision. 
 #

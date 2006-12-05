@@ -42,4 +42,14 @@ class DPrecisionTest < Test::Unit::TestCase
     assert(month_prec==DPrecision.to_p(no_prec_datetime,DPrecision::MONTH))
   end
 
+  def test_label
+    assert_equal(DPrecision::YEAR.label,"YEAR")
+    assert_equal(DPrecision::MONTH.label,"MONTH")
+    assert_equal(DPrecision::DAY.label,"DAY")
+    assert_equal(DPrecision::HOUR.label,"HOUR")
+    assert_equal(DPrecision::MIN.label,"MINUTE")
+    assert_equal(DPrecision::SEC.label,"SECOND")
+    assert_equal(DPrecision::MILLI.label,"MILLISECOND")
+  end
+
 end
