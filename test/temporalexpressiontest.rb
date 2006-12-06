@@ -538,9 +538,9 @@ class TExprTest < Test::Unit::TestCase
   end
 
   def test_use_time_class
-    monday = DIWeek.new(Mon) & REDay.new(9,30,17,30)
-    tues_to_fri = REWeek.new(Tue, Fri) & REDay.new(9,00,17,30)
-    exp =  monday | tues_to_fri
+    monday=DIWeek.new(Mon) & REDay.new(9,30,17,30)
+    tues_to_fri=REWeek.new(Tue, Fri) & REDay.new(9,00,17,30)
+    exp=monday | tues_to_fri
     assert(!exp.include?(Time.parse('Monday 06 November 2006 07:38')))
     assert(exp.include?(Time.parse('Monday 06 November 2006 13:37')))
     assert(exp.include?(Time.parse('Friday 10 November 2006 16:59')))
@@ -556,6 +556,7 @@ class TExprTest < Test::Unit::TestCase
     assert xpr.include?(PDate.sec(2006,12,5,5,58,03))
     assert xpr.include?(PDate.min(2006,12,5,6,00))
     assert !xpr.include?(PDate.min(2006,12,5,5,59))
+    assert xpr.include?(Time.parse('Tuesday 05 December 2006 07:08'))
   end
   
   def test_every_te_to_s
