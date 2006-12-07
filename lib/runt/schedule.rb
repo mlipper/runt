@@ -70,7 +70,7 @@ module Runt
 
   class Event
 
-    attr_reader :schedule, :id
+    attr_reader :id
 
     def initialize(id)
       raise Exception, "id argument cannot be nil" unless !id.nil?

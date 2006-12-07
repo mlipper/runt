@@ -27,19 +27,29 @@ regulations. For the uptown side of my block, the sign says:
     #  Violators will be towed! #
     #                           #
     #############################
-               # #
-               # #
-               # #
+                # #
+                # #
+                # #
  
 We created a temporal expression to match this time period, like so: 
 
-    expr1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+  expr1=(DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     
-    expr2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+  expr2=(DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     
-    ticket = expr1 | expr2
+  ticket=expr1 | expr2
 
+What we need at this point is a way to associate this expression with the rest 
+of our domain model. For this purpose, we can use a Schedule and an associated
+Event both of which are supplied by Runt.
 
+A Schedule holds zero or more Event/TemporalExpression pairs, allowing clients
+to easily query and update TemporalExpressions as well perform certain range
+operations as we will see in a moment.
+
+An Event is simply a container for domain data which has an :id field for
+uniqueness purposes. Although, Runt uses Events by default, Schedules can 
+house any hashable Object. 
 
 =.....FINNISH ME!......
 
