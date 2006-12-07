@@ -33,11 +33,11 @@ regulations. For the uptown side of my block, the sign says:
  
 We created a temporal expression to match this time period, like so: 
 
-  expr1=(DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+    expr1=(DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     
-  expr2=(DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+    expr2=(DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     
-  ticket=expr1 | expr2
+    ticket=expr1 | expr2
 
 What we need at this point is a way to associate this expression with the rest 
 of our domain model. For this purpose, we can use a Schedule and an associated
@@ -47,9 +47,32 @@ A Schedule holds zero or more Event/TemporalExpression pairs, allowing clients
 to easily query and update TemporalExpressions as well perform certain range
 operations as we will see in a moment.
 
-An Event is simply a container for domain data which has an :id field for
-uniqueness purposes. Although, Runt uses Events by default, Schedules can 
-house any hashable Object. 
+An Event is simply a container for domain data. Although Runt uses Events 
+by default, Schedules will happily house any kind of Object. Internally, a 
+Schedule is really just a Hash where the keys are whatever it is you are 
+scheduling and the values are the TemporalExpressions you create.
+
+
+    def add(obj, expression)
+      @elems[obj]=expression
+    end
+
+
+For the remainder of this tutorial I will refer to Events specifically, but 
+just remember that anything reasonably Hash-keyable will do.
+
+
+So, let's pretend that I own a car. Since I don't want to get a ticket, I 
+decide to create a little cron-like utility daemon to remind myself whenever
+it's time for me to move it.
+
+  class Ron
+
+
+    def run
+      loop 
+ 
+    etc...
 
 =.....FINNISH ME!......
 
