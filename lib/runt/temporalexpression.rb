@@ -589,7 +589,7 @@ class EveryTE
   end
 
   def include?(date)
-    i=@start
+    i=DPrecision.to_p(@start,@start.date_precision)
     # Use the precision of the start date
     d=DPrecision.to_p(date,@start.date_precision)
     while i<=d
