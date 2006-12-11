@@ -24,7 +24,7 @@ module Runt
         when MONTH then PDate.month(*DPrecision.explode(date,prec))
         when YEAR then PDate.year(*DPrecision.explode(date,prec))
         when SEC then PDate.sec(*DPrecision.explode(date,prec))
-        when MILLI then raise "Not implemented."
+        when MILLI then date #raise "Not implemented."
         else PDate.default(*DPrecision.explode(date,prec))
       end
     end

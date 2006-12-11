@@ -24,6 +24,7 @@ module Runt
       alias_method :old_civil, :civil
 
       def civil(*args)
+	precision=nil
         if(args[0].instance_of?(DPrecision::Precision))
           precision = args.shift
         else
@@ -55,8 +56,10 @@ module Runt
 	return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }
       when MIN then
 	return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }
-	  when SEC then
+      when SEC then
 	return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
+      when MILLI then
+	return self
     end
   end
 
@@ -120,7 +123,8 @@ module Runt
   end
 
   def PDate.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
-    raise "Not implemented yet."
+    PDate.civil(SEC, yr, mon, day,hr,min, sec, ms, *ignored)
+    #raise "Not implemented yet."
   end
 
   def PDate.default(*args)

@@ -87,6 +87,7 @@ module Runt
 	end
       end
     end
+
   end
 
   #Yes it's true, I'm a big idiot!
@@ -140,7 +141,7 @@ end
 #
 class Date
 
-  include Runt::DPrecision
+  include Runt
 
   attr_accessor :date_precision
 
@@ -161,14 +162,36 @@ end
 #
 class Time
   
-  include Runt::DPrecision
+  include Runt
 
   attr_accessor :date_precision
 
-  def date_precision
-    return @date_precision unless @date_precision.nil?
-    return Runt::DPrecision::DEFAULT
+  def initialize(*args)
+    if(args[0].instance_of?(Runt::DPrecision::Precision))
+      @precision=args.shift
+    else
+      @precision=Runt::DPrecision::DEFAULT
+    end
+    super(*args)
   end
+
+  class << self
+    alias_method :old_parse, :parse
+    def parse(*args)
+      precision=Runt::DPrecision::DEFAULT
+      if(args[0].instance_of?(Runt::DPrecision::Precision))
+        precision=args.shift
+      end
+      _parse=old_parse(*args)
+      _parse.date_precision=precision
+      _parse
+    end
+  end
+
+  #def date_precision
+  #  return @date_precision unless @date_precision.nil?
+  #  return Runt::DPrecision::DEFAULT
+  #end
 end
 
 #

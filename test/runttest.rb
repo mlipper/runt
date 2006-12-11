@@ -87,4 +87,15 @@ class RuntModuleTest < Test::Unit::TestCase
     date=DateTime.civil
     assert_equal(Runt::DPrecision::DEFAULT,date.date_precision)
   end
+
+  def test_time_plus
+    time=Time.parse("Sat Dec 09 05:56:12 -0500 2006")
+    # Default precision is minute
+    assert_equal(Runt::PDate.min(2006,12,9,5,56),Runt::DPrecision.to_p(time))
+    assert_not_equal(Time.parse("Sat Dec 09 05:56:00 -0500 2006"),time)
+
+
+
+  end
+
 end
