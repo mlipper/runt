@@ -557,6 +557,12 @@ class TExprTest < Test::Unit::TestCase
     assert xpr.include?(PDate.min(2006,12,5,6,00))
     assert !xpr.include?(PDate.min(2006,12,5,5,59))
     assert xpr.include?(Time.parse('Tuesday 05 December 2006 07:08'))
+    # Match every 3 days
+    xpr2=EveryTE.new(PDate.day(2006,5,4), 3)
+    assert !xpr2.include?(Date.new(2006,5,5))
+    assert !xpr2.include?(PDate.new(2006,5,6))
+    assert xpr2.include?(PDate.new(2006,5,7))
+    assert xpr2.include?(PDate.min(2006,5,10,6,45))
   end
   
   def test_every_te_to_s
