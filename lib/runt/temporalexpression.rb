@@ -63,11 +63,16 @@ module TExpr
 
   # Contributed by Emmett Shear:
   # Returns an Array of Date-like objects which occur within the supplied
-  # DateRange.
-  def dates(date_range)
+  # DateRange.  Will stop calculating dates once a number of dates equal 
+  # to the optional attribute limit are found. (A limit of zero will collect
+  # all matching dates in the date range.)
+  def dates(date_range, limit=0)
     result = []
     date_range.each do |date|
       result << date if self.include? date
+      if limit > 0 and result.size == limit
+        break
+      end
     end
     result
   end
@@ -600,7 +605,7 @@ class EveryTE
   end
 
   def to_s
-    "every #{@interval} #{@start.date_precision.label.downcase!}s starting #{Runt.format_date(@start)}"
+    "every #{@interval} #{@start.date_precision.label.downcase}s starting #{Runt.format_date(@start)}"
   end
 
 end
@@ -645,6 +650,46 @@ class YearTE
 
   def to_s
     "during the year #{@year}"
+  end
+
+end
+
+# Matches dates that occur before a given date.
+class BeforeTE
+
+  include TExpr
+
+  def initialize(date, inclusive=false)
+    @date = date
+    @inclusive = inclusive
+  end
+
+  def include?(date)
+    return (date < @date) || (@inclusive && @date == date)
+  end
+
+  def to_s
+    "before #{Runt.format_date(@base_date)}"
+  end
+
+end
+
+# Matches dates that occur after a given date.
+class AfterTE
+
+  include TExpr
+
+  def initialize(date, inclusive=false)
+    @date = date
+    @inclusive = inclusive
+  end
+
+  def include?(date)
+    return (date > @date) || (@inclusive && @date == date)
+  end
+
+  def to_s
+    "before #{Runt.format_date(@base_date)}"
   end
 
 end

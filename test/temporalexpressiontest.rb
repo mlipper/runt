@@ -547,7 +547,7 @@ class TExprTest < Test::Unit::TestCase
     assert(!exp.include?(Time.parse('Friday 10 November 2006 17:31')))
   end
 
-  def test_every_te
+  def test_every_te_minutes
     # Match every 2 minutes
     xpr=EveryTE.new(PDate.min(2006,12,5,5,54), 2)
     assert !xpr.include?(PDate.min(2006,12,4,5,54))
@@ -565,11 +565,33 @@ class TExprTest < Test::Unit::TestCase
     assert xpr2.include?(PDate.min(2006,5,10,6,45))
   end
   
+  def test_every_te_days
+    dstart = DateTime.parse("US-Eastern:19970902T090000")
+    dstart.date_precision = DPrecision::DAY
+    
+    xpr=EveryTE.new(dstart, 10) & REWeek.new(Sun,Sat)
+    
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970901T090000")) #Sep 1
+    assert xpr.include?(DateTime.parse("US-Eastern:19970902T090000")) #Sep 2
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970904T090000")) #Sep 3
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970904T090000")) #Sep 4
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970905T090000")) #Sep 5
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970906T090000")) #Sep 6
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970907T090000")) #Sep 7
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970908T090000")) #Sep 8
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970909T090000")) #Sep 9
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970910T090000")) #Sep 10
+    assert !xpr.include?(DateTime.parse("US-Eastern:19970911T090000")) #Sep 11
+    assert xpr.include?(DateTime.parse("US-Eastern:19970912T090000")) #Sep 12
+    assert xpr.include?(DateTime.parse("US-Eastern:19970922T090000")) #Sep 22
+    assert xpr.include?(DateTime.parse("US-Eastern:19971002T090000")) #Oct 2
+    assert xpr.include?(DateTime.parse("US-Eastern:19971012T090000")) #Oct 12
+  end
+  
   def test_every_te_to_s
     date=PDate.new(2006,12,5,6,0,0)
     every_thirty_seconds=EveryTE.new(date, 30)
     assert_equal "every 30 seconds starting #{Runt.format_date(date)}", every_thirty_seconds.to_s
   end
-  
   
 end
