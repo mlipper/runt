@@ -20,6 +20,8 @@
 
 * Applied patch to fix PDate serialization bug contributed by Jodi Showers
 
+* Added BeforeTE, AfterTE, enhanced TExpr#dates method, RFC2445 (iCalendar) compliance unit test, contributed by Larry Karnowski
+
 == Version 0.4.0
 
 * Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date

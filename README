@@ -76,6 +76,8 @@ Paul Wright for Time class compatibility.
 
 Ara T. Howard for Numeric class extensions.
 
+Larry Karnowski for BeforeTE, AfterTE, TExpr#dates enhancements, RFC2445 (iCalendar) compliance tests.
+
 The number 12, and the letters E, J, and B.
 
 = Etc...
