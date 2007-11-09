@@ -2,6 +2,8 @@
 
 == Version 0.6.0
 
+* Fixed bug #5749: Fixed spans midnight for REDay (Revision 156), changed semantics when dealing with lower precision arguments
+
 * Fixed bug #10640: incorrect tutorial section for tutorial_te.rdoc
 
 * Fixed bug #10605: DateRange.empty? should be true for min == max
