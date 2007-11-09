@@ -4,17 +4,8 @@ Send suggestions, questions, threats, etc. for this list to Matt[mailto:mlipper@
 
 === To Do
 
-* Schedule tutorial
+* Tutorials
 
-* Example usage with Rails
+* Better examples
 
-* Persistence strategy:
-  - Marshall
-  - database...create storable grammar, expression stack?  
-
-* Fix REWeek so that ordinal day values where the end day < start day does not fail
-
-* Make Schedule a Module instead of a class
-
-* Address performance issues due to implementation (in particular, PDate#<=>)
-
+* Laundry

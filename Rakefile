@@ -50,17 +50,16 @@ task :clobber => [:clobber_build_dir]
 # Make the build directory
 directory TARGET_DIR
 
+# Calling this task directly doesn't work?
 desc "Clobber the entire build directory."
 task :clobber_build_dir do |t|
-    #puts "It's clobberin' time! (hello from task #{t.name})"
     CLOBBER.include(TARGET_DIR)
 end
 
 Rake::RDocTask.new do |rd|
   rd.rdoc_dir="#{TARGET_DIR}/doc"
   rd.options << "-S"
-  rd.rdoc_files.include('lib/**/*.rb', 'doc/**/*.rdoc','[A-Z]*')
-  rd.rdoc_files.exclude('test/*.rb','[A-Z]*.ses','Rakefile')
+  rd.rdoc_files.include('lib/*','doc/*.rdoc','README','CHANGES','TODO','LICENSE.txt')
 end
 
 Rake::TestTask.new do |t|
