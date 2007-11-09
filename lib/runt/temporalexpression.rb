@@ -388,9 +388,6 @@ class REWeek
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
   # (6 => Saturday) is assumed.
-  #
-  # If the start day is greater than the end day, an
-  # ArgumentError will be raised
   def initialize(start_day,end_day=6)
     validate(start_day,end_day)
     @start_day = start_day
@@ -399,7 +396,11 @@ class REWeek
 
   def include?(date)
     return true if all_week?
-    @start_day<=date.wday && @end_day>=date.wday
+    if @start_day < @end_day
+      @start_day<=date.wday && @end_day>=date.wday
+    else
+      (@start_day<=date.wday && 6 >=date.wday) || (0 <=date.wday && @end_day >=date.wday)
+    end
   end
 
   def to_s
@@ -414,9 +415,6 @@ class REWeek
   end
     
   def validate(start_day,end_day)
-    unless start_day<=end_day
-      raise ArgumentError, 'end day of week must be greater than start day'
-    end
     unless VALID_RANGE.include?(start_day)&&VALID_RANGE.include?(end_day)
       raise ArgumentError, 'start and end day arguments must be in the range #{VALID_RANGE.to_s}.'
     end

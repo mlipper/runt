@@ -274,6 +274,21 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr2.include?(PDate.min(2004,2,20,0,0,0)))
   end
   
+  def test_range_each_week_te
+    #Friday through Tuesday
+     expr = Runt::REWeek.new(5,2) 
+
+     assert   expr.include?(Time.mktime(2007,9,28,0,0,0)),   "#{expr.inspect} should include Fri 12am"
+     assert   expr.include?(Time.mktime(2007,9,25,11,59,59)),"#{expr.inspect} should include Tue 11:59pm"
+     assert ! expr.include?(Time.mktime(2007,9,26,0,0,0)),  "#{expr.inspect} should not include Wed 12am"
+     assert ! expr.include?(Time.mktime(2007,9,27,6,59,59)), "#{expr.inspect} should not include Thurs 6:59am"
+     assert ! expr.include?(Time.mktime(2007,9,27,11,59,0)), "#{expr.inspect} should not include Thurs 1159am"
+     assert   expr.include?(Time.mktime(2007,9,29,11,0,0)),  "#{expr.inspect} should include Sat 11am"
+     assert   expr.include?(Time.mktime(2007,9,29,0,0,0)),   "#{expr.inspect} should include Sat midnight"
+     assert   expr.include?(Time.mktime(2007,9,29,23,59,59)), "#{expr.inspect} should include Saturday one minute before midnight"
+     assert   expr.include?(Time.mktime(2007,9,30,23,59,59)), "#{expr.inspect} should include Sunday one minute before midnight"
+  end
+  
   def test_range_each_week_te_to_s
     assert_equal 'all week', REWeek.new(Tuesday,Tuesday).to_s
     assert_equal 'Thursday through Saturday', REWeek.new(Thursday,Saturday).to_s

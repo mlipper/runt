@@ -22,6 +22,10 @@
 
 * Added BeforeTE, AfterTE, enhanced TExpr#dates method, RFC2445 (iCalendar) compliance unit test, contributed by Larry Karnowski
 
+* Applied patch by Gordon Thiesfeld which fixes broken Time class compatibility
+
+* Applied patch by Gordon Thiesfeld which allows REWeek expressions to span across two weeks
+
 == Version 0.4.0
 
 * Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date

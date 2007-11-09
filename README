@@ -78,6 +78,8 @@ Ara T. Howard for Numeric class extensions.
 
 Larry Karnowski for BeforeTE, AfterTE, TExpr#dates enhancements, RFC2445 (iCalendar) compliance tests.
 
+Gordon Thiesfeld for fixed Time integration and extended REWeek functionality
+
 The number 12, and the letters E, J, and B.
 
 = Etc...

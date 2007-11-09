@@ -165,14 +165,14 @@ class Time
   include Runt
 
   attr_accessor :date_precision
-
+  alias_method :old_initialize, :initialize
   def initialize(*args)
     if(args[0].instance_of?(Runt::DPrecision::Precision))
       @precision=args.shift
     else
       @precision=Runt::DPrecision::DEFAULT
     end
-    super(*args)
+    old_initialize(*args)
   end
 
   class << self
@@ -188,10 +188,10 @@ class Time
     end
   end
 
-  #def date_precision
-  #  return @date_precision unless @date_precision.nil?
-  #  return Runt::DPrecision::DEFAULT
-  #end
+  def date_precision
+    return @date_precision unless @date_precision.nil?
+    return Runt::DPrecision::DEFAULT
+  end
 end
 
 #
