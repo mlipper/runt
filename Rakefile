@@ -19,7 +19,7 @@ require 'fileutils'
 #####################################################################
 
 # Build Settings
-PKG_VERSION = "0.4.0"
+PKG_VERSION = "0.5.0"
 
 # Files to be included in Runt distribution
 PKG_FILES = FileList[
@@ -52,7 +52,7 @@ directory TARGET_DIR
 
 desc "Clobber the entire build directory."
 task :clobber_build_dir do |t|
-    puts "It's clobberin' time! (hello from task #{t.name})"
+    #puts "It's clobberin' time! (hello from task #{t.name})"
     CLOBBER.include(TARGET_DIR)
 end
 
@@ -65,7 +65,7 @@ end
 
 Rake::TestTask.new do |t|
   t.libs << "test"
-  t.pattern = 'test/alltests.rb'
+  t.pattern = 'test/*test.rb'
   t.verbose = false	
 end
 

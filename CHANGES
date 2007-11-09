@@ -26,6 +26,10 @@
 
 * Applied patch by Gordon Thiesfeld which allows REWeek expressions to span across two weeks
 
+* Removed unused context.rb and contexttest.rb
+
+* Removed unnecessary test suite alltests.rb
+
 == Version 0.4.0
 
 * Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date
