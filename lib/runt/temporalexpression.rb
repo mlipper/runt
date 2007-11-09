@@ -491,8 +491,11 @@ class REDay
   end
 
   def include?(date)
+    # 2007-11-9: Not completely sure of the implications of commenting this 
+    # out but...
+    # 
     # If precision is day or greater, then the result is always true
-    return true if date.date_precision <= DPrecision::DAY
+    #return true if date.date_precision <= DPrecision::DAY
     
     if(@spans_midnight&&date.hour<12) then
       #Assume next day
@@ -509,7 +512,9 @@ class REDay
 
   private
   def spans_midnight?(start_hour, end_hour)
-    return end_hour <= start_hour
+    #puts "spans midnight? #{end_hour < start_hour} (end==#{end_hour} <= start==#{start_hour})"
+    #return end_hour <= start_hour
+    return end_hour < start_hour
   end
 
   def get_current(hour,minute)
