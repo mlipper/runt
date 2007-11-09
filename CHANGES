@@ -1,5 +1,11 @@
 = Runt Changelog
 
+== Version 0.6.0
+
+* Fixed incorrect tutorial section for tutorial_te.rdoc
+
+* Fixed bug #10605: DateRange.empty? should be true for min == max
+
 == Version 0.5.0
 
 * Refactored Schedule implementation which greatly simplifies customization but does potentially break existing clients who relied on the ability to call add mulitple times (SEE BELOW)

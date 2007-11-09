@@ -70,6 +70,8 @@ class DateRangeTest < Test::Unit::TestCase
     empty_range = DateRange.new(r_start,r_end)
     assert(empty_range.empty?)
     assert(DateRange::EMPTY.empty?)
+    # start == end should be empty
+    assert DateRange.new(r_start,r_start).empty?, "Range should be empty when start == end"
   end
 
   def test_gap

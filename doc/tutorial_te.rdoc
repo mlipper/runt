@@ -42,8 +42,8 @@ Alrighty, then...less talkin', more tutorin'!
   10  expr.include?(Date.new(2002,8,29)) #Thurs 8/29/02 => true
   11  expr.include?(Date.new(2003,8,28)) #Thurs 8/28/03 => true
   12  expr.include?(Date.new(2004,8,26)) #Thurs 8/26/04 => true
-  13  expr.include?(Date.new(2004,3,18)) #Thurs 3/18/04 => true
-  14
+  13  
+  14  expr.include?(Date.new(2004,3,18)) #Thurs 3/18/04 => false
   15  expr.include?(Date.new(2004,8,27)) #Fri 8/27/04 => false
 
 A couple things are worth noting before we move on to more complicated
@@ -86,7 +86,7 @@ will all match dates and ranges occurring within 'the last Thursday'
 <b>OR</b> 'the month of August'.
 
 
-Now what? Beginning on line 11, you can see that calling the
+Now what? Beginning on line 10, you can see that calling the
 <tt>#include?</tt> method will let you know whether the expression you've
 defined includes a given date (or, in some cases, a range, or another
 TE). This is much like the way you use the standard <tt>Range#include?</tt>.

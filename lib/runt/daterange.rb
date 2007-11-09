@@ -37,7 +37,7 @@ module Runt
     end
 
     def empty?
-      return @start_expr>@end_expr
+      return @start_expr >= @end_expr
     end
 
     def gap(obj)
