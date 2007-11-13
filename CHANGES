@@ -2,6 +2,10 @@
 
 == Version 0.6.0
 
+* Refactored REYear tests to separate file from temporalexpressiontest.rb
+
+* Fixed bug #5741: incorrect handling of default args
+
 * Fixed bug #5749: Fixed spans midnight for REDay (Revision 156), changed semantics when dealing with lower precision arguments
 
 * Fixed bug #10640: incorrect tutorial section for tutorial_te.rdoc

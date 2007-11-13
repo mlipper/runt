@@ -423,19 +423,49 @@ end
 
 class REYear 
 
+  NO_DAY = 0
+
   include TExpr
+
+  # For testing :)
+  attr_accessor :start_month, :start_day, :end_month, :end_day
   
-  def initialize(start_month, start_day=0, end_month=start_month, end_day=0)
+  def initialize(start_month, *args)
     @start_month = start_month
-    @start_day = start_day
-    @end_month = end_month
-    @end_day = end_day
+    if (args.nil? || args.size == NO_DAY) then
+      # One argument given
+      @end_month = start_month
+      @start_day = NO_DAY
+      @end_day = NO_DAY
+    else
+      case args.size
+      when 1
+	@end_month = args[0]
+	@start_day = NO_DAY
+	@end_day = NO_DAY
+      when 2
+	@start_day = args[0]
+	@end_month = args[1]
+	@end_day = NO_DAY
+      when 3
+	@start_day = args[0]
+	@end_month = args[1]
+	@end_day = args[2]
+      else
+	raise "Invalid number of var args: 1 or 3 expected, #{args.size} given"
+      end
+    end
+    @same_month_dates_provided = (@start_month == @end_month) && (@start_day!=NO_DAY && @end_day != NO_DAY)
   end
 
   def include?(date)
-    months_include?(date) ||
-      start_month_include?(date) ||
-        end_month_include?(date)
+    #puts "bet=#{is_between_months?(date)}"
+    #puts "start_include=#{same_start_month_include_day?(date)}"
+    #puts "end_include=#{same_end_month_include_day?(date)}"
+    return ((@start_day <= date.day) && (@end_day >= date.day)) if @same_month_dates_provided
+    is_between_months?(date) ||
+      (same_start_month_include_day?(date) ||
+        same_end_month_include_day?(date))
   end
 
   def save
@@ -448,19 +478,20 @@ class REYear
   end
 
   private
-  def months_include?(date)
+  def is_between_months?(date)
     (date.mon > @start_month) && (date.mon < @end_month)
   end
 
-  def end_month_include?(date)
+  def same_end_month_include_day?(date)
     return false unless (date.mon == @end_month)
-    (@end_day == 0)  || (date.day <= @end_day)
+    (@end_day == NO_DAY)  || (date.day <= @end_day)
   end
 
-  def start_month_include?(date)
+  def same_start_month_include_day?(date)
     return false unless (date.mon == @start_month)
-    (@start_day == 0) || (date.day >= @start_day)
+    (@start_day == NO_DAY) || (date.day >= @start_day)
   end
+
 end
 
 # TExpr that matches periods of the day with minute

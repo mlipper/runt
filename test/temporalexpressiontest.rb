@@ -189,7 +189,7 @@ class TExprTest < Test::Unit::TestCase
     assert(!expr.include?(PDate.new(2004,1,12)))
   end
   
-  def test_day_in_week_te
+  def test_day_in_week_te_to_s
     assert_equal 'Friday', DIWeek.new(Friday).to_s
   end
     
@@ -203,31 +203,8 @@ class TExprTest < Test::Unit::TestCase
     assert(expr3.include?(PDate.day(2004,2,22)))
   end
 
-  def test_range_each_year_te
-    # November 1st, 1961
-    dt1 = Date.civil(1961,11,1)
-    #June, 1986
-    dt2 = PDate::month(1986,6)
-    #November and December
-    expr1 = REYear.new(11,12)
-    #May 31st through September 6th
-    expr2 = REYear.new(5,31,9,6)
-    assert(expr1.include?(dt1))
-    assert(!expr1.include?(dt2))
-    assert(expr2.include?(dt2))
-    #August
-    expr3 = REYear.new(8)
-    assert(!expr3.include?(dt1))
-    assert(!expr3.include?(dt2))
-    #August 6th, 2004
-    dt3 = Date::new(2004,8,6)
-    assert(expr3.include?(dt3))
-  end
-  
-  def test_range_each_year_te_to_s
-    assert_equal 'June 1st through July 2nd', REYear.new(6, 1, 7, 2).to_s
-  end
-  
+  # REYear tests moved to reyeartest.rb!
+
   def test_range_each_day_te
     #noon to 4:30pm
     expr1 = REDay.new(12,0,16,30)
