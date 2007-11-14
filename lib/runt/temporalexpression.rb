@@ -421,15 +421,69 @@ class REWeek
   end
 end
 
+#
+# TExpr that matches date ranges within a single year. Assumes that the start 
+# and end parameters occur within the same year. 
+#
+#
 class REYear 
 
+  # Sentinel value used to denote that no specific day was given to create
+  # the expression.
   NO_DAY = 0
 
   include TExpr
 
-  # For testing :)
   attr_accessor :start_month, :start_day, :end_month, :end_day
   
+  #
+  # == Synopsis
+  # 
+  #   REYear.new(start_month [, (start_day | end_month), ...]
+  #
+  # == Args
+  # 
+  # One or two arguments given::
+  #
+  # +start_month+::
+  #   Start month. Valid values are 1..12. When no other parameters are given 
+  #   this value will be used for the end month as well. Matches the entire
+  #   month through the ending month.
+  # +end_month+::
+  #   End month. Valid values are 1..12. When given in two argument form
+  #   will match through the entire month.   
+  # 
+  # Three or four arguments given::
+  #
+  # +start_month+::
+  #   Start month. Valid values are 1..12.
+  # +start_day+::
+  #   Start day. Valid values are 1..31, depending on the month.
+  # +end_month+::
+  #   End month. Valid values are 1..12. If a fourth argument is not given,
+  #   this value will cover through the entire month.
+  # +end_day+::
+  #   End day. Valid values are 1..31, depending on the month.
+  # 
+  # == Description
+  #
+  # Create a new REYear expression expressing a range of months or days 
+  # within months within a year.
+  #
+  # == Usage
+  #
+  #   # Creates the range March 12th through May 23rd
+  #   expr = REYear.new(3,12,5,23)
+  #
+  #   # Creates the range March 1st through May 31st
+  #   expr = REYear.new(3,5)
+  #
+  #   # Creates the range March 12th through May 31st
+  #   expr = REYear.new(3,12,5)
+  #
+  #   # Creates the range March 1st through March 30th
+  #   expr = REYear.new(3)
+  #
   def initialize(start_month, *args)
     @start_month = start_month
     if (args.nil? || args.size == NO_DAY) then
@@ -459,9 +513,6 @@ class REYear
   end
 
   def include?(date)
-    #puts "bet=#{is_between_months?(date)}"
-    #puts "start_include=#{same_start_month_include_day?(date)}"
-    #puts "end_include=#{same_end_month_include_day?(date)}"
     return ((@start_day <= date.day) && (@end_day >= date.day)) if @same_month_dates_provided
     is_between_months?(date) ||
       (same_start_month_include_day?(date) ||

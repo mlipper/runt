@@ -154,30 +154,7 @@ class TExprTest < Test::Unit::TestCase
     assert job.include?(PDate.min(20006,5,30,14,00))
   end
   
-  def test_day_in_month_te
-    #Friday, January 16th 2004
-    dt1 = Date.civil(2004,1,16)
-    #Friday, January 9th 2004
-    dt2 = Date.civil(2004,1,9)
-    #third Friday of the month
-    expr1 = DIMonth.new(Third,Friday)
-    #second Friday of the month
-    expr2 = DIMonth.new(Second,Friday)
-    assert(expr1.include?(dt1))
-    assert(!expr1.include?(dt2))
-    assert(expr2.include?(dt2))
-    assert(!expr2.include?(dt1))
-    #Sunday, January 25th 2004
-    dt3 = Date.civil(2004,1,25)
-    #last Sunday of the month
-    expr3 = DIMonth.new(Last_of,Sunday)
-    assert(expr3.include?(dt3))
-  end
-  
-  def test_day_in_month_te_to_s
-    assert_equal 'last Sunday of the month', DIMonth.new(Last_of,Sunday).to_s
-  end
-  
+  # DIMonth tests moved to dimonthtest.rb
   def test_day_in_week_te
     #Friday (woo-hoo!)
     expr = DIWeek.new(Friday)
@@ -402,28 +379,6 @@ class TExprTest < Test::Unit::TestCase
    assert(!expr2.include?(dt1))
   end
   
-  ###
-  # Dates functionality & tests contributed by Emmett Shear
-  ###
-  def test_day_in_month_dates
-    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
-    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
-    expr = DIMonth.new(First, Tuesday)
-    dates = expr.dates(date_range)
-    assert dates.size == 12
-    dates.each do |d|
-      assert d.wday == 2 # tuesday
-      assert d.day < 8 # in the first week
-    end
-    expr2 = DIMonth.new(Last, Friday)
-    dates2 = expr2.dates(date_range)
-    assert dates2.size == 12
-    dates2.each do |d|
-      assert d.wday == 5 # friday
-      assert d.day > month_days[d.month-1] - 8 # last week
-    end
-  end
-
   def test_day_in_week_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
     expr = DIWeek.new(Sunday)
@@ -461,13 +416,6 @@ class TExprTest < Test::Unit::TestCase
     expr = REWeek.new(3, 5)
     dates = expr.dates(date_range)
     assert dates.size == 12
-  end
-
-  def test_range_each_year_dates
-    date_range = Date.civil(2004, 5, 1)..Date.civil(2006, 5, 4)
-    expr = REYear.new(4, 28, 5, 6)
-    dates = expr.dates(date_range)
-    assert dates.size == 22, dates.size
   end
 
   def test_week_in_month_dates

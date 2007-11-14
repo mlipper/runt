@@ -78,4 +78,9 @@ class REYearTest < BaseExpressionTest
     assert_equal 'June 1st through July 2nd', REYear.new(6, 1, 7, 2).to_s
   end
   
+  def test_dates_mixin
+    expr = REYear.new(4, 28, 5, 6)
+    assert (expr.dates(@date_20040501..@date_20060504)).size == 22, "Should be 22 occurences in dates Array"
+  end
+
 end
