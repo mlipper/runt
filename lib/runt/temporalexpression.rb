@@ -614,6 +614,7 @@ end
 #     WIMonth.new(1)
 #
 #  See also: Date
+#  FIXME .dates mixin seems functionally broken
 class WIMonth 
 
   include TExpr
