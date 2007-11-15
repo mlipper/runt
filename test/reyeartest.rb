@@ -83,4 +83,16 @@ class REYearTest < BaseExpressionTest
     assert (expr.dates(@date_20040501..@date_20060504)).size == 22, "Should be 22 occurences in dates Array"
   end
 
+  # From bug #5749 
+  def test_mixed_precision_combo
+    # 10:00 am to 10:01 am
+    ten_ish = REDay.new(10,0,10,1)
+    # September 21st every year
+    every_21_sept = REYear.new(9,21,9,21)
+    # Between 10:00 am and 10:01 am every September 21st
+    combo = ten_ish & every_21_sept
+    assert !combo.include?(@pdate_20060921), "Should not include lower precision argument"
+    assert combo.include?(@pdate_200609211001), "Should include matching precision argument which is in range"
+    assert !combo.include?(@pdate_200609211002), "Should not include matching precision argument which is out of range"
+  end
 end

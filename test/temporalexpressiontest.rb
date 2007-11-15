@@ -154,58 +154,6 @@ class TExprTest < Test::Unit::TestCase
     assert job.include?(PDate.min(20006,5,30,14,00))
   end
   
-  def test_range_each_day_te
-    #noon to 4:30pm
-    expr1 = REDay.new(12,0,16,30)
-    #3:15 pm (May 8th, 2012 - ignored)
-    assert(expr1.include?(PDate.hour(2012,5,8,15,15)))
-    #4:30 pm (April 18th, 1922 - ignored)
-    assert(expr1.include?(PDate.hour(1922,4,18,16,30)))
-    #noon (June 5th, 1975 - ignored)
-    assert(expr1.include?(PDate.hour(1975,6,5,12,0)))
-    #3:15 am (May 8th, 2012 - ignored)
-    assert(!expr1.include?(PDate.hour(2012,5,8,3,15)))
-    #8:30pm to 12:00 midnite
-    expr2 = REDay.new(20,30,00,00)
-    #9:00 pm (January 28th, 2004 - ignored)
-    assert(expr2.include?(PDate.min(2004,1,28,21,00)))
-    #12:00 am (January 28th, 2004 - ignored)
-    assert(expr2.include?(PDate.min(2004,1,28,0,0)))
-    #12:01 am (January 28th, 2004 - ignored)
-    assert(!expr2.include?(PDate.min(2004,1,28,0,01)))
-  end
-
-  # Commenting this out; not sure what's being tested exactly
-  #def test_range_each_day_te_again
-  #  dr = DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))
-  #  red = REDay.new(8,0,10,0)
-  #  result = false
-  #  dr.each do |interval|
-  #    result = red.include?(interval)
-  #    break if result
-  #  end      
-  #  assert(result)
-  #end
-  
-  # From bug #5749 
-  def test_range_each_day_te_fun_with_precision
-    # range of time from 10.00 to 10.01
-    ten_ish = REDay.new(10,0,10,1)
-    # 21st of September every year
-    every_21_sept = REYear.new(9,21,9,21)
-    # combination expression (between 10.00 and 10.01 every 21st September)
-    combo = ten_ish & every_21_sept
-    assert(!combo.include?(PDate.new(2006,9,21)), "Should not include lower precision argument")
-    assert(combo.include?(PDate.new(2006,9,21,10,0,1)),
-           "Should include higher precision argument which is in range")
-    assert(!combo.include?(PDate.new(2006,9,21,10,2)),
-           "Should not include matching pecision argument which is out of range")
-  end
-
-  def test_range_each_day_te_to_s
-    assert_equal 'from 11:10PM to 01:20AM daily', REDay.new(23,10,1,20).to_s
-  end
-  
   def test_range_each_week_te
     assert_raises(ArgumentError){ expr = REWeek.new(10,4) }
     expr1 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
