@@ -33,6 +33,7 @@ class BaseExpressionTest < Test::Unit::TestCase
     @pdate_200401282100 = PDate.min(2004,01,28,21,00) 
     @pdate_200401280000 = PDate.min(2004,01,28,00,00)
     @pdate_200401280001 = PDate.min(2004,01,28,00,01)
+    @pdate_20071116100030 = PDate.sec(2007,11,16,10,0,30)
     @date_19611101 = Date.civil(1961,11,1)
     @date_20040109 = Date.civil(2004,1,9)   # Friday, January 9th 2004
     @date_20040116 = Date.civil(2004,1,16)  # Friday, January 16th 2004
@@ -49,6 +50,16 @@ class BaseExpressionTest < Test::Unit::TestCase
     @date_20050228 = Date.civil(2005,2,28)
     @date_20051231 = Date.civil(2005,12,31)
     @date_20060504 = Date.civil(2006,5,4)
+    @datetime_200709161007 = DateTime.new(2007,9,16,10,7)
+    @time_20070925115959 = Time.mktime(2007,9,25,11,59,59)
+    @time_20070926000000 = Time.mktime(2007,9,26,0,0,0)
+    @time_20070927065959 = Time.mktime(2007,9,27,6,59,59)
+    @time_20070927115900 = Time.mktime(2007,9,27,11,59,0)
+    @time_20070928000000 = Time.mktime(2007,9,28,0,0,0)
+    @time_20070929110000 = Time.mktime(2007,9,29,11,0,0)
+    @time_20070929000000 = Time.mktime(2007,9,29,0,0,0)
+    @time_20070929235959 = Time.mktime(2007,9,29,23,59,59)
+    @time_20070930235959 = Time.mktime(2007,9,30,23,59,59)
   end
 
   def test_nothing

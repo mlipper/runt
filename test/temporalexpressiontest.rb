@@ -154,36 +154,6 @@ class TExprTest < Test::Unit::TestCase
     assert job.include?(PDate.min(20006,5,30,14,00))
   end
   
-  def test_range_each_week_te
-    assert_raises(ArgumentError){ expr = REWeek.new(10,4) }
-    expr1 = REWeek.new(Mon,Fri) & REDay.new(8,00,8,30)
-    assert(!expr1.include?(PDate.new(2004,5,1,8,06)))
-    #Sunday through Thursday
-    expr2 = REWeek.new(0,4)
-    assert(expr2.include?(PDate.min(2004,2,19,23,59,59)))
-    assert(!expr2.include?(PDate.min(2004,2,20,0,0,0)))
-  end
-  
-  def test_range_each_week_te
-    #Friday through Tuesday
-     expr = Runt::REWeek.new(5,2) 
-
-     assert   expr.include?(Time.mktime(2007,9,28,0,0,0)),   "#{expr.inspect} should include Fri 12am"
-     assert   expr.include?(Time.mktime(2007,9,25,11,59,59)),"#{expr.inspect} should include Tue 11:59pm"
-     assert ! expr.include?(Time.mktime(2007,9,26,0,0,0)),  "#{expr.inspect} should not include Wed 12am"
-     assert ! expr.include?(Time.mktime(2007,9,27,6,59,59)), "#{expr.inspect} should not include Thurs 6:59am"
-     assert ! expr.include?(Time.mktime(2007,9,27,11,59,0)), "#{expr.inspect} should not include Thurs 1159am"
-     assert   expr.include?(Time.mktime(2007,9,29,11,0,0)),  "#{expr.inspect} should include Sat 11am"
-     assert   expr.include?(Time.mktime(2007,9,29,0,0,0)),   "#{expr.inspect} should include Sat midnight"
-     assert   expr.include?(Time.mktime(2007,9,29,23,59,59)), "#{expr.inspect} should include Saturday one minute before midnight"
-     assert   expr.include?(Time.mktime(2007,9,30,23,59,59)), "#{expr.inspect} should include Sunday one minute before midnight"
-  end
-  
-  def test_range_each_week_te_to_s
-    assert_equal 'all week', REWeek.new(Tuesday,Tuesday).to_s
-    assert_equal 'Thursday through Saturday', REWeek.new(Thursday,Saturday).to_s
-  end
-
   def test_combined_te
     #This is a hack.....
     #In the U.S., Memorial Day begins the last Monday of May
@@ -284,21 +254,6 @@ class TExprTest < Test::Unit::TestCase
     assert(!ticket.include?(DateTime.new(2004,3,11,1,15)))
  end
 
- def test_re_month_te
-   # October 22nd, 2005
-   dt1 = Date.civil(2005,10,22)
-   # The 20th through the 29th of any month
-   expr1 = REMonth.new(20,29)
-   assert(expr1.include?(dt1))
-   assert(!expr1.include?(PDate.new(2010,12,12)))
-   # August 17th, 1975
-   dt2 = Date.civil(1975,8,17)
-   # The 17th of any month
-   expr2 = REMonth.new(17)
-   assert(expr2.include?(dt2))
-   assert(!expr2.include?(dt1))
-  end
-  
   def test_union_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
@@ -322,68 +277,11 @@ class TExprTest < Test::Unit::TestCase
     dates.each { |d| assert( other_dates.include?(d) ) }
   end
 
-  def test_range_each_week_dates
-    date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
-    expr = REWeek.new(3, 5)
-    dates = expr.dates(date_range)
-    assert dates.size == 12
-  end
-
-  def test_range_each_month_dates
-    date_range = Date.civil(2005, 1, 7)..Date.civil(2005, 1, 15)
-    expr = REMonth.new(5, 9)
-    dates = expr.dates(date_range)
-    assert dates.size == 3, dates.size
-    assert false if dates.include? Date.civil(2005, 1, 6)
-  end
-  
-  def test_range_each_month_to_s
-    assert_equal 'from the 2nd to the 5th monthly',REMonth.new(2,5).to_s
-  end
-  
   def test_diff_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
     expr = REYear.new(1, 1, 1, 31) - REMonth.new(7, 15)
     dates = expr.dates(date_range)
     assert dates.size == 22, dates.size
-  end
-
-  def test_day_interval_te
-    date1 = Date.civil(2005,10,28)
-    # Match every 8 days
-    expr = DayIntervalTE.new(date1, 8)
-    assert expr.include?((date1 + 8))
-    assert expr.include?((date1 + 16))
-    assert expr.include?((date1 + 64))
-    # Now use DateTime
-    date2 = DateTime.now
-    # Match every 6 days
-    expr2 = DayIntervalTE.new(date2, 6)
-    assert expr2.include?((date2 + 12))
-    assert expr2.include?((date2 + 24))
-  end
-  
-  def test_day_interval_te_to_s
-    every_four_days = DayIntervalTE.new(Date.new(2006,2,26), 4)
-    assert_equal "every 4th day after #{Runt.format_date(Date.new(2006,2,26))}", every_four_days.to_s
-  end
-  
-  def test_year_te
-    # second sun of any month 
-    second_sun = DIMonth.new(Second, Sunday)
-    # simple year matching expression which will return true for
-    # any date in 2005
-    year_te = YearTE.new(2005)
-    # Second Sunday of a month in 2002
-    dt_in_2002 = Date.civil(2002,9,8)
-    # Second Sunday of a month in 2005
-    dt_in_2005 = Date.civil(2005,12,11)
-    assert(year_te.include?(dt_in_2005))
-    assert(!year_te.include?(dt_in_2002))
-  end
-
-  def test_year_te
-    assert_equal 'during the year 1934', YearTE.new(1934).to_s
   end
 
   def test_use_time_class
@@ -396,51 +294,4 @@ class TExprTest < Test::Unit::TestCase
     assert(!exp.include?(Time.parse('Friday 10 November 2006 17:31')))
   end
 
-  def test_every_te_minutes
-    # Match every 2 minutes
-    xpr=EveryTE.new(PDate.min(2006,12,5,5,54), 2)
-    assert !xpr.include?(PDate.min(2006,12,4,5,54))
-    assert xpr.include?(PDate.min(2006,12,5,5,54))
-    assert xpr.include?(PDate.min(2006,12,5,5,56))
-    assert xpr.include?(PDate.sec(2006,12,5,5,58,03))
-    assert xpr.include?(PDate.min(2006,12,5,6,00))
-    assert !xpr.include?(PDate.min(2006,12,5,5,59))
-    assert xpr.include?(Time.parse('Tuesday 05 December 2006 07:08'))
-    # Match every 3 days
-    xpr2=EveryTE.new(PDate.day(2006,5,4), 3)
-    assert !xpr2.include?(Date.new(2006,5,5))
-    assert !xpr2.include?(PDate.new(2006,5,6))
-    assert xpr2.include?(PDate.new(2006,5,7))
-    assert xpr2.include?(PDate.min(2006,5,10,6,45))
-  end
-  
-  def test_every_te_days
-    dstart = DateTime.parse("US-Eastern:19970902T090000")
-    dstart.date_precision = DPrecision::DAY
-    
-    xpr=EveryTE.new(dstart, 10) & REWeek.new(Sun,Sat)
-    
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970901T090000")) #Sep 1
-    assert xpr.include?(DateTime.parse("US-Eastern:19970902T090000")) #Sep 2
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970904T090000")) #Sep 3
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970904T090000")) #Sep 4
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970905T090000")) #Sep 5
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970906T090000")) #Sep 6
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970907T090000")) #Sep 7
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970908T090000")) #Sep 8
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970909T090000")) #Sep 9
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970910T090000")) #Sep 10
-    assert !xpr.include?(DateTime.parse("US-Eastern:19970911T090000")) #Sep 11
-    assert xpr.include?(DateTime.parse("US-Eastern:19970912T090000")) #Sep 12
-    assert xpr.include?(DateTime.parse("US-Eastern:19970922T090000")) #Sep 22
-    assert xpr.include?(DateTime.parse("US-Eastern:19971002T090000")) #Oct 2
-    assert xpr.include?(DateTime.parse("US-Eastern:19971012T090000")) #Oct 12
-  end
-  
-  def test_every_te_to_s
-    date=PDate.new(2006,12,5,6,0,0)
-    every_thirty_seconds=EveryTE.new(date, 30)
-    assert_equal "every 30 seconds starting #{Runt.format_date(date)}", every_thirty_seconds.to_s
-  end
-  
 end
