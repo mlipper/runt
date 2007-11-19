@@ -25,13 +25,13 @@ class CombinedExpressionTest < BaseExpressionTest
     # May 29th, 2006
     last_monday_in_may = @pdate_200605291012
     # Before 
-    assert job.include?(last_monday_in_may)
-    assert job.include?(@pdate_200605301400)
+    assert job.include?(last_monday_in_may), "Expression #{job.to_s} should include #{last_monday_in_may.to_s}"
+    assert job.include?(@pdate_200605301400), "Expression #{job.to_s} should include #{@pdate_200605301400.to_s}"
     # Add Diff expression
     job_with_holiday = job - last_monday_in_may
-    assert !job_with_holiday.include?(last_monday_in_may)
+    assert !job_with_holiday.include?(last_monday_in_may), "Expression #{job_with_holiday.to_s} should not include #{last_monday_in_may.to_s}"
     # Still have to work on Tuesday
-    assert job.include?(@pdate_200605301400)
+    assert job.include?(@pdate_200605301400), "Expression #{job.to_s} should include #{@pdate_200605301400.to_s}"
   end
   
   def test_summertime
@@ -63,18 +63,18 @@ class CombinedExpressionTest < BaseExpressionTest
     #To exclude everything in the first week which occurs on or after Monday.
     first_week_of_september=entire_first_week_of_september - monday_to_saturday
     #June through August
-    june_through_august=REYear.new(6,First,8)
-    assert june_through_august.include?(@pdate_20040704)
+    june_through_august=REYear.new(6, 1, 8)
+    assert june_through_august.include?(@pdate_20040704), "Expression #{june_through_august.to_s} should include #{@pdate_20040704.to_s}"
     #Finally!
     summer_time = last_week_of_may | first_week_of_september | june_through_august
 
     #Will work, but will be incredibly slow:
     #  assert(summer_time.include?(PDate.min(2004,5,31,0,0)))
-    assert summer_time.include?(@pdate_20040531)
-    assert summer_time.include?(@pdate_20040704)
+    assert summer_time.include?(@pdate_20040531), "Expression #{summer_time.to_s} should include #{@pdate_20040704.to_s}"
+    assert summer_time.include?(@pdate_20040704), "Expression #{summer_time.to_s} should include #{@pdate_20040704.to_s}"
     #also works...also slow:
     #  assert(!summer_time.include?(PDate.min(2004,9,6,0,0)))
-    assert(!summer_time.include?(PDate.hour(2004,9,6,0,0)))
+    assert !summer_time.include?(@pdate_2004090600), "Expression #{summer_time.to_s} should not include #{@pdate_2004090600.to_s}"
 
   end
   def test_nyc_parking_te
@@ -84,54 +84,33 @@ class CombinedExpressionTest < BaseExpressionTest
                     DIWeek.new(Wed) | \
                       DIWeek.new(Fri)
 
-
-    #Wednesday (at 7:15pm - ignored)
-    assert(mon_wed_fri.include?(DateTime.new(2004,3,10,19,15)))
-
-    #Sunday (at 9:00am - ignored)
-    assert(!mon_wed_fri.include?(DateTime.new(2004,3,14,9,00)))
-
-    #8am to 11am
+    assert mon_wed_fri.include?(@datetime_200403101915), "Expression #{mon_wed_fri.to_s} should include #{@datetime_200403101915.to_s}"
+    assert !mon_wed_fri.include?(@datetime_200403140900), "Expression #{mon_wed_fri.to_s} should not include #{@datetime_200403140900.to_s}"
+    # 8am to 11am
     eight_to_eleven = REDay.new(8,00,11,00)
-
-    #=> Mon,Wed,Fri - 8am to 11am
+    # => Mon,Wed,Fri - 8am to 11am
     expr1 = mon_wed_fri & eight_to_eleven
-
-    #Tuesdays, Thursdays
+    # Tuesdays, Thursdays
     tues_thurs = DIWeek.new(Tue) | DIWeek.new(Thu)
-
-    #11:30am to 2pm
+    # 11:30am to 2pm
     eleven_thirty_to_two = REDay.new(11,30,14,00)
-
-    #Noon (on Monday - ignored)
-    assert(eleven_thirty_to_two.include?(DateTime.new(2004,3,8,12,00)))
-
-    #Midnite (on Thursday - ignored)
-    assert(!eleven_thirty_to_two.include?(DateTime.new(2004,3,11,00,00)))
-
-
-    #=> Tues,Thurs - 11:30am to 2pm
+    assert eleven_thirty_to_two.include?(@datetime_200403081200), "Expression #{eleven_thirty_to_two.to_s} should include #{@datetime_200403081200.to_s}"
+    assert !eleven_thirty_to_two.include?(@datetime_200403110000), "Expression #{eleven_thirty_to_two.to_s} should not include #{@datetime_200403110000.to_s}"
+    # => Tues,Thurs - 11:30am to 2pm
     expr2 = tues_thurs & eleven_thirty_to_two
-
     #
-    #Sigh...now if I can only get my dad to remember this...
-    #
+    # No parking: Mon Wed Fri, 8am - 11am
+    #             Tu Thu, 11:30am - 2pm
     parking_ticket = expr1 | expr2
+    assert parking_ticket.include?(@datetime_200403111215), "Expression #{parking_ticket.to_s} should include #{@datetime_200403111215.to_s}"
+    assert parking_ticket.include?(@datetime_200403100915), "Expression #{parking_ticket.to_s} should include #{@datetime_200403100915.to_s}"
+    assert parking_ticket.include?(@datetime_200403100800), "Expression #{parking_ticket.to_s} should include #{@datetime_200403100800.to_s}"
+    assert !parking_ticket.include?(@datetime_200403110115), "Expression #{parking_ticket.to_s} should not include #{@datetime_200403110115.to_s}"
 
-    assert(parking_ticket.include?(DateTime.new(2004,3,11,12,15)))
-    assert(parking_ticket.include?(DateTime.new(2004,3,10,9,15)))
-    assert(parking_ticket.include?(DateTime.new(2004,3,10,8,00)))
-
-    assert(!parking_ticket.include?(DateTime.new(2004,3,11,1,15)))
-
-    # Simplified
-    e1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
-    e2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
-    ticket = expr1 | expr2
-    assert(ticket.include?(DateTime.new(2004,3,11,12,15)))
-    assert(ticket.include?(DateTime.new(2004,3,10,9,15)))
-    assert(ticket.include?(DateTime.new(2004,3,10,8,00)))
-    assert(!ticket.include?(DateTime.new(2004,3,11,1,15)))
+    # The preceeding example can be condensed to:
+    #   e1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+    #   e2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+    #   ticket = e1 | e2
  end
 
 end
