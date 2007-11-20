@@ -10,8 +10,6 @@ class UnionTest < BaseExpressionTest
   def setup
     super
     @union = Union.new
-    @stub1 = StubExpression.new(false, "stub 1", false)
-    @stub2 = StubExpression.new(false, "stub 2", false)
     @date = @pdate_20071028
   end
 

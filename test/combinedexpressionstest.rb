@@ -8,6 +8,20 @@ require 'baseexpressiontest'
 
 class CombinedExpressionTest < BaseExpressionTest
 
+  def test_monday_tuesday_8am_to_9am
+    expr = REWeek.new(Mon,Fri) & REDay.new(8,0,9,0)
+    assert expr.include?(@pdate_200405040806), "Expression #{expr.to_s} should include #{@pdate_200405040806.to_s}"
+    assert !expr.include?(@pdate_200405010806), "Expression #{expr.to_s} should not include #{@pdate_200405010806.to_s}"
+    assert !expr.include?(@pdate_200405030906), "Expression #{expr.to_s} should not include #{@pdate_200405030906.to_s}"
+  end
+  
+
+  def test_midnight_to_9am_or_tuesday
+    expr = REDay.new(0,0,9,0) | DIWeek.new(Tuesday)
+    assert expr.include?(@pdate_20071030), "Expression #{expr.to_s} should include #{@pdate_20071030.to_s}"
+    assert expr.include?(@pdate_2012050803), "Expression #{expr.to_s} should include #{@pdate_2012050803.to_s}"
+    assert !expr.include?(@pdate_20071116100030), "Expression #{expr.to_s} should not include #{@pdate_20071116100030.to_s}"
+  end
 
   def test_wednesday_thru_saturday_6_to_12am
     expr = REWeek.new(Wed, Sat) & REDay.new(6,0,12,00)
