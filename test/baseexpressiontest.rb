@@ -80,3 +80,24 @@ class BaseExpressionTest < Test::Unit::TestCase
   end
 
 end
+
+class StubExpression
+  attr_accessor :match, :string, :overlap, :args
+  def initialize(match=false, string="StubExpression",overlap=false)
+    @match=match
+    @string=string
+    @overlap=overlap
+    @args=[]
+  end
+  def include?(arg)
+    @args << arg
+    @match
+  end
+  def overlap?(arg)
+    @args << arg
+    @overlap
+  end
+  def to_s
+    @string
+  end
+end

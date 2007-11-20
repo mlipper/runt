@@ -86,7 +86,6 @@ class Collection
   include TExpr
   
   attr_reader :expressions
-  #protected :expressions
 
   def initialize
     @expressions = Array.new
