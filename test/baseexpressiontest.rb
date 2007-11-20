@@ -82,6 +82,8 @@ class BaseExpressionTest < Test::Unit::TestCase
 end
 
 class StubExpression
+  include Runt
+  include TExpr
   attr_accessor :match, :string, :overlap, :args
   def initialize(match=false, string="StubExpression",overlap=false)
     @match=match

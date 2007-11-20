@@ -15,25 +15,18 @@ class TExprTest < Test::Unit::TestCase
   include Runt
   include DPrecision
 
-  def test_union_te
-    #midnight to 6:30am AND/OR first Tuesday of the month
-    expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
-    assert(expr.include?(PDate.day(2004,1,6))) #January 6th, 2004 (First Tuesday)
-    assert(expr.include?(PDate.hour(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
-    assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
-  end
-  
-  def test_union_to_s
-    dim = DIMonth.new(First,Tuesday) 
-    red = REDay.new(0,0,6,30)
-    expr = dim | red
-    assert_equal 'every ' + dim.to_s + ' or ' + red.to_s, expr.to_s
-  end
-  
+  # def test_union_te
+    ##midnight to 6:30am AND/OR first Tuesday of the month
+    #expr = REDay.new(0,0,6,30) | DIMonth.new(First,Tuesday)
+    #assert(expr.include?(PDate.day(2004,1,6))) #January 6th, 2004 (First Tuesday)
+    #assert(expr.include?(PDate.hour(1966,2,8,4))) #4am (February, 8th, 1966 - ignored)
+    #assert(!expr.include?(PDate.min(2030,7,4,6,31))) #6:31am, July, 4th, 2030
+  # end
+  # FIXME Refactor to TExpr-specific test 
   def test_union_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
-    expr = DIMonth.new(Last, Friday) | DIMonth.new(1, Tuesday)
+    expr = DIMonth.new(Last, Friday) | DIMonth.new(First, Tuesday)
     dates = expr.dates(date_range)
     assert dates.size == 24
     dates.each do |d|
@@ -43,6 +36,7 @@ class TExprTest < Test::Unit::TestCase
       end
     end
   end
+
 
   def test_intersection_te
     #Should match the first Sunday of March and April
@@ -81,6 +75,7 @@ class TExprTest < Test::Unit::TestCase
   end
     
 
+  # FIXME Refactor to TExpr-specific test 
   def test_intersection_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)
     expr = DIWeek.new(Sunday) & DIMonth.new(Second, Sunday)
@@ -90,6 +85,7 @@ class TExprTest < Test::Unit::TestCase
     dates.each { |d| assert( other_dates.include?(d) ) }
   end
 
+  # FIXME Refactor to TExpr-specific test 
   def test_diff_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 1, 31)
     expr = REYear.new(1, 1, 1, 31) - REMonth.new(7, 15)
