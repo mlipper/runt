@@ -41,14 +41,6 @@ class TExprTest < Test::Unit::TestCase
     assert(!diff_expr.include?(PDate.new(2003,5,1,20,00)))
   end
 
-  def test_diff_to_s
-    rey1 = REYear.new 3,1,6,2
-    rey2 = REYear.new 4,15,5,20
-    expr = rey1 - rey2
-    assert_equal rey1.to_s + ' except for ' + rey2.to_s, expr.to_s
-  end
-    
-
   # FIXME Refactor to TExpr-specific test 
   def test_intersection_dates
     date_range = Date.civil(2005, 1, 1)..Date.civil(2005, 12, 31)

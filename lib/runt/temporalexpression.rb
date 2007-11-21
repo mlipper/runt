@@ -171,6 +171,8 @@ class Diff
 
   include TExpr
 
+  attr_reader :expr1, :expr2
+
   def initialize(expr1, expr2)
     @expr1 = expr1
     @expr2 = expr2
