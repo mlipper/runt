@@ -192,6 +192,8 @@ end
 class Spec
   
   include TExpr
+
+  attr_reader :date_expr
   
   def initialize(date_expr)
     @date_expr = date_expr
@@ -215,16 +217,10 @@ end
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class RSpec 
+class RSpec < Spec 
 
-  include TExpr
-
-  def initialize(date_expr)
-    @date_expr = date_expr
-  end
-
-  # Will return true if the supplied object is included in the range used to
-  # create this instance
+  ## Will return true if the supplied object is included in the range used to
+  ## create this instance
   def include?(date_expr)
     return @date_expr.include?(date_expr)
   end
@@ -238,9 +234,6 @@ class RSpec
     false    
   end
 
-  def to_s
-    @date_expr.to_s
-  end
 end
 
 #######################################################################

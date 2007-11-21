@@ -8,6 +8,13 @@ require 'baseexpressiontest'
 
 class CombinedExpressionTest < BaseExpressionTest
 
+  def test_difference_te
+    # Should match for 9am to 5pm except for 12pm to 1pm
+    expr = REDay.new(9,0,17,0) - REDay.new(12,0,13,0)
+    assert expr.include?(@pdate_200405030906), "Expression #{expr.to_s} should include #{@pdate_200405030906.to_s}"
+    assert !expr.include?(@pdate_1975060512), "Expression #{expr.to_s} should not include #{@pdate_1975060512.to_s}"
+  end
+
   def test_monday_tuesday_8am_to_9am
     expr = REWeek.new(Mon,Fri) & REDay.new(8,0,9,0)
     assert expr.include?(@pdate_200405040806), "Expression #{expr.to_s} should include #{@pdate_200405040806.to_s}"
