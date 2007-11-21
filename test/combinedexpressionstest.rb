@@ -8,7 +8,28 @@ require 'baseexpressiontest'
 
 class CombinedExpressionTest < BaseExpressionTest
 
-  def test_difference_te
+  def test_dates_on_last_fri_or_first_tues
+    date_range = @date_20050101..@date_20051231
+    expr = DIMonth.new(Last, Friday) | DIMonth.new(First, Tuesday)
+    dates = expr.dates(date_range)
+    assert_equal 24, dates.size, "Expected 24 dates in 2005 which were either on the last Friday or first Tuesday of the month"
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
+    dates.each do |d|
+      unless (d.wday == 2 and d.day < 8) or \
+	(d.wday == 5 and d.day > month_days[d.month-1] - 8)
+	# Fail
+        assert false, d.to_s 
+      end
+    end
+  end
+
+  def test_january_except_from_7th_to_15th
+    date_range = @date_20050101..@date_20050131
+    dates = (REYear.new(1, 1, 1, 31) - REMonth.new(7, 15)).dates(date_range)
+    assert_equal 22, dates.size, "Expected 22 dates: 1/1-1/6, 1/16-1/31"
+  end
+
+  def test_work_day
     # Should match for 9am to 5pm except for 12pm to 1pm
     expr = REDay.new(9,0,17,0) - REDay.new(12,0,13,0)
     assert expr.include?(@pdate_200405030906), "Expression #{expr.to_s} should include #{@pdate_200405030906.to_s}"

@@ -2,7 +2,7 @@
 
 == Version 0.6.0
 
-* Refactored REYear tests to separate file from temporalexpressiontest.rb
+* Refactored and improved temporal expression tests, moving them to separate files per class
 
 * Fixed bug #5741: REYear incorrect handling of default args
 
