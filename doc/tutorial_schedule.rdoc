@@ -1,69 +1,111 @@
 = Schedule Tutorial
 
-If you haven't done so already, took a look the temporal expression 
-tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_te_rdoc.html].
+<em> This tutorial assumes you are familiar with use of the Runt API to
+create temporal expressions. If you're unfamiliar with how and why to write
+temporal expressions, take a look at the temporal expression 
+tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_te_rdoc.html].</em>
 
-So, you've defined some temporal expressions, now what? In his 
-paper[http://martinfowler.com/apsupp/recurring.pdf] about recurring events, 
-Martin Fowler also discusses a simple schedule API which is used, surprisingly
-enough, to build a schedule.
+In his paper[http://martinfowler.com/apsupp/recurring.pdf] about recurring 
+events, Martin Fowler also discusses a simple schedule API which is used, 
+surprisingly enough, to build a schedule. We're not going to cover the pattern 
+itself in this tutorial as Fowler already does a nice job. Because it is such 
+a simple pattern (once you invent it!), you'll be able understand it even if 
+you decide not to read his paper[http://martinfowler.com/apsupp/recurring.pdf].
 
-We're not going to cover the pattern itself in this tutorial as Fowler already 
-does a nice job. Luckily, because it is such a simple pattern (once you invent 
-it!), you'll be able understand it even if you decide not to skim the 
-aforementioned paper[http://martinfowler.com/apsupp/recurring.pdf].
+So, let's pretend that I own a car. Since I don't want to get a ticket, I 
+decide to create an application which will tell me where and when I can park 
+it on my street. (Since this is all make believe anyway, my car is a late 60's 
+model black Ford Mustang with flame detailing (and on the back seat is one 
+million dollars)). 
 
-In the last tutorial we learned about the exciting world of NYC street cleaning 
-regulations. For the uptown side of my block, the sign says:
+We'll build a Runt Schedule that models the parking regulations. Our app 
+will check this Schedule at regular intervals and send us reminders to 
+move our car so we don't get a ticket. YAY!
+
+First, let's visit the exciting world of NYC street cleaning regulations.
+Let's pretend the following rules are in place for our block:
+
+* For the north side of the street, there is no parking Monday, Wednesday, or Friday, from 8am thru 11am
+
+* For the south side of the street, there is no parking Tuesday or Thursday between 11:30am and 2pm
+
+Thus...
     
-    #############################
-    #                           #
-    #       NO PARKING          #
-    #                           #
-    #  Mon, Wed, Fri 8am-11am   #
-    #                           #
-    #   T,Th 11:30am-2:00pm     #
-    #                           #
-    #  Violators will be towed! #
-    #                           #
-    #############################
-                # #
-                # #
-                # #
+  #############################   #############################
+  #                           #   #                           #                             
+  #       NO PARKING          #   #       NO PARKING          #                            
+  #                           #   #                           #                            
+  #  Mon, Wed, Fri 8am-11am   #   #  Tu, Th 11:30am-2:00pm    #                            
+  #                           #   #                           #                            
+  #                           #   #                           #                             
+  #  Violators will be towed! #   #  Violaters will be towed! #                            
+  #                           #   #                           #                            
+  #############################   #############################                          
+              # #                              # #
+              # #                              # #
+              # #                              # #
+
+    North side of the street      South side of the street
+
+
+We'll start by creating temporal expressions which describe the verboten 
+parking times: 
+
+
+  north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+    
+  south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)    
+
  
-We created a temporal expression to match this time period, like so: 
+What we need at this point is a way to write queries against these expressions 
+to determine whether we need to send a reminder. For this purpose, we can use 
+a Schedule and an associated Event, both of which are supplied by Runt.
 
-    expr1=(DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
-    
-    expr2=(DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
-    
-    ticket=expr1 | expr2
-
-What we need at this point is a way to associate this expression with the rest 
-of our domain model. For this purpose, we can use a Schedule and an associated
-Event both of which are supplied by Runt.
+  schedule = Schedule.new
 
 A Schedule holds zero or more Event/TemporalExpression pairs, allowing clients
 to easily query and update TemporalExpressions as well perform certain range
-operations as we will see in a moment.
+operations as we will see in a moment. We'll create two events, one for each 
+side of the street:
+
+  north_event = Event.new("north side")
+  
+  south_event = Event.new("south side")
+
+Now we add each event and its associated occurrence to our Schedule:
+
+  schedule.add(north_event, north_expr)
+
+  schedule.add(south_event, south_expr)
 
 An Event is simply a container for domain data. Although Runt uses Events 
 by default, Schedules will happily house any kind of Object. Internally, a 
 Schedule is really just a Hash where the keys are whatever it is you are 
 scheduling and the values are the TemporalExpressions you create.
 
+  class Schedule
+  ...
 
     def add(obj, expression)
       @elems[obj]=expression
     end
+  ...
+
+Now that we have a Schedule configured, we need something to check it and 
+then let us know if we need to move the car. For this, we'll create a simple
+class called Reminder which will function as the "main-able" part of 
+our app.
+
+   
 
 
 For the remainder of this tutorial I will refer to Events specifically, but 
 just remember that anything reasonably Hash-keyable will do.
 
 
-So, let's pretend that I own a car. Since I don't want to get a ticket, I 
-decide to create a little cron-like utility daemon to remind myself whenever
+
+
+little cron-like utility daemon to remind myself whenever
 it's time for me to move it.
 
   class Ron
