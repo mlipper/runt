@@ -94,27 +94,115 @@ scheduling and the values are the TemporalExpressions you create.
 Now that we have a Schedule configured, we need something to check it and 
 then let us know if we need to move the car. For this, we'll create a simple
 class called Reminder which will function as the "main-able" part of 
-our app.
+our app. 
+
+We'll start by creating an easily testable constructor which will be passed
+a Schedule instance (like the one we just created) and an SMTP server. 
 
    
+  class Reminder
+    
+    attr_reader :schedule, :mail_server
+  
+    def initialize(schedule,mail_server)
+      @schedule = schedule
+      @mail_server = mail_server
+    end
+  ...
+
+Being devoted Agilists, we'll of course also create a unit test to 
+help flesh out the specifics of our new Reminder class. We'll create
+test fixtures using the Runt Objects described above.
 
 
-For the remainder of this tutorial I will refer to Events specifically, but 
-just remember that anything reasonably Hash-keyable will do.
+  class ReminderTest < Test::Unit::TestCase
+  
+    include Runt
+  
+    def setup
+      @schedule = Schedule.new
+      @north_event = Event.new("north side of the street will be ticketed")
+      north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)  
+      @schedule.add(@north_event, north_expr)
+      @south_event = Event.new("south side of the street will be ticketed")
+      south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
+      @schedule.add(@south_event, south_expr)
+      @mail_server = MailServer.new
+      @reminder = Reminder.new(@schedule, @mail_server)
+      @saturday_at_10 = PDate.min(2007,11,24,10,0,0)
+      @monday_at_10 = PDate.min(2007,11,26,10,0,0)
+      @tuesday_at_noon = PDate.min(2007,11,27,12,0,0)
+    end
+
+    def test_initalize
+      assert_same @schedule, @reminder.schedule, "Expected #{@schedule} instead was #{@reminder.schedule}"
+      assert_same @mail_server, @reminder.mail_server, "Expected #{@mail_server} instead was #{@reminder.mail_server}"
+    end
+  ...
+
+For the purposes of this tutorial, the mail server will simply be stub to 
+illustrate how a real one might be used.
+
+  class MailServer
+
+    Struct.new("Email",:to,:from,:subject,:text)
+
+    def send(to, from, subject, text)
+      Struct::Email.new(to, from, subject, text)
+      # etc... 
+    end
+
+  end
+
+Next, let's add a method to our Reminder class which actually checks our 
+schedule using a date which is passed in as a parameter.
+  
+  class Reminder
+  ...
+  def check(date)
+    return @schedule.events(date)
+  end
+  ...
+
+The Schedule#events method will return an Array of Event Objects for any 
+events which occur at the date and time given by the method's argument. Usage
+is easily demonstrated by a test case which makes use of the fixtures created
+by the TestCase#setup method defined above.
+
+  class ReminderTest < Test::Unit::TestCase
+    ...
+    def test_check
+      assert_equal 1, @reminder.check(@monday_at_10).size, "Unexpected size #{@reminder.check(@monday_at_10).size} returned"
+      assert_same @north_event, @reminder.check(@monday_at_10)[0], "Expected Event #{@north_event}. Got #{@reminder.check(@monday_at_10)[0]}."
+      assert_equal 1, @reminder.check(@tuesday_at_noon).size, "Unexpected size #{@reminder.check(@tuesday_at_noon).size} returned"
+      assert_same @south_event, @reminder.check(@tuesday_at_noon)[0], "Expected Event #{@south_event}. Got #{@reminder.check(@tuesday_at_noon)[0]}."
+      assert @reminder.check(@saturday_at_10).empty?, "Expected empty Array. Got #{@reminder.check(@saturday_at_10)}"
+    end
+    ...
+
+
+There are other methods in the Schedule API which allow a client to query for
+information. Although we don't need them for this tutorial, I'll mention two 
+briefly because they are generally useful. The first is Schedule#dates
+which will return an Array of PDate Objects which occur during the DateRange
+supplied as a parameter. The second is Schedule#include? which returns a 
+boolean value indicating whether the Event occurs on the date which are both 
+supplied as arguments.
+
+Next, let's make use of the mail server argument given to the Reminder class
+in it's constructor. This is the method that will be called when a call to the
+Reminder#check method produces results.
+
+  class Reminder
+  ...
+  def send(date)
+    text = "Warning: " + events.join(', ')
+    return @mail_server.send(TO, FROM, SUBJECT, text)
+  end
+  ...
 
 
 
-
-little cron-like utility daemon to remind myself whenever
-it's time for me to move it.
-
-  class Ron
-
-
-    def run
-      loop 
- 
-    etc...
 
 =.....FINISH ME!......
 

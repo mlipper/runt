@@ -80,7 +80,7 @@ module Runt
     else
       result = super(other)
     end
-    puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
+    #puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
     result
   end
 

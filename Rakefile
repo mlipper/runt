@@ -27,6 +27,7 @@ PKG_FILES = FileList[
   '[A-Z]*',
   'lib/**/*.rb',
   'test/**/*.rb',
+  'examples/**/*.rb',
   'doc/**/*',
   'site/**/*'
 ].exclude("*.ses")
@@ -63,8 +64,8 @@ Rake::RDocTask.new do |rd|
 end
 
 Rake::TestTask.new do |t|
-  t.libs << "test"
-  t.pattern = 'test/*test.rb'
+  t.libs << "test" << "examples"
+  t.pattern = '**/*test.rb'
   t.verbose = false	
 end
 
@@ -103,7 +104,7 @@ else
     s.email = 'mlipper@gmail.com'
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
-    s.test_files = Dir['test/*test.rb']
+    s.test_files = Dir['**/*test.rb']
     s.rubyforge_project = 'runt'
     s.description = <<EOF
 Runt is a Ruby version of temporal patterns by

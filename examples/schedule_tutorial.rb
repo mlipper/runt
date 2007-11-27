@@ -15,11 +15,11 @@ class Reminder
     @mail_server = mail_server
   end
   def run(date)
-    result = self.check date
+    result = self.check(date)
     self.send(result) if !result.empty?
   end
   def check(date)
-    puts "Checking the schedule..."
+    puts "Checking the schedule..." if $DEBUG
     return @schedule.events(date)
   end
   def send(events)
@@ -31,7 +31,7 @@ end
 class MailServer
   Struct.new("Email",:to,:from,:subject,:text)
   def send(to, from, subject, text)
-    puts "Sending message TO: #{to} FROM: #{from} RE: #{subject}..."
+    puts "Sending message TO: #{to} FROM: #{from} RE: #{subject}..." if $DEBUG
     Struct::Email.new(to, from, subject, text)
    # etc... 
   end
@@ -51,7 +51,7 @@ if __FILE__ == $0
   schedule.add(south_event, south_expr)
   reminder = Reminder.new(schedule, MailServer.new)
   while true
-    sleep 5
+    sleep 15.minutes
     reminder.run Time.now
   end
 
