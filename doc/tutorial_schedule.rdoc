@@ -201,9 +201,9 @@ Reminder#check method produces results.
     end
     ...
 
-Testing this is simple thanks to our MailServer stub which simply regurgitates
-the text argument it's passed as a result.
 
+Testing this is simple thanks to our MailServer stub which simply regurgitates
+the text argument it's passed as a result. 
 
   class ReminderTest < Test::Unit::TestCase
     ...
@@ -212,9 +212,20 @@ the text argument it's passed as a result.
       result = @reminder.send(params)
       assert_email result, Reminder::TEXT + params.join(', ')
     end
+
+    def assert_email(result, text)
+      assert_equal Reminder::TO, result.to, "Unexpected value for 'to' field of Email Struct: #{result.to}"
+      assert_equal Reminder::FROM, result.from, "Unexpected value for 'from' field of Email Struct: #{result.from}"
+      assert_equal Reminder::SUBJECT, result.subject, "Unexpected value for 'subject' field of Email Struct: #{result.subject}"
+      assert_equal text, result.text, "Unexpected value for 'text' field of Email Struct: #{result.text}"
+    end
     ...
 
-Now, let's tie the whiole thing together with a method which which checks for
+Note the ReminderTest#assert_email method we've added to make assertions 
+common to multiple test cases.
+
+
+Now, let's tie the whole thing together with a method which which checks for
 occuring Events and (upon finding some) sends a reminder. This method is 
 really the only one in the Reminder class that needs to be public.
 
