@@ -140,7 +140,7 @@ test fixtures using the Runt Objects described above.
     end
   ...
 
-For the purposes of this tutorial, the mail server will simply be stub to 
+For the purposes of this tutorial, the mail server will simply be a stub to 
 illustrate how a real one might be used.
 
   class MailServer
@@ -194,13 +194,65 @@ in it's constructor. This is the method that will be called when a call to the
 Reminder#check method produces results.
 
   class Reminder
-  ...
-  def send(date)
-    text = "Warning: " + events.join(', ')
-    return @mail_server.send(TO, FROM, SUBJECT, text)
-  end
-  ...
+    ...
+    def send(date)
+      text = "Warning: " + events.join(', ')
+      return @mail_server.send(TO, FROM, SUBJECT, text)
+    end
+    ...
 
+Testing this is simple thanks to our MailServer stub which simply regurgitates
+the text argument it's passed as a result.
+
+
+  class ReminderTest < Test::Unit::TestCase
+    ...
+    def test_send
+      params = [@north_event, @south_event]
+      result = @reminder.send(params)
+      assert_email result, Reminder::TEXT + params.join(', ')
+    end
+    ...
+
+Now, let's tie the whiole thing together with a method which which checks for
+occuring Events and (upon finding some) sends a reminder. This method is 
+really the only one in the Reminder class that needs to be public.
+
+  class Reminder
+    ...
+    def run(date)
+      result = self.check(date)
+      self.send(result) if !result.empty?
+    end
+    ...
+
+  class ReminderTest < Test::Unit::TestCase
+    ...
+    def test_send
+      params = [@north_event, @south_event]
+      result = @reminder.send(params)
+      assert_email result, Reminder::TEXT + params.join(', ')
+    end
+    ...
+
+Finally, we'll cheat a bit and stitch every thing together so it can be run 
+from a command line.
+
+ 
+  include Runt
+
+  schedule = Schedule.new
+  north_event = Event.new("north side")
+  north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
+  schedule.add(north_event, north_expr)
+  south_event = Event.new("south side")
+  south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)      
+  schedule.add(south_event, south_expr)
+  reminder = Reminder.new(schedule, MailServer.new)
+  while true
+    sleep 15.minutes
+    reminder.run Time.now
+  end
 
 
 
