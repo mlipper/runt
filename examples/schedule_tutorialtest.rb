@@ -29,7 +29,7 @@ class ReminderTest < Test::Unit::TestCase
   def test_send
     params = [@north_event, @south_event]
     result = @reminder.send(params)
-    assert_email result, 'Warning: ' + params.join(', ')
+    assert_email result, Reminder::TEXT + params.join(', ')
   end
   def test_check
     assert_equal 1, @reminder.check(@monday_at_10).size, "Unexpected size #{@reminder.check(@monday_at_10).size} returned"
@@ -40,7 +40,7 @@ class ReminderTest < Test::Unit::TestCase
   end
   def test_run
     result = @reminder.run(@monday_at_10)
-    assert_email result, "Warning: #{@north_event.to_s}"
+    assert_email result, Reminder::TEXT + @north_event.to_s
   end
   def assert_email(result, text)
     assert_equal Reminder::TO, result.to, "Unexpected value for 'to' field of Email Struct: #{result.to}"

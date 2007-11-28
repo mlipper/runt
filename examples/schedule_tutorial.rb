@@ -7,6 +7,7 @@ class Reminder
   TO = "me@myselfandi.com"
   FROM = "reminder@daemon.net"
   SUBJECT = "Move your car!"
+  TEXT = "Warning: "
 
   attr_reader :schedule, :mail_server
 
@@ -23,7 +24,7 @@ class Reminder
     return @schedule.events(date)
   end
   def send(events)
-    text = "Warning: " + events.join(', ')
+    text = TEXT + events.join(', ')
     return @mail_server.send(TO, FROM, SUBJECT, text)
   end
 end
