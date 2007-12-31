@@ -39,7 +39,7 @@ module Runt
     end
 
     #
-    # Returns all Events whose Tempoarl Expression includes the given date/expression
+    # Returns all Events whose Temporal Expression includes the given date/expression
     #
     def events(date)
       self.select{|ev,xpr| xpr.include?(date);}

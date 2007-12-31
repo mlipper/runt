@@ -104,6 +104,8 @@ else
     s.email = 'mlipper@gmail.com'
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
+    s.rdoc_options += %w{--main README --title Runt}
+    s.extra_rdoc_files = FileList["README","CHANGES","TODO","LICENSE.txt","doc/*.rdoc"]    
     s.test_files = Dir['**/*test.rb']
     s.rubyforge_project = 'runt'
     s.description = <<EOF
