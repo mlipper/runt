@@ -1,5 +1,9 @@
 = Runt Changelog
 
+== Version 0.7.0
+
+* Fixed usage of deprecated methods in Date when accessing them from PDate subclass 
+
 == Version 0.6.0
 
 * Refactored and improved temporal expression tests, moving them to separate files per class

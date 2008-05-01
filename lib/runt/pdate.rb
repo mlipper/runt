@@ -19,7 +19,7 @@ module Runt
     include DPrecision
 
     attr_accessor :date_precision
-
+    
     class << self
       alias_method :old_civil, :civil
 
@@ -88,7 +88,7 @@ module Runt
     if(block_given?)
       n=yield(n)
     end
-    return DPrecision::to_p(self.class.new0(@ajd + n, @of, @sg),@date_precision)
+    return DPrecision::to_p(self.class.new!(@ajd + n, @of, @sg),@date_precision)
   end
 
   def PDate.to_date(pdate)
@@ -137,7 +137,7 @@ module Runt
   # Author:: Jodi Showers
   #
   def marshal_dump
-    [date_precision, ajd, sg, of]
+    [date_precision, ajd, start, offset]
   end
 
   #

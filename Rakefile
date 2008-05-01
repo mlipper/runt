@@ -67,6 +67,7 @@ Rake::TestTask.new do |t|
   t.libs << "test" << "examples"
   t.pattern = '**/*test.rb'
   t.verbose = false	
+  #t.warning = true
 end
 
 desc "Copy html files for the Runt website to the build directory."
