@@ -21,6 +21,7 @@ module Runt
         when MIN then PDate.min(*DPrecision.explode(date,prec))
         when DAY then PDate.day(*DPrecision.explode(date,prec))
         when HOUR then PDate.hour(*DPrecision.explode(date,prec))
+        when WEEK then PDate.week(*DPrecision.explode(date,prec))
         when MONTH then PDate.month(*DPrecision.explode(date,prec))
         when YEAR then PDate.year(*DPrecision.explode(date,prec))
         when SEC then PDate.sec(*DPrecision.explode(date,prec))
@@ -49,15 +50,17 @@ module Runt
       #Some constants w/arbitrary integer values used internally for comparisions
       YEAR_PREC = 0
       MONTH_PREC = 1
-      DAY_PREC = 2
-      HOUR_PREC = 3
-      MIN_PREC = 4
-      SEC_PREC = 5
-      MILLI_PREC = 6
+      WEEK_PREC = 2
+      DAY_PREC = 3
+      HOUR_PREC = 4
+      MIN_PREC = 5
+      SEC_PREC = 6
+      MILLI_PREC = 7
 
       #String values for display
       LABEL = { YEAR_PREC => "YEAR",
         MONTH_PREC => "MONTH",
+        WEEK_PREC => "WEEK",
         DAY_PREC => "DAY",
         HOUR_PREC => "HOUR",
         MIN_PREC => "MINUTE",
@@ -67,6 +70,7 @@ module Runt
       #Minimun values that precisioned fields get set to
       FIELD_MIN = { YEAR_PREC => 1,
       MONTH_PREC => 1,
+      WEEK_PREC => 1,
       DAY_PREC => 1,
       HOUR_PREC => 0,
       MIN_PREC => 0,
@@ -81,6 +85,10 @@ module Runt
         new(MONTH_PREC)
       end
 
+      def Precision.week
+        new(WEEK_PREC)
+      end 
+      
       def Precision.day
         new(DAY_PREC)
       end
@@ -122,13 +130,14 @@ module Runt
       end
 
       def label
-	LABEL[@precision]
+        LABEL[@precision]
       end
   end
 
   #Pseudo Singletons:
   YEAR = Precision.year
   MONTH = Precision.month
+  WEEK = Precision.week
   DAY = Precision.day
   HOUR = Precision.hour
   MIN = Precision.min

@@ -50,6 +50,8 @@ module Runt
       when MONTH then
 	current_date = self.class.to_date(self)
 	return DPrecision::to_p((current_date>>n),@date_precision)
+      when WEEK then
+	return new_self_plus(n*7)	
       when DAY then
 	return new_self_plus(n)
       when HOUR then
@@ -104,6 +106,16 @@ module Runt
 
   def PDate.month( yr,mon,*ignored )
     PDate.civil(MONTH, yr, mon, DAY.min_value  )
+  end
+
+  def PDate.week( yr,mon,day,*ignored )
+    #LJK: need to calculate which week this day implies,
+    #and then move the day back to the *first* day in that week;
+    #note that since rfc2445 defaults to weekstart=monday, I'm 
+    #going to use commercial day-of-week
+    raw = PDate.day(yr, mon, day)
+    cooked = PDate.commercial(raw.cwyear, raw.cweek, 1)
+    PDate.civil(WEEK, cooked.year, cooked.month, cooked.day)
   end
 
   def PDate.day( yr,mon,day,*ignored )

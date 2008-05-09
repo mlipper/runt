@@ -668,24 +668,25 @@ class EveryTE
 
   include TExpr
 
-  def initialize(start,n)
+  def initialize(start,n,precision=nil)
     @start=start
     @interval=n
+    # Use the precision of the start date by default
+    @precision=precision || @start.date_precision
   end
 
   def include?(date)
-    i=DPrecision.to_p(@start,@start.date_precision)
-    # Use the precision of the start date
-    d=DPrecision.to_p(date,@start.date_precision)
+    i=DPrecision.to_p(@start,@precision)
+    d=DPrecision.to_p(date,@precision)
     while i<=d
       return true if i.eql?(d)
-      i=i+@interval
+      i=i+@interval      
     end
     false
   end
 
   def to_s
-    "every #{@interval} #{@start.date_precision.label.downcase}s starting #{Runt.format_date(@start)}"
+    "every #{@interval} #{@precision.label.downcase}s starting #{Runt.format_date(@start)}"
   end
 
 end

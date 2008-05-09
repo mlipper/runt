@@ -14,7 +14,8 @@ class DPrecisionTest < Test::Unit::TestCase
 
   def test_comparable
     assert(DPrecision::YEAR<DPrecision::MONTH, "DPrecision.year was not less than DPrecision.month")
-    assert(DPrecision::MONTH<DPrecision::DAY, "DPrecision.month was not less than DPrecision.day")
+    assert(DPrecision::MONTH<DPrecision::WEEK, "DPrecision.month was not less than DPrecision.week")
+    assert(DPrecision::WEEK<DPrecision::DAY, "DPrecision.week was not less than DPrecision.day")
     assert(DPrecision::DAY<DPrecision::HOUR, "DPrecision.day was not less than DPrecision.hour")
     assert(DPrecision::HOUR<DPrecision::MIN, "DPrecision.hour was not less than DPrecision.min")
     assert(DPrecision::MIN<DPrecision::SEC, "DPrecision.min was not less than DPrecision.sec")
@@ -24,6 +25,7 @@ class DPrecisionTest < Test::Unit::TestCase
   def test_pseudo_singleton_instance
     assert(DPrecision::YEAR.object_id==DPrecision::YEAR.object_id, "Object Id's not equal.")
     assert(DPrecision::MONTH.object_id==DPrecision::MONTH.object_id, "Object Id's not equal.")
+    assert(DPrecision::WEEK.object_id==DPrecision::WEEK.object_id, "Object Id's not equal.")
     assert(DPrecision::DAY.object_id==DPrecision::DAY.object_id, "Object Id's not equal.")
     assert(DPrecision::HOUR.object_id==DPrecision::HOUR.object_id, "Object Id's not equal.")
     assert(DPrecision::MIN.object_id==DPrecision::MIN.object_id, "Object Id's not equal.")
@@ -45,6 +47,7 @@ class DPrecisionTest < Test::Unit::TestCase
   def test_label
     assert_equal(DPrecision::YEAR.label,"YEAR")
     assert_equal(DPrecision::MONTH.label,"MONTH")
+    assert_equal(DPrecision::WEEK.label,"WEEK")
     assert_equal(DPrecision::DAY.label,"DAY")
     assert_equal(DPrecision::HOUR.label,"HOUR")
     assert_equal(DPrecision::MIN.label,"MINUTE")

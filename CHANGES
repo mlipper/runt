@@ -4,6 +4,8 @@
 
 * Fixed usage of deprecated methods in Date when accessing them from PDate subclass 
 
+* Applied patches providing week precision and expanded RFC2445 compliance tests contributed by Larry Karnowski
+
 == Version 0.6.0
 
 * Refactored and improved temporal expression tests, moving them to separate files per class
