@@ -19,7 +19,7 @@ require 'fileutils'
 #####################################################################
 
 # Build Settings
-PKG_VERSION = "0.6.0"
+PKG_VERSION = "0.7.0"
 
 # Files to be included in Runt distribution
 PKG_FILES = FileList[
@@ -67,7 +67,7 @@ Rake::TestTask.new do |t|
   t.libs << "test" << "examples"
   t.pattern = '**/*test.rb'
   t.verbose = false	
-  #t.warning = true
+  t.warning = false
 end
 
 desc "Copy html files for the Runt website to the build directory."

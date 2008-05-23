@@ -6,6 +6,8 @@
 
 * Applied patches providing week precision and expanded RFC2445 compliance tests contributed by Larry Karnowski
 
+* Fixed bug #19982: REYear will match day in any month if @same_month_dates_provided with patch submitted by Riley Lynch
+
 == Version 0.6.0
 
 * Refactored and improved temporal expression tests, moving them to separate files per class

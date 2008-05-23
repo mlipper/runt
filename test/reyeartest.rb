@@ -45,6 +45,7 @@ class REYearTest < BaseExpressionTest
     assert !expr.include?(@pdate_20071114), "#{expr.to_s} should not include #{@pdate_20071114}" 
     assert !expr.include?(@pdate_20071030), "#{expr.to_s} should not include #{@pdate_20071030}" 
     assert !expr.include?(@pdate_20071008), "#{expr.to_s} should not include #{@pdate_20071008}" 
+    assert !expr.include?(@pdate_20060921), "#{expr.to_s} should not include #{@pdate_20060921}"
   end
 
   def test_specific_days_different_months
@@ -80,7 +81,7 @@ class REYearTest < BaseExpressionTest
   
   def test_dates_mixin
     expr = REYear.new(4, 28, 5, 6)
-    assert (expr.dates(@date_20040501..@date_20060504)).size == 22, "Should be 22 occurences in dates Array"
+    assert((expr.dates(@date_20040501..@date_20060504)).size == 22, "Should be 22 occurences in dates Array")
   end
 
   # From bug #5749 

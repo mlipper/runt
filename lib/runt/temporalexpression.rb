@@ -507,10 +507,13 @@ class REYear
   end
 
   def include?(date)
-    return ((@start_day <= date.day) && (@end_day >= date.day)) if @same_month_dates_provided
+   
+    return same_start_month_include_day?(date) \
+      && same_end_month_include_day?(date) if @same_month_dates_provided
+
     is_between_months?(date) ||
       (same_start_month_include_day?(date) ||
-        same_end_month_include_day?(date))
+	same_end_month_include_day?(date))
   end
 
   def save
