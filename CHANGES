@@ -2,6 +2,8 @@
 
 == Version 0.7.0
 
+* Changed runttest.rb to use local Time so test doesn't fail when run from another time zone
+
 * Fixed usage of deprecated methods in Date when accessing them from PDate subclass 
 
 * Applied patches providing week precision and expanded RFC2445 compliance tests contributed by Larry Karnowski
