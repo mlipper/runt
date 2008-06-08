@@ -249,15 +249,21 @@ module TExprUtils
   end
 
   def max_day_of_month(date)
-    result = 1
-    next_month = nil
-    if(date.mon==12)
-      next_month = Date.new(date.year+1,1,1)
+    # Contributed by Justin Cunningham who took it verbatim from the Rails 
+    # ActiveSupport::CoreExtensions::Time::Calculations::ClassMethods module 
+    # days_in_month method. 
+    month = date.month
+    year = date.year
+    if month == 2
+      !year.nil? && 
+        (year % 4 == 0) && 
+        ((year % 100 != 0) || 
+         (year % 400 == 0)) ?  29 : 28
+    elsif month <= 7
+      month % 2 == 0 ? 30 : 31
     else
-      next_month = Date.new(date.year,date.mon+1,1)
+      month % 2 == 0 ? 31 : 30
     end
-    date.step(next_month,1){ |d| result=d.day unless d.day < result }
-    result
   end
 
   def week_matches?(index,date)

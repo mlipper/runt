@@ -2,6 +2,8 @@
 
 == Version 0.7.0
 
+* Applied patch contributed by Justin Cunningham for optimizing performance of the TExprUtils#max_day_of_month method - source is taken verbatim from ActiveSupport::CoreExtensions::Time::Calculations::ClassMethods module days_in_month method
+
 * Changed runttest.rb to use local Time so test doesn't fail when run from another time zone
 
 * Fixed usage of deprecated methods in Date when accessing them from PDate subclass 
