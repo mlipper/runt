@@ -759,7 +759,7 @@ class BeforeTE
   end
 
   def to_s
-    "before #{Runt.format_date(@base_date)}"
+    "before #{Runt.format_date(@date)}"
   end
 
 end
@@ -779,7 +779,7 @@ class AfterTE
   end
 
   def to_s
-    "before #{Runt.format_date(@base_date)}"
+    "after #{Runt.format_date(@date)}"
   end
 
 end
