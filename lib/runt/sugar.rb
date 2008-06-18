@@ -3,6 +3,7 @@
 require 'runt'
 
 module Runt
+  MONTHS = '(january|february|march|april|may|june|july|august|september|october|november|december)'
   DAYS = '(sunday|monday|tuesday|wednesday|thursday|friday|saturday)'
   ORDINALS = '(first|second|third|fourth|last|second_to_last)'
   class << self 
@@ -33,6 +34,12 @@ module Runt
     when Regexp.new('^weekly_' + DAYS + '_to_' + DAYS + '$')
       st_day, end_day = $1, $2
       return REWeek.new(Runt.const(st_day), Runt.const(end_day))
+    when Regexp.new('^yearly_' + MONTHS + '_(\d{1,2})_to_' + MONTHS + '_(\d{1,2})$')
+      st_mon, st_day, end_mon, end_day = $1, $2, $3, $4
+      return REYear.new(Runt.const(st_mon), st_day, Runt.const(end_mon), end_day)
+    else
+      # You're hosed
+      nil
     end
   end
 

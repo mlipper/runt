@@ -53,6 +53,25 @@ class SugarTest < Test::Unit::TestCase
     end
   end
 
+  def test_method_missing_should_define_re_year
+    # Imperfect but "good enough" for now
+    make_months.each do |st_month|
+      make_months.each do |end_month|
+	st_mon_number = Runt.const(st_month)
+	end_mon_number = Runt.const(end_month)
+	next if st_mon_number > end_mon_number
+	st_day = rand(27) + 1
+	end_day = rand(27) + 1
+        if st_mon_number == end_mon_number && st_day > end_day then
+	  st_day, end_day = end_day, st_day
+	end	  
+	puts "Checking #{st_month} #{st_day} - #{end_month} #{end_day}"
+	assert_expression REYear.new(st_mon_number, st_day, end_mon_number, end_day), \
+	  self.send('yearly_' + st_month + '_' + st_day.to_s + '_to_' + end_month + '_' + end_day.to_s)
+      end
+    end
+  end
+
   private 
   def assert_expression(expected, actual)
     assert_equal expected.to_s, actual.to_s, \
@@ -63,5 +82,8 @@ class SugarTest < Test::Unit::TestCase
   end
   def make_days
     Runt::DAYS.delete('()').split('|')
+  end
+  def make_months
+    Runt::MONTHS.delete('()').split('|')
   end
 end
