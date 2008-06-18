@@ -2,6 +2,8 @@
 
 == Version 0.7.0
 
+* Added month constants defined in Date class to runt.rb for use by shortcuts
+
 * Added optional Runt module extension which provides some syntactic sugar for creating common expressions
 
 * Added tests and fixed broken to_s method in AfterTE and BeforeTE
