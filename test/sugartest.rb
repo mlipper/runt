@@ -13,10 +13,8 @@ class SugarTest < Test::Unit::TestCase
   end
   
   def test_method_missing_should_define_dimonth
-      ['first', 'second', 'third', 'fourth', \
-	'last','second_to_last'].each do |ordinal|
-        ['monday','tuesday','wednesday','thursday',\
-	  'friday','saturday','sunday'].each do |day|
+      make_ordinals.each do |ordinal|
+        make_days.each do |day|
 	  name = ordinal + '_' + day
 	  result = self.send(name)
 	  expected = DIMonth.new(Runt.const(ordinal), Runt.const(day))
@@ -40,13 +38,30 @@ class SugarTest < Test::Unit::TestCase
     assert_equal [1,2], parse_time('1','02','am')
   end
 
-  def test_method_missing_should_build_re_day
+  def test_method_missing_should_define_re_day
     assert_expression(REDay.new(8,45,14,00), daily_8_45am_to_2_00pm)
+  end
+
+  def test_method_missing_should_define_re_week
+    make_days.each do |st_day|
+      make_days.each do |end_day|
+	if Runt.const(st_day) <= Runt.const(end_day) then
+	  assert_expression REWeek.new(Runt.const(st_day), \
+	      Runt.const(end_day)), self.send('weekly_' + st_day + '_to_' + end_day)
+	end
+      end
+    end
   end
 
   private 
   def assert_expression(expected, actual)
     assert_equal expected.to_s, actual.to_s, \
       "Expected #{expected.to_s} but was #{actual.to_s}"
+  end
+  def make_ordinals
+    Runt::ORDINALS.delete('()').split('|')
+  end
+  def make_days
+    Runt::DAYS.delete('()').split('|')
   end
 end

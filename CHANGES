@@ -2,6 +2,8 @@
 
 == Version 0.7.0
 
+* Added optional Runt module extension which provides some syntactic sugar for creating common expressions
+
 * Added tests and fixed broken to_s method in AfterTE and BeforeTE
 
 * Applied patch contributed by Justin Cunningham for optimizing performance of the TExprUtils#max_day_of_month method - source is taken verbatim from ActiveSupport::CoreExtensions::Time::Calculations::ClassMethods module days_in_month method
