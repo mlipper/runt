@@ -65,7 +65,7 @@ class SugarTest < Test::Unit::TestCase
         if st_mon_number == end_mon_number && st_day > end_day then
 	  st_day, end_day = end_day, st_day
 	end	  
-	puts "Checking #{st_month} #{st_day} - #{end_month} #{end_day}"
+	#puts "Checking #{st_month} #{st_day} - #{end_month} #{end_day}"
 	assert_expression REYear.new(st_mon_number, st_day, end_mon_number, end_day), \
 	  self.send('yearly_' + st_month + '_' + st_day.to_s + '_to_' + end_month + '_' + end_day.to_s)
       end

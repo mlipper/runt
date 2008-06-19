@@ -1,5 +1,48 @@
 #!/usr/bin/env ruby
 
+#
+# 
+# == Overview
+# 
+#  This file provides an optional extension to the Runt module which 
+#  provides convenient shortcuts for commonly used temporal expressions.
+#  
+#  Several methods for creating new temporal expression instances are added
+#  to a client class by including the Runt module.
+#
+#  === Shortcuts
+#  
+#  Shortcuts are implemented by pattern matching done in method_missing for 
+#  the Runt module. Generally speaking, range expressions start with "daily_", 
+#  "weekly_", "yearly", etc... 
+#
+#  Times use the format /\d{1,2}_\d{2}[ap]m/ where the first digits represent hours
+#  and the second digits represent minutes. Note that hours are always within the
+#  range of 1-12 and may be one or two digits. Minutes are always two digits 
+#  (e.g. '03' not just '3') and are always followed by am or pm (lowercase).
+#  
+#
+#  class MyClass
+#    include Runt
+#  
+#    def some_method
+#      expr1 = daily_4_02pm_to_10_20pm()
+#      expr2 = tuesday()   
+#    end
+#
+#  === REDay 
+#  
+#    daily_<start hour>_<start minute>_to_<end hour>_<end minute>
+#  
+#  Example:
+#
+#    self.daily_10_00am_to_1:30pm() 
+#
+#  is equivilant to 
+#
+#    REDay.new(10,00,13,30)
+# 
+
 require 'runt'
 
 module Runt
