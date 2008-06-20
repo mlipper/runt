@@ -14,7 +14,7 @@
 #  
 #  Shortcuts are implemented by pattern matching done in method_missing for 
 #  the Runt module. Generally speaking, range expressions start with "daily_", 
-#  "weekly_", "yearly", etc... 
+#  "weekly_", "yearly_", etc.   
 #
 #  Times use the format /\d{1,2}_\d{2}[ap]m/ where the first digits represent hours
 #  and the second digits represent minutes. Note that hours are always within the
@@ -26,10 +26,27 @@
 #    include Runt
 #  
 #    def some_method
-#      expr1 = daily_4_02pm_to_10_20pm()
-#      expr2 = tuesday()   
+#      # Daily from 4:02pm to 10:20pm or anytime Tuesday
+#      expr = daily_4_02pm_to_10_20pm() | tuesday()   
+#      ...
 #    end
+#    ...
+#  end
+#  
+#  The following documents the syntax for particular temporal expression classes.
 #
+#  === REDay 
+#  
+#    daily_<start hour>_<start minute>_to_<end hour>_<end minute>
+#  
+#  Example:
+#
+#    self.daily_10_00am_to_1:30pm() 
+#
+#  is equivilant to 
+#
+#    REDay.new(10,00,13,30)
+# 
 #  === REDay 
 #  
 #    daily_<start hour>_<start minute>_to_<end hour>_<end minute>
@@ -65,21 +82,26 @@ module Runt
   def build(name, *args, &block)
     case name.to_s
     when /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
+      # REDay
       st_hr, st_min, st_m, end_hr, end_min, end_m = $2, $3, $4, $5, $6, $7
       args = parse_time(st_hr, st_min, st_m)
       args.concat(parse_time(end_hr, end_min, end_m))
       return REDay.new(*args)
-    when Regexp.new('^' + DAYS + '$')
-      return DIWeek.new(Runt.const(name.to_s))
-    when Regexp.new(ORDINALS + '_' + DAYS)
-      ordinal, day = $1, $2
-      return DIMonth.new(Runt.const(ordinal), Runt.const(day))
     when Regexp.new('^weekly_' + DAYS + '_to_' + DAYS + '$')
+      # REWeek
       st_day, end_day = $1, $2
       return REWeek.new(Runt.const(st_day), Runt.const(end_day))
     when Regexp.new('^yearly_' + MONTHS + '_(\d{1,2})_to_' + MONTHS + '_(\d{1,2})$')
+      # REYear
       st_mon, st_day, end_mon, end_day = $1, $2, $3, $4
       return REYear.new(Runt.const(st_mon), st_day, Runt.const(end_mon), end_day)
+    when Regexp.new('^' + DAYS + '$')
+      # DIWeek
+      return DIWeek.new(Runt.const(name.to_s))
+    when Regexp.new(ORDINALS + '_' + DAYS)
+      # DIYear
+      ordinal, day = $1, $2
+      return DIMonth.new(Runt.const(ordinal), Runt.const(day))
     else
       # You're hosed
       nil
