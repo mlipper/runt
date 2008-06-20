@@ -83,6 +83,20 @@
 #
 #    DIWeek.new(Friday)
 # 
+#  === DIMonth
+#  
+#    self.<lowercase ordinal>_<day name>()
+#  
+#  Example:
+#
+#    self.first_saturday()
+#    self.last_tuesday()
+#
+#  is equivilant to 
+#
+#    DIMonth.new(First, Saturday)
+#    DIMonth.new(Last, Tuesday)
+# 
 
 require 'runt'
 
