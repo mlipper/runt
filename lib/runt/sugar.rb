@@ -47,17 +47,41 @@
 #
 #    REDay.new(10,00,13,30)
 # 
-#  === REDay 
+#  === REWeek
 #  
-#    daily_<start hour>_<start minute>_to_<end hour>_<end minute>
+#    weekly_<start day>_to_<end day>
 #  
 #  Example:
 #
-#    self.daily_10_00am_to_1:30pm() 
+#    self.weekly_tuesday_to_thrusday()
 #
 #  is equivilant to 
 #
-#    REDay.new(10,00,13,30)
+#    REWeek.new(Tuesday, Thrusday)
+# 
+#  === REYear
+#  
+#    self.yearly_<start month>_<start day>_to_<end month>_<end day>()
+#  
+#  Example:
+#
+#    self.yearly_march_15_to_june_1()
+#
+#  is equivilant to 
+#
+#    REYear.new(March, 15, June, 1)
+# 
+#  === DIWeek
+#  
+#    self.<day name>()
+#  
+#  Example:
+#
+#    self.friday()
+#
+#  is equivilant to 
+#
+#    DIWeek.new(Friday)
 # 
 
 require 'runt'
@@ -99,7 +123,7 @@ module Runt
       # DIWeek
       return DIWeek.new(Runt.const(name.to_s))
     when Regexp.new(ORDINALS + '_' + DAYS)
-      # DIYear
+      # DIMonth
       ordinal, day = $1, $2
       return DIMonth.new(Runt.const(ordinal), Runt.const(day))
     else
