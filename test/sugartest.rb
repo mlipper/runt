@@ -53,6 +53,9 @@ class SugarTest < Test::Unit::TestCase
     end
   end
 
+  def test_method_missing_should_define_re_month
+    assert_expression(REMonth.new(8,14), monthly_8_to_14)
+  end
   def test_method_missing_should_define_re_year
     # Imperfect but "good enough" for now
     make_months.each do |st_month|

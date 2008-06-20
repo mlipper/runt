@@ -129,6 +129,10 @@ module Runt
       # REWeek
       st_day, end_day = $1, $2
       return REWeek.new(Runt.const(st_day), Runt.const(end_day))
+    when Regexp.new('^monthly_(\d{1,2})_to_(\d{1,2})$')
+      # REMonth
+      st_day, end_day = $1, $2
+      return REMonth.new(st_day, end_day)
     when Regexp.new('^yearly_' + MONTHS + '_(\d{1,2})_to_' + MONTHS + '_(\d{1,2})$')
       # REYear
       st_mon, st_day, end_mon, end_day = $1, $2, $3, $4
