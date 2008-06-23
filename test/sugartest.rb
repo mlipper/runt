@@ -54,7 +54,7 @@ class SugarTest < Test::Unit::TestCase
   end
 
   def test_method_missing_should_define_re_month
-    assert_expression(REMonth.new(8,14), monthly_8_to_14)
+    assert_expression(REMonth.new(3,14), monthly_3rd_to_14th)
   end
   def test_method_missing_should_define_re_year
     # Imperfect but "good enough" for now
@@ -81,7 +81,7 @@ class SugarTest < Test::Unit::TestCase
       "Expected #{expected.to_s} but was #{actual.to_s}"
   end
   def make_ordinals
-    Runt::ORDINALS.delete('()').split('|')
+    Runt::WEEK_OF_MONTH_ORDINALS.delete('()').split('|')
   end
   def make_days
     Runt::DAYS.delete('()').split('|')

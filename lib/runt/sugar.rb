@@ -59,6 +59,18 @@
 #
 #    REWeek.new(Tuesday, Thrusday)
 # 
+#  === REMonth
+#  
+#    monthly_<start numeric ordinal>_to_<end numeric ordinal>
+#  
+#  Example:
+#
+#    self.monthly_23rd_to_29th()
+#
+#  is equivilant to 
+#
+#    REMonth.new(23, 29)
+# 
 #  === REYear
 #  
 #    self.yearly_<start month>_<start day>_to_<end month>_<end day>()
@@ -103,7 +115,8 @@ require 'runt'
 module Runt
   MONTHS = '(january|february|march|april|may|june|july|august|september|october|november|december)'
   DAYS = '(sunday|monday|tuesday|wednesday|thursday|friday|saturday)'
-  ORDINALS = '(first|second|third|fourth|last|second_to_last)'
+  WEEK_OF_MONTH_ORDINALS = '(first|second|third|fourth|last|second_to_last)'
+  ORDINAL_SUFFIX = '(?:st|nd|rd|th)'
   class << self 
     def const(string)
       self.const_get(string.capitalize)
@@ -129,7 +142,8 @@ module Runt
       # REWeek
       st_day, end_day = $1, $2
       return REWeek.new(Runt.const(st_day), Runt.const(end_day))
-    when Regexp.new('^monthly_(\d{1,2})_to_(\d{1,2})$')
+    when Regexp.new('^monthly_(\d{1,2})' + ORDINAL_SUFFIX + '_to_(\d{1,2})' \
+		    + ORDINAL_SUFFIX + '$')
       # REMonth
       st_day, end_day = $1, $2
       return REMonth.new(st_day, end_day)
@@ -140,7 +154,7 @@ module Runt
     when Regexp.new('^' + DAYS + '$')
       # DIWeek
       return DIWeek.new(Runt.const(name.to_s))
-    when Regexp.new(ORDINALS + '_' + DAYS)
+    when Regexp.new(WEEK_OF_MONTH_ORDINALS + '_' + DAYS)
       # DIMonth
       ordinal, day = $1, $2
       return DIMonth.new(Runt.const(ordinal), Runt.const(day))
