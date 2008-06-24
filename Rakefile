@@ -99,7 +99,6 @@ else
     s.version = PKG_VERSION
     s.requirements << 'none'
     s.require_path = 'lib'
-    #s.autorequire = 'runt'
     s.files = PKG_FILES.to_a
     s.author = 'Matthew Lipper'
     s.email = 'mlipper@gmail.com'
