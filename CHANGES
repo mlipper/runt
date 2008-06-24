@@ -2,6 +2,8 @@
 
 == Version 0.7.0
 
+* Added properly spelled constant Runt::Eighth to the Runt module
+
 * Added month constants defined in Date class to runt.rb for use by shortcuts
 
 * Added optional Runt module extension which provides some syntactic sugar for creating common expressions

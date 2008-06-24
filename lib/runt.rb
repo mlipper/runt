@@ -39,6 +39,7 @@ require "runt/pdate"
 require "runt/temporalexpression"
 require "runt/schedule"
 require "runt/daterange"
+require "runt/sugar"
 
 #
 # The Runt module is the main namespace for all Runt modules and classes. Using
@@ -124,7 +125,8 @@ module Runt
   Fifth = 5
   Sixth = 6
   Seventh = 7
-  Eigth = 8
+  Eighth = 8
+  Eigth = 8  # Will be removed in v0.9.0
   Ninth = 9
   Tenth = 10
 
