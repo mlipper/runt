@@ -32,10 +32,18 @@ Here's a quick summary of patterns and the expressions they create.
 
 === REDay
 
-<em>regex</em>::     /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
+<b>regex</b>::           /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
 
-<em>examples</em>::  daily_8_30am_to_10_00pm  
+<b>example</b>::         daily_8_30am_to_10_00pm  
 
-<em>action</em>::    REDay.new(8,30,22,00)
+<b>action</b>::          REDay.new(8,30,22,00)
+
+=== REWeek
+
+<b>regex</b>::           /^weekly_(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\_to\_(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/
+
+<b>example</b>::         weekly_wednesday_to_friday  
+
+<b>action</b>::          REWeek.new(Wednesday, Friday)
 
 

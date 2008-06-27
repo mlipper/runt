@@ -117,6 +117,7 @@ module Runt
   DAYS = '(sunday|monday|tuesday|wednesday|thursday|friday|saturday)'
   WEEK_OF_MONTH_ORDINALS = '(first|second|third|fourth|last|second_to_last)'
   ORDINAL_SUFFIX = '(?:st|nd|rd|th)'
+  ORDINAL_ABBR = '(st|nd|rd|th)'
   class << self 
     def const(string)
       self.const_get(string.capitalize)
