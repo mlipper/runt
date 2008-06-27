@@ -10,7 +10,7 @@
 #  Several methods for creating new temporal expression instances are added
 #  to a client class by including the Runt module.
 #
-#  === Shortcuts
+# === Shortcuts
 #  
 #  Shortcuts are implemented by pattern matching done in method_missing for 
 #  the Runt module. Generally speaking, range expressions start with "daily_", 
@@ -35,7 +35,7 @@
 #  
 #  The following documents the syntax for particular temporal expression classes.
 #
-#  === REDay 
+# === REDay 
 #  
 #    daily_<start hour>_<start minute>_to_<end hour>_<end minute>
 #  
@@ -47,7 +47,7 @@
 #
 #    REDay.new(10,00,13,30)
 # 
-#  === REWeek
+# === REWeek
 #  
 #    weekly_<start day>_to_<end day>
 #  
@@ -59,7 +59,7 @@
 #
 #    REWeek.new(Tuesday, Thrusday)
 # 
-#  === REMonth
+# === REMonth
 #  
 #    monthly_<start numeric ordinal>_to_<end numeric ordinal>
 #  
@@ -71,7 +71,7 @@
 #
 #    REMonth.new(23, 29)
 # 
-#  === REYear
+# === REYear
 #  
 #    self.yearly_<start month>_<start day>_to_<end month>_<end day>()
 #  
@@ -83,7 +83,7 @@
 #
 #    REYear.new(March, 15, June, 1)
 # 
-#  === DIWeek
+# === DIWeek
 #  
 #    self.<day name>()
 #  
@@ -95,7 +95,7 @@
 #
 #    DIWeek.new(Friday)
 # 
-#  === DIMonth
+# === DIMonth
 #  
 #    self.<lowercase ordinal>_<day name>()
 #  
