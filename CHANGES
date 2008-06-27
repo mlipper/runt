@@ -2,6 +2,10 @@
 
 == Version 0.7.0
 
+* Added ExpressionBuilder class for creating expressions using more human-friendly syntax
+
+* Fixed bug #20723: using modified patch contributed by Justin Cunningham. This partially reverted changes made by bug fix #5749, REDay by default now returns true for less precise arguments but accepts an optional constructor parameter which will override this behavior
+
 * Removed deprecated "autorequire" property configuration from Rakefile
  
 * Added properly spelled constant Runt::Eighth to the Runt module
