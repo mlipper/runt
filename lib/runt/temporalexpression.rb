@@ -551,6 +551,11 @@ end
 # TExpr that matches periods of the day with minute
 # precision. If the start hour is greater than the end hour, than end hour
 # is assumed to be on the following day.
+# 
+# NOTE: By default, this class will match any date expression whose
+# precision is less than or equal to DPrecision::DAY. To override
+# this behavior, pass the optional fifth constructor argument the 
+# value: false.
 #
 #  See also: Date
 class REDay 
@@ -561,7 +566,7 @@ class REDay
   NEXT=29
   ANY_DATE=PDate.day(2002,8,CURRENT)
 
-  def initialize(start_hour, start_minute, end_hour, end_minute)
+  def initialize(start_hour, start_minute, end_hour, end_minute, less_precise_match=true)
 
     start_time = PDate.min(ANY_DATE.year,ANY_DATE.month,
               ANY_DATE.day,start_hour,start_minute)
@@ -573,15 +578,14 @@ class REDay
     end
 
     @range = start_time..end_time
+    @less_precise_match = less_precise_match
   end
 
   def include?(date)
-    # 2007-11-9: Not completely sure of the implications of commenting this 
-    # out but...
     # 
-    # If precision is day or greater, then the result is always true
-    #return true if date.date_precision <= DPrecision::DAY
-    
+    # If @less_precise_match == true and the precision of the argument
+    #  is day or greater, then the result is always true
+    return true if @less_precise_match && date.date_precision <= DPrecision::DAY
     if(@spans_midnight&&date.hour<12) then
       #Assume next day
       return @range.include?(get_next(date.hour,date.min))
@@ -597,8 +601,6 @@ class REDay
 
   private
   def spans_midnight?(start_hour, end_hour)
-    #puts "spans midnight? #{end_hour < start_hour} (end==#{end_hour} <= start==#{start_hour})"
-    #return end_hour <= start_hour
     return end_hour < start_hour
   end
 

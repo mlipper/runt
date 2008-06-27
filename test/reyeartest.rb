@@ -92,7 +92,7 @@ class REYearTest < BaseExpressionTest
     every_21_sept = REYear.new(9,21,9,21)
     # Between 10:00 am and 10:01 am every September 21st
     combo = ten_ish & every_21_sept
-    assert !combo.include?(@pdate_20060921), "Should not include lower precision argument"
+    assert combo.include?(@pdate_20060921), "Should include lower precision argument"
     assert combo.include?(@pdate_200609211001), "Should include matching precision argument which is in range"
     assert !combo.include?(@pdate_200609211002), "Should not include matching precision argument which is out of range"
   end

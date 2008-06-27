@@ -26,5 +26,15 @@ class REDayTest < BaseExpressionTest
   def test_range_each_day_te_to_s
     assert_equal 'from 11:10PM to 01:20AM daily', REDay.new(23,10,1,20).to_s
   end
+
+  def test_less_precise_argument_and_precision_policy
+    expr = REDay.new(8,00,10,00)
+    assert expr.include?(@pdate_20040531), \
+      "Expression #{expr.to_s} should include any lower precision argument by default"
+
+    expr = REDay.new(8,00,10,00, false)
+    assert !expr.include?(@pdate_20040531), \
+      "Expression #{expr.to_s} created with less_precise_match=false should not include any lower precision argument automatically"
+  end
   
 end
