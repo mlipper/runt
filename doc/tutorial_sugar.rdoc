@@ -1,0 +1,41 @@
+= Sugar Tutorial
+
+<em> This tutorial assumes you are familiar with use of the Runt API to
+create temporal expressions. If you're unfamiliar with how and why to write
+temporal expressions, take a look at the temporal expression 
+tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_te_rdoc.html].</em>
+
+Starting with version 0.7.0, Runt provides some syntactic sugar for creating 
+temporal expressions. Runt also provides a builder class for which can be
+used to create expressions in a more readable way than simply using :new.
+
+First, let's look at some of the new shorcuts for creating individual
+expressions. If you look at the lib/runt/sugar.rb file you find that the
+Runt module has been re-opened and some nutty stuff happens when 
+:method_missing is called.
+
+For example, if you've included the Runt module, you can now create a
+DIWeek expression by calling a method whose name matches the following
+pattern:
+
+    /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/
+
+So
+
+  tuesday
+
+is equivalent to
+
+  DIWeek.new(Tuesday)
+
+Here's a quick summary of patterns and the expressions they create.
+
+=== REDay
+
+<em>regex</em>::     /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
+
+<em>examples</em>::  daily_8_30am_to_10_00pm  
+
+<em>action</em>::    REDay.new(8,30,22,00)
+
+
