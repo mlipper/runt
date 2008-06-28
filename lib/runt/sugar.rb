@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'runt'
+
 #
 # 
 # == Overview
@@ -109,9 +111,6 @@
 #    DIMonth.new(First, Saturday)
 #    DIMonth.new(Last, Tuesday)
 # 
-
-require 'runt'
-
 module Runt
   MONTHS = '(january|february|march|april|may|june|july|august|september|october|november|december)'
   DAYS = '(sunday|monday|tuesday|wednesday|thursday|friday|saturday)'

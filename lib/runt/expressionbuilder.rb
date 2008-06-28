@@ -1,4 +1,5 @@
-#
+require 'runt'
+
 # Convenience class for building temporal expressions in a more 
 # human-friendly way. Used in conjunction with shortcuts defined in the 
 # sugar.rb file, this allows one to create expressions like the following:
@@ -26,9 +27,6 @@
 # * <b>:occurs</b> - alias for :on method
 # * <b>:maybe</b> - alias for :possibly method 
 #  
-#
-require 'runt'
-
 class ExpressionBuilder
 
   include Runt
