@@ -56,7 +56,7 @@ Here's a quick summary of patterns and the expressions they create.
 
 === REYear
 
-<b>regex</b>::          /^yearly_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})_to_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})
+<b>regex</b>::          /^yearly_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})\_to\_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})
 
 <b>example</b>::        yearly_may_31_to_september_1
 
