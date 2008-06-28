@@ -77,3 +77,5 @@ Here's a quick summary of patterns and the expressions they create.
 <b>example</b>::        last_friday 
 
 <b>action</b>::         DIMonth.new(Last,Friday) 
+
+Now let's look at the new ExpressionBuilder class. This class uses some simple methods and instance_eval to allow one to create composite tempooral expressions in a more fluid style than :new and friends. The idea is that you define a block where method calls add to a composite expression using either "and", "or", or "not".  
