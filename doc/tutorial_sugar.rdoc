@@ -54,6 +54,14 @@ Here's a quick summary of patterns and the expressions they create.
 
 <b>action</b>::         REMonth.new(2,24) 
 
+=== REYear
+
+<b>regex</b>::          /^yearly_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})_to_(january|february|march|april|may|june|july|august|september|october|november|december)_(\d{1,2})
+
+<b>example</b>::        yearly_may_31_to_september_1
+
+<b>action</b>::         REYear.new(May,31,September,1)
+
 === DIWeek
 
 <b>regex</b>::          /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/
