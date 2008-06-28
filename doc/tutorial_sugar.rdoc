@@ -54,3 +54,11 @@ Here's a quick summary of patterns and the expressions they create.
 
 <b>action</b>::         REMonth.new(2,24) 
 
+=== DIWeek
+
+<b>regex</b>::          /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/
+
+<b>example</b>::        friday 
+
+<b>action</b>::         DIWeek.new(Friday) 
+
