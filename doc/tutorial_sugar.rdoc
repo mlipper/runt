@@ -46,4 +46,11 @@ Here's a quick summary of patterns and the expressions they create.
 
 <b>action</b>::          REWeek.new(Wednesday, Friday)
 
+=== REMonth
+
+<b>regex</b>::          /^monthly_(\d{1,2})(?:st|nd|rd|th)\_to\_(\d{1,2})(?:st|nd|rd|th)$/
+
+<b>example</b>::        monthly_2nd_to_24th 
+
+<b>action</b>::         REMonth.new(2,24) 
 
