@@ -79,3 +79,25 @@ Here's a quick summary of patterns and the expressions they create.
 <b>action</b>::         DIMonth.new(Last,Friday) 
 
 Now let's look at the new ExpressionBuilder class. This class uses some simple methods and instance_eval to allow one to create composite tempooral expressions in a more fluid style than :new and friends. The idea is that you define a block where method calls add to a composite expression using either "and", "or", or "not".  
+
+    # Create a new builder
+    b = ExpressionBuilder.new
+    
+    # Call define with a block
+    expression = d.define do
+      on REDay.new(8,45,9,30)       
+      on DIWeek.new(Friday)              # "And"
+      possibly DIWeek.new(Saturday)      # "Or"
+      except DIMonth.new(Last, Friday)   # "Not"
+    end
+
+    # expression = "Daily 8:45am to 9:30 and Fridays or Saturday except not the last Friday of the month"
+
+Hmmm, this is not really an improvement over
+
+
+      REDay.new(8,45,9,30) & DIWeek.new(Friday) | DIWeek.new(Saturday) - DIMonth.new(Last, Friday)
+
+I know, let's try the new constructor aliases defined above!
+
+
