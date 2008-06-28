@@ -62,3 +62,10 @@ Here's a quick summary of patterns and the expressions they create.
 
 <b>action</b>::         DIWeek.new(Friday) 
 
+=== DIMonth
+
+<b>regex</b>::          /^(first|second|third|fourth|last|second_to_last)_(sunday|monday|tuesday|wednesday|thursday|friday|saturday)$/
+
+<b>example</b>::        last_friday 
+
+<b>action</b>::         DIMonth.new(Last,Friday) 
