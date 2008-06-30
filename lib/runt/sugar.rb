@@ -125,17 +125,16 @@ module Runt
   end
 
   def method_missing(name, *args, &block) 
-    #puts "Called '#{name}' with #{args.inspect} and #{block}"
     result = self.build(name, *args, &block)
     return result unless result.nil?
-    super(name, *args, &block)
+    super
   end
 
   def build(name, *args, &block)
     case name.to_s
-    when /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
+    when /^daily_(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
       # REDay
-      st_hr, st_min, st_m, end_hr, end_min, end_m = $2, $3, $4, $5, $6, $7
+      st_hr, st_min, st_m, end_hr, end_min, end_m = $1, $2, $3, $4, $5, $6
       args = parse_time(st_hr, st_min, st_m)
       args.concat(parse_time(end_hr, end_min, end_m))
       return REDay.new(*args)

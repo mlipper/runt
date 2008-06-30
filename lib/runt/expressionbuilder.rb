@@ -63,15 +63,3 @@ class ExpressionBuilder
   alias_method :occurs, :on
   alias_method :maybe, :possibly
 end
-
-if __FILE__ == $0
-  builder = ExpressionBuilder.new
-  expr = builder.define do
-    occurs daily_11_00am_to_3_00pm
-    on monday 
-    possibly tuesday
-    except last_monday
-  end
-  puts expr
-end
-

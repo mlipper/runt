@@ -7,6 +7,18 @@ require 'runt/sugar'
 class SugarTest < Test::Unit::TestCase
   include Runt
 
+  def test_build__should_return_nil_when_an_unknown_name_is_given
+    assert self.build('duh').nil?
+  end
+
+  def test_method_missing_should_be_called_for_invalid_name
+    begin
+      self.some_tuesday
+    rescue NoMethodError
+      # YAY!
+    end
+  end
+
   def test_const_should_return_runt_constant
     assert_equal Runt::Monday, Runt.const('monday'), \
       "Expected #{Runt::Monday} but was #{Runt.const('monday')}"
