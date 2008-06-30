@@ -32,7 +32,7 @@ Here's a quick summary of patterns and the expressions they create.
 
 === REDay
 
-<b>regex</b>::           /^(daily_)(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
+<b>regex</b>::           /^daily_(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
 
 <b>example</b>::         daily_8_30am_to_10_00pm  
 
@@ -98,6 +98,23 @@ Hmmm, this is not really an improvement over
 
       REDay.new(8,45,9,30) & DIWeek.new(Friday) | DIWeek.new(Saturday) - DIMonth.new(Last, Friday)
 
+
 I know, let's try the new constructor aliases defined above!
 
 
+    expression = d.define do
+      on daily_8_45am_to_9_30am
+      on friday
+      possibly saturday
+      except last_friday
+    end
+
+Much better, except "on daily..." seems  a little awkward. We can use :occurs which is aliased to :on for just such a scenario.
+
+
+    expression = d.define do
+      occurs daily_8_45am_to_9_30am
+      on friday
+      possibly saturday
+      except last_friday
+    end
