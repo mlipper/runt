@@ -48,6 +48,9 @@ require "runt/expressionbuilder"
 # defines some new constants and exposes some already defined in the standard
 # library classes <tt>Date</tt> and <tt>DateTime</tt>.
 #
+# <b>See also</b> runt/sugar_rb which re-opens this module and adds 
+# some additional functionality
+#
 # <b>See also</b> date.rb
 #
 module Runt

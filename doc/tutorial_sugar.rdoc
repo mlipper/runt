@@ -118,3 +118,26 @@ Much better, except "on daily..." seems  a little awkward. We can use :occurs wh
       possibly saturday
       except last_friday
     end
+
+ 
+ExpressionBuilder creates expressions by evaluating a block passed to the 
+:define method. From inside the block, methods :occurs, :on, :every, :possibly,
+and :maybe can be called with a temporal expression which will be added to
+a composite expression as follows:
+
+* <b>:on</b>::        creates an "and" (&)
+* <b>:possibly</b>::  creates an "or" (|)  
+* <b>:except</b>::    creates a "not" (-)
+* <b>:every</b>::     alias for :on method
+* <b>:occurs</b>::    alias for :on method
+* <b>:maybe</b>::     alias for :possibly method 
+
+Of course it's easy to open the builder class and add you own aliases if the ones provided don't work for you:
+
+    class ExpressionBuilder
+      alias_method :potentially, :possibly
+      etc....
+    end
+
+If there are shortcuts or macros that you think others would find useful, send in a feature request or patch.
+ 

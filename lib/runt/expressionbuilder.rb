@@ -17,7 +17,7 @@ require 'runt'
 #
 # ExpressionBuilder creates expressions by evaluating a block passed to the 
 # :define method. From inside the block, methods :occurs, :on, :every, :possibly,
-# and maybe can be called with a temporal expression which will be added to
+# and :maybe can be called with a temporal expression which will be added to
 # a composite expression as follows:
 #
 # * <b>:on</b> - creates an "and" (&)
