@@ -40,6 +40,7 @@ require "runt/temporalexpression"
 require "runt/schedule"
 require "runt/daterange"
 require "runt/sugar"
+require "runt/expressionbuilder"
 
 #
 # The Runt module is the main namespace for all Runt modules and classes. Using

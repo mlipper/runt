@@ -2,7 +2,6 @@
 
 require 'test/unit'
 require 'runt'
-require 'runt/expressionbuilder'
 
 class ExpressionBuilderTest < Test::Unit::TestCase
 
@@ -50,5 +49,16 @@ class ExpressionBuilderTest < Test::Unit::TestCase
     assert_equal 3, result, "Result should equal 3 == 1 | 2"
     assert_equal 3, @builder.ctx, "Builder context should equal result"
   end
-
+  
+  def test_builder_created_expression_should_equal_manually_created_expression
+    manual = Runt::REDay.new(8,45,9,30) & Runt::DIWeek.new(Runt::Friday) | \
+      Runt::DIWeek.new(Runt::Saturday) -  Runt::DIMonth.new(Runt::Last, Runt::Friday)
+    expression = @builder.define do
+      on daily_8_45am_to_9_30am
+      on friday
+      possibly saturday
+      except last_friday
+    end
+    assert_equal manual.to_s, expression.to_s, "Expected #{manual.to_s} but was #{expression.to_s}"
+  end
 end
