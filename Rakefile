@@ -19,7 +19,7 @@ require 'fileutils'
 #####################################################################
 
 # Build Settings
-PKG_VERSION = "0.7.0"
+PKG_VERSION = "0.8.0"
 
 # Files to be included in Runt distribution
 PKG_FILES = FileList[
