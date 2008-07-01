@@ -108,7 +108,36 @@
 #
 #    DIMonth.new(First, Saturday)
 #    DIMonth.new(Last, Tuesday)
-# 
+#    
+# === AfterTE 
+#
+#    self.after(date [, inclusive])
+#
+#  Example:
+#
+#    self.after(date)
+#    self.after(date, true)
+#
+#  is equivilant to
+#
+#    AfterTE.new(date)
+#    AfterTE.new(date, true)
+#
+# === BeforeTE 
+#
+#    self.before(date [, inclusive])
+#
+#  Example:
+#
+#    self.before(date)
+#    self.before(date, true)
+#
+#  is equivilant to
+#
+#    BeforeTE.new(date)
+#    BeforeTE.new(date, true)
+#    
+
 
 require 'runt'
 
@@ -162,6 +191,16 @@ module Runt
       # You're hosed
       nil
     end
+  end
+
+  # Shortcut for AfterTE(date, ...).new
+  def after(date, inclusive=false)
+    AfterTE.new(date, inclusive)
+  end
+
+  # Shortcut for BeforeTE(date, ...).new
+  def before(date, inclusive=false)
+    BeforeTE.new(date, inclusive)
   end
 
   def parse_time(hour, minute, ampm)

@@ -78,6 +78,20 @@ Here's a quick summary of patterns and the expressions they create.
 
 <b>action</b>::         DIMonth.new(Last,Friday) 
 
+There are also other methods defined (not via :method_missing) which provide shortcuts:
+
+=== AfterTE
+
+<b>method</b>::         after(date, inclusive=false)
+
+<b>action</b>::         AfterTE.new(date, inclusive=false)
+
+=== BeforeTE
+
+<b>method</b>::         before(date, inclusive=false)
+
+<b>action</b>::         BeforeTE.new(date, inclusive=false)
+
 Now let's look at the new ExpressionBuilder class. This class uses some simple methods and instance_eval to allow one to create composite tempooral expressions in a more fluid style than :new and friends. The idea is that you define a block where method calls add to a composite expression using either "and", "or", or "not".  
 
     # Create a new builder

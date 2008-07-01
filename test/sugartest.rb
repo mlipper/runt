@@ -7,6 +7,10 @@ require 'runt/sugar'
 class SugarTest < Test::Unit::TestCase
   include Runt
 
+  def setup
+    @date = PDate.day(2008,7,1)
+  end
+
   def test_build__should_return_nil_when_an_unknown_name_is_given
     assert self.build('duh').nil?
   end
@@ -85,6 +89,30 @@ class SugarTest < Test::Unit::TestCase
 	  self.send('yearly_' + st_month + '_' + st_day.to_s + '_to_' + end_month + '_' + end_day.to_s)
       end
     end
+  end
+
+  def test_after_should_define_after_te_with_inclusive_parameter
+    result = self.after(@date, true)
+    assert_expression AfterTE.new(@date, true), result
+    assert result.instance_variable_get("@inclusive")
+  end
+
+  def test_after_should_define_after_te_without_inclusive_parameter
+    result = self.after(@date)
+    assert_expression AfterTE.new(@date), result
+    assert !result.instance_variable_get("@inclusive")
+  end
+
+  def test_before_should_define_before_te_with_inclusive_parameter
+    result = self.before(@date, true)
+    assert_expression BeforeTE.new(@date, true), result
+    assert result.instance_variable_get("@inclusive")
+  end
+
+  def test_before_should_define_before_te_without_inclusive_parameter
+    result = self.before(@date)
+    assert_expression BeforeTE.new(@date), result
+    assert !result.instance_variable_get("@inclusive")
   end
 
   private 
