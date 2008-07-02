@@ -41,6 +41,8 @@ end
 # build directory
 TARGET_DIR = "target"
 
+RDOC_OPTS = %w{--main README --title Runt --inline-source --line-numbers}
+
 #####################################################################
 # Targets
 #####################################################################
@@ -59,7 +61,7 @@ end
 
 Rake::RDocTask.new do |rd|
   rd.rdoc_dir="#{TARGET_DIR}/doc"
-  rd.options << "-S"
+  rd.options.concat(RDOC_OPTS)
   rd.rdoc_files.include('lib/*','doc/*.rdoc','README','CHANGES','TODO','LICENSE.txt')
 end
 
@@ -104,7 +106,7 @@ else
     s.email = 'mlipper@gmail.com'
     s.homepage = 'http://runt.rubyforge.org'
     s.has_rdoc = true
-    s.rdoc_options += %w{--main README --title Runt}
+    s.rdoc_options += RDOC_OPTS
     s.extra_rdoc_files = FileList["README","CHANGES","TODO","LICENSE.txt","doc/*.rdoc"]    
     s.test_files = Dir['**/*test.rb']
     s.rubyforge_project = 'runt'

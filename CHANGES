@@ -1,5 +1,9 @@
 = Runt Changelog
 
+== Version 0.8.0
+
+* Fixed RDoc generation from Rakefile so start page points to README
+
 == Version 0.7.0
 
 * Addded tutorial_sugar.rdoc for new builder and shortcut stuff
