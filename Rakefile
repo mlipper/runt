@@ -3,6 +3,8 @@
 begin
   require 'rubygems'
   require 'rake/gempackagetask'
+  require 'hoe'
+  require './lib/runt.rb'
 rescue Exception
   nil
 end
@@ -13,6 +15,7 @@ require 'rake/rdoctask'
 require 'rake/contrib/sshpublisher'
 require 'rake/contrib/rubyforgepublisher'
 require 'fileutils'
+
 
 #####################################################################
 # Constants
@@ -42,6 +45,12 @@ end
 TARGET_DIR = "target"
 
 RDOC_OPTS = %w{--main README --title Runt --inline-source --line-numbers}
+
+# Trying to auto-build with Hoe.
+Hoe.new('runt', PKG_VERSION) do |p|
+   p.rubyforge_name = 'Runt' # if different than lowercase project name
+   p.developer('Matthew Lipper', 'mlipper@gmail.com')
+end
 
 #####################################################################
 # Targets

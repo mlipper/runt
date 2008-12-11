@@ -55,6 +55,8 @@ require "runt/expressionbuilder"
 #
 module Runt
   
+  VERSION = "0.7.1"
+
   class << self
     
     def day_name(number)
@@ -219,16 +221,16 @@ end
 # somewhere else. :-)
 #
 class Numeric #:nodoc:
-  def microseconds() Float(self  * (10 ** -6)) end
-  def milliseconds() Float(self  * (10 ** -3)) end
-  def seconds() self end
-  def minutes() 60 * seconds end
-  def hours() 60 * minutes end
-  def days() 24 * hours end
-  def weeks() 7 * days end
-  def months() 30 * days end
-  def years() 365 * days end
-  def decades() 10 * years end
+  def microseconds() Float(self  * (10 ** -6)) end unless self.instance_methods.include?('microseconds')
+  def milliseconds() Float(self  * (10 ** -3)) end unless self.instance_methods.include?('milliseconds')
+  def seconds() self end unless self.instance_methods.include?('seconds')
+  def minutes() 60 * seconds end unless self.instance_methods.include?('minutes')
+  def hours() 60 * minutes end unless self.instance_methods.include?('hours')
+  def days() 24 * hours end unless self.instance_methods.include?('days')
+  def weeks() 7 * days end unless self.instance_methods.include?('weeks')
+  def months() 30 * days end unless self.instance_methods.include?('months')
+  def years() 365 * days end unless self.instance_methods.include?('years')
+  def decades() 10 * years end unless self.instance_methods.include?('decades')
   # This causes RDoc to hurl:  
   %w[
   microseconds milliseconds seconds minutes hours days weeks months years decades

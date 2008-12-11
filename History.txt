@@ -13,7 +13,7 @@
 * Fixed bug #20723: using modified patch contributed by Justin Cunningham. This partially reverted changes made by bug fix #5749, REDay by default now returns true for less precise arguments but accepts an optional constructor parameter which will override this behavior
 
 * Removed deprecated "autorequire" property configuration from Rakefile
- 
+
 * Added properly spelled constant Runt::Eighth to the Runt module
 
 * Added month constants defined in Date class to runt.rb for use by shortcuts
@@ -26,7 +26,7 @@
 
 * Changed runttest.rb to use local Time so test doesn't fail when run from another time zone
 
-* Fixed usage of deprecated methods in Date when accessing them from PDate subclass 
+* Fixed usage of deprecated methods in Date when accessing them from PDate subclass
 
 * Applied patches providing week precision and expanded RFC2445 compliance tests contributed by Larry Karnowski
 
@@ -56,9 +56,9 @@
 
 * Added update method to Schedule allowing clients to update existing expressions
 
-* Added select method to Schedule allowing clients to query Events using arbitrary criteria   
+* Added select method to Schedule allowing clients to query Events using arbitrary criteria
 
-* Added events method to Schedule which returns an Array of the currrently held Events   
+* Added events method to Schedule which returns an Array of the currrently held Events
 
 * Added time-related shortcuts to Runt module contributed by Ara T. Howard
 
@@ -88,12 +88,12 @@
 
 == Version 0.3.0
 
-* TExpr (finally!) becomes a Module instead of a superclass 
+* TExpr (finally!) becomes a Module instead of a superclass
 
 * Added overlap? method for all temporal expressions and DateRange
 
 * Added REMonth expression which matches a range of dates each month
- 
+
 * Contributed by Emmett Shear: TExpr#dates method which returns an array of dates occurring within the supplied DateRange
 
 * Rakefile fixes:
@@ -118,7 +118,7 @@
 * Renamed file dateprecisiontest.rb to dprecisiontest.rb
 * Renamed several methods on PDate:
   - second -> sec
-  - minute -> min  
+  - minute -> min
   - hour_of_day -> hour
   - day_of_month -> day
 
