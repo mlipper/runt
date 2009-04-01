@@ -101,11 +101,17 @@ module Runt
       return DPrecision::to_p(self.class.new!(@ajd + n, @of, @sg),@date_precision)
     end
 
+    def to_date_time
+      DateTime.new(self.year,self.month,self.day,self.hour,self.min,self.sec)
+    end
+    
+    def to_date
+      (self.date_precision > DPrecision::DAY) ? self.to_date_time : Date.new(self.year, self.month, self.day)
+    end
+
+
     def PDate.to_date(pdate)
-      if( pdate.date_precision > DPrecision::DAY) then
-        DateTime.new(pdate.year,pdate.month,pdate.day,pdate.hour,pdate.min,pdate.sec)
-      end
-      return Date.new(pdate.year,pdate.month,pdate.day)
+      pdate.to_date
     end
 
     def PDate.year(yr,*ignored)
