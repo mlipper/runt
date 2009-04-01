@@ -23,6 +23,14 @@ module TExpr
   # date expression.
   def include?(date_expr); false end
   
+  
+  # Returns the simplest subset of the current TExpr that matches aDate
+  # return nil if the current TExpr doesn't match aDate
+  # In the case of a single TExpr, it just returns itself it the TExpr matches the date
+  def matching_expressions_for(aDate)
+    include?(aDate) ? self : nil
+  end
+  
   def to_s; "TExpr" end
 
   def or (arg)
@@ -76,6 +84,39 @@ module TExpr
     end
     result
   end
+  
+  
+  # Returns an Array of {:date_time, :duration} hash of all the events that occur
+  # within the supplied DateRange
+  # Will stop calculating dates once a number of dates equal 
+  # to the optional attribute limit are found. (A limit of zero will collect
+  # all matching dates in the date range.)
+  def date_times_and_durations(date_range, limit = 0)
+    result = []
+    date_range.each do |date|
+
+      date.date_precision = DPrecision::DAY
+      matching_expression = self.matching_expressions_for(date)
+      re_days = if matching_expression.is_a?(REDay)
+        [matching_expression]
+      elsif matching_expression.class < Collection
+        matching_expression.re_days
+      else
+        []
+      end
+      
+      re_days.each do |re_day|
+        start_hour = re_day.range.first.hour
+        start_min  = re_day.range.first.min
+        start_time = date.to_date_time + start_hour / 24.0 + start_min / 1440.0
+        
+        result << {:duration => re_day.duration, :date_time => start_time}
+      end
+      
+      break if limit > 0 and result.size == limit
+    end
+    result
+  end
 
 end
 
@@ -87,13 +128,20 @@ class Collection
   
   attr_reader :expressions
 
-  def initialize
-    @expressions = Array.new
+  def initialize(expressions = [])
+    @expressions = expressions
   end
 
   def add(anExpression)
     @expressions.push anExpression
     self
+  end
+  
+  # Returns the simplest subset of the current TExpr that matches aDate
+  # return nil if the current TExpr doesn't match aDate
+  # In the case of a single TExpr, it just returns itself it the TExpr matches the date
+  def matching_expressions_for
+    nil
   end
 
   # Will return true if the supplied object overlaps with the range used to
@@ -105,16 +153,21 @@ class Collection
     false    
   end
 
+  def re_days
+    @expressions.map{|e| ((e.class < Collection) && e.re_days) || (e.is_a?(REDay) && e) || nil}.flatten.compact
+  end
+
+
   def to_s
     if !@expressions.empty? && block_given?
       first_expr, next_exprs = yield
       result = '' 
       @expressions.map do |expr|
-	if @expressions.first===expr
-	  result = first_expr + expr.to_s
-	else
-	 result = result + next_exprs + expr.to_s
-	end 
+        if @expressions.first===expr
+          result = first_expr + expr.to_s
+        else
+          result = result + next_exprs + expr.to_s
+        end 
       end
       result
     else
@@ -142,6 +195,11 @@ class Union < Collection
     end
     false
   end
+  
+  def matching_expressions_for(aDate)
+    new_exprs = @expressions.map{|expr| expr.matching_expressions_for(aDate)}.compact
+    new_exprs.length == 1 ? new_exprs.first : Union.new(new_exprs)  
+  end  
 
   def to_s
     super {['every ',' or ']}
@@ -158,6 +216,14 @@ class Intersect < Collection
       return false unless (result = expr.include?(aDate))
     end
     result
+  end
+  
+  def matching_expressions_for(aDate)
+    Intersect.new(@expressions.map do |expr| 
+      e = expr.matching_expressions_for(aDate)
+      return nil unless e
+      e
+    end)
   end
 
   def to_s 
@@ -181,6 +247,13 @@ class Diff
   def include?(aDate)
     return false unless (@expr1.include?(aDate) && !@expr2.include?(aDate))
     true
+  end
+
+  def matching_expressions_for(aDate)
+    matching_expr1 = @expr1.matching_expressions_for(aDate)
+    matching_expr2 = @expr2.matching_expressions_for(aDate)
+    return nil unless matching_expr1 && matching_expr2
+    Diff.new(matching_expr1, matching_expr2)
   end
 
   def to_s
@@ -565,6 +638,8 @@ class REDay
   CURRENT=28
   NEXT=29
   ANY_DATE=PDate.day(2002,8,CURRENT)
+  
+  attr_reader :range
 
   def initialize(start_hour, start_minute, end_hour, end_minute, less_precise_match=true)
 
@@ -579,6 +654,10 @@ class REDay
 
     @range = start_time..end_time
     @less_precise_match = less_precise_match
+  end
+  
+  def duration
+    (range.last - range.first) * 24
   end
 
   def include?(date)

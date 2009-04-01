@@ -16,8 +16,8 @@ class CombinedExpressionTest < BaseExpressionTest
     month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
     dates.each do |d|
       unless (d.wday == 2 and d.day < 8) or \
-	(d.wday == 5 and d.day > month_days[d.month-1] - 8)
-	# Fail
+        (d.wday == 5 and d.day > month_days[d.month-1] - 8)
+        # Fail
         assert false, d.to_s 
       end
     end
@@ -42,7 +42,7 @@ class CombinedExpressionTest < BaseExpressionTest
     assert !expr.include?(@pdate_200405010806), "Expression #{expr.to_s} should not include #{@pdate_200405010806.to_s}"
     assert !expr.include?(@pdate_200405030906), "Expression #{expr.to_s} should not include #{@pdate_200405030906.to_s}"
   end
-  
+
 
   def test_midnight_to_9am_or_tuesday
     expr = REDay.new(0,0,9,0) | DIWeek.new(Tuesday)
@@ -75,7 +75,7 @@ class CombinedExpressionTest < BaseExpressionTest
     # Still have to work on Tuesday
     assert job.include?(@pdate_200605301400), "Expression #{job.to_s} should include #{@pdate_200605301400.to_s}"
   end
-  
+
   def test_summertime
     #This is a hack.....
     #In the U.S., Memorial Day begins the last Monday of May
@@ -123,8 +123,8 @@ class CombinedExpressionTest < BaseExpressionTest
 
     #Monday, Wednesday, Friday
     mon_wed_fri = DIWeek.new(Mon) | \
-                    DIWeek.new(Wed) | \
-                      DIWeek.new(Fri)
+    DIWeek.new(Wed) | \
+    DIWeek.new(Fri)
 
     assert mon_wed_fri.include?(@datetime_200403101915), "Expression #{mon_wed_fri.to_s} should include #{@datetime_200403101915.to_s}"
     assert !mon_wed_fri.include?(@datetime_200403140900), "Expression #{mon_wed_fri.to_s} should not include #{@datetime_200403140900.to_s}"
@@ -163,5 +163,27 @@ class CombinedExpressionTest < BaseExpressionTest
     every_four_hours_on_tuesday = every_four_hours & tuesday
     result = every_four_hours_on_tuesday.dates(range)
   end
-  
+
+  def test_matching_expressions_for
+    expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
+    assert(expr.matching_expressions_for(PDate.day(2009, 01, 04)), (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)))
+  end
+
+
+  def test_date_times_and_durations
+    expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
+    results =  expr.date_times_and_durations(DateRange.new(PDate.day(2009, 04, 01), PDate.day(2009, 04, 06)))
+    
+    assert_equal results, [{:duration=>Rational(5, 1), :date_time=>DateTime.parse("Wed, 01 Apr 2009 10:30:00")}, 
+                           {:duration=>Rational(5, 1), :date_time=>DateTime.parse("Thu, 02 Apr 2009 10:30:00")}, 
+                           {:duration=>Rational(5, 1), :date_time=>DateTime.parse("Fri, 03 Apr 2009 10:30:00")}, 
+                           {:duration=>Rational(3, 1), :date_time=>DateTime.parse("Sat, 04 Apr 2009 10:30:00")}]
+    expr2 = DIWeek.new(Wednesday) & (REDay.new(10,30,15,30) | REDay.new(16,30,17,30))
+    results2 =  expr2.date_times_and_durations(DateRange.new(PDate.day(2009, 04, 01), PDate.day(2009, 04, 06)))
+    
+    assert_equal results2, [{:duration=>Rational(5, 1), :date_time=>DateTime.parse("Wed, 01 Apr 2009 10:30:00")}, 
+                           {:duration=>Rational(1, 1), :date_time=>DateTime.parse("Thu, 01 Apr 2009 16:30:00")}] 
+
+    
+  end
 end
