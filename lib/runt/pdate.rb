@@ -19,12 +19,12 @@ module Runt
     include DPrecision
 
     attr_accessor :date_precision
-    
+
     class << self
       alias_method :old_civil, :civil
 
       def civil(*args)
-	precision=nil
+        precision=nil
         if(args[0].instance_of?(DPrecision::Precision))
           precision = args.shift
         else
@@ -34,6 +34,14 @@ module Runt
         _civil.date_precision = precision
         _civil
       end
+      
+      def parse(*args)
+        opts = args.last.is_a?(Hash) ? args.pop : {}
+        pdate = super(*args)
+        pdate.date_precision = opts[:precision] || opts[:date_precision]
+        pdate
+      end
+      
     end
 
     class << self; alias_method :new, :civil end
@@ -46,120 +54,120 @@ module Runt
       raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
       case @date_precision
       when YEAR then
-	return DPrecision::to_p(PDate::civil(year+n,month,day),@date_precision)
+        return DPrecision::to_p(PDate::civil(year+n,month,day),@date_precision)
       when MONTH then
-	current_date = self.class.to_date(self)
-	return DPrecision::to_p((current_date>>n),@date_precision)
+        current_date = self.class.to_date(self)
+        return DPrecision::to_p((current_date>>n),@date_precision)
       when WEEK then
-	return new_self_plus(n*7)	
+        return new_self_plus(n*7)	
       when DAY then
-	return new_self_plus(n)
+        return new_self_plus(n)
       when HOUR then
-	return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }
+        return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }
       when MIN then
-	return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }
+        return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }
       when SEC then
-	return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
+        return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
       when MILLI then
-	return self
+        return self
+      end
     end
-  end
 
-  def - (x)
-    case x
+    def - (x)
+      case x
       when Numeric then
-	return self+(-x)
-      #FIXME!!
+        return self+(-x)
+        #FIXME!!
       when Date;    return @ajd - x.ajd
+      end
+      raise TypeError, 'expected numeric or date'
     end
-    raise TypeError, 'expected numeric or date'
-  end
 
-  def <=> (other)
-    result = nil
-    if(other.respond_to?("date_precision") && other.date_precision>@date_precision)
-      result = super(DPrecision::to_p(other,@date_precision))
-    else
-      result = super(other)
+    def <=> (other)
+      result = nil
+      if(other.respond_to?("date_precision") && other.date_precision>@date_precision)
+        result = super(DPrecision::to_p(other,@date_precision))
+      else
+        result = super(other)
+      end
+      #puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
+      result
     end
-    #puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
-    result
-  end
 
-  def new_self_plus(n)
-    if(block_given?)
-      n=yield(n)
+    def new_self_plus(n)
+      if(block_given?)
+        n=yield(n)
+      end
+      return DPrecision::to_p(self.class.new!(@ajd + n, @of, @sg),@date_precision)
     end
-    return DPrecision::to_p(self.class.new!(@ajd + n, @of, @sg),@date_precision)
-  end
 
-  def PDate.to_date(pdate)
-    if( pdate.date_precision > DPrecision::DAY) then
-      DateTime.new(pdate.year,pdate.month,pdate.day,pdate.hour,pdate.min,pdate.sec)
+    def PDate.to_date(pdate)
+      if( pdate.date_precision > DPrecision::DAY) then
+        DateTime.new(pdate.year,pdate.month,pdate.day,pdate.hour,pdate.min,pdate.sec)
+      end
+      return Date.new(pdate.year,pdate.month,pdate.day)
     end
-    return Date.new(pdate.year,pdate.month,pdate.day)
-  end
 
-  def PDate.year(yr,*ignored)
-    PDate.civil(YEAR, yr, MONTH.min_value, DAY.min_value  )
-  end
+    def PDate.year(yr,*ignored)
+      PDate.civil(YEAR, yr, MONTH.min_value, DAY.min_value  )
+    end
 
-  def PDate.month( yr,mon,*ignored )
-    PDate.civil(MONTH, yr, mon, DAY.min_value  )
-  end
+    def PDate.month( yr,mon,*ignored )
+      PDate.civil(MONTH, yr, mon, DAY.min_value  )
+    end
 
-  def PDate.week( yr,mon,day,*ignored )
-    #LJK: need to calculate which week this day implies,
-    #and then move the day back to the *first* day in that week;
-    #note that since rfc2445 defaults to weekstart=monday, I'm 
-    #going to use commercial day-of-week
-    raw = PDate.day(yr, mon, day)
-    cooked = PDate.commercial(raw.cwyear, raw.cweek, 1)
-    PDate.civil(WEEK, cooked.year, cooked.month, cooked.day)
-  end
+    def PDate.week( yr,mon,day,*ignored )
+      #LJK: need to calculate which week this day implies,
+      #and then move the day back to the *first* day in that week;
+      #note that since rfc2445 defaults to weekstart=monday, I'm 
+      #going to use commercial day-of-week
+      raw = PDate.day(yr, mon, day)
+      cooked = PDate.commercial(raw.cwyear, raw.cweek, 1)
+      PDate.civil(WEEK, cooked.year, cooked.month, cooked.day)
+    end
 
-  def PDate.day( yr,mon,day,*ignored )
-    PDate.civil(DAY, yr, mon, day )
-  end
+    def PDate.day( yr,mon,day,*ignored )
+      PDate.civil(DAY, yr, mon, day )
+    end
 
-  def PDate.hour( yr,mon,day,hr=HOUR.min_value,*ignored )
-    PDate.civil(HOUR, yr, mon, day,hr,MIN.min_value, SEC.min_value)
-  end
+    def PDate.hour( yr,mon,day,hr=HOUR.min_value,*ignored )
+      PDate.civil(HOUR, yr, mon, day,hr,MIN.min_value, SEC.min_value)
+    end
 
-  def PDate.min( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,*ignored )
-    PDate.civil(MIN, yr, mon, day,hr,min, SEC.min_value)
-  end
+    def PDate.min( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,*ignored )
+      PDate.civil(MIN, yr, mon, day,hr,min, SEC.min_value)
+    end
 
-  def PDate.sec( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,sec=SEC.min_value,*ignored )
-    PDate.civil(SEC, yr, mon, day,hr,min, sec)
-  end
+    def PDate.sec( yr,mon,day,hr=HOUR.min_value,min=MIN.min_value,sec=SEC.min_value,*ignored )
+      PDate.civil(SEC, yr, mon, day,hr,min, sec)
+    end
 
-  def PDate.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
-    PDate.civil(SEC, yr, mon, day,hr,min, sec, ms, *ignored)
-    #raise "Not implemented yet."
-  end
+    def PDate.millisecond( yr,mon,day,hr,min,sec,ms,*ignored )
+      PDate.civil(SEC, yr, mon, day,hr,min, sec, ms, *ignored)
+      #raise "Not implemented yet."
+    end
 
-  def PDate.default(*args)
-    PDate.civil(DEFAULT, *args)
-  end
+    def PDate.default(*args)
+      PDate.civil(DEFAULT, *args)
+    end
 
-  #
-  # Custom dump which preserves DatePrecision   
-  # 
-  # Author:: Jodi Showers
-  #
-  def marshal_dump
-    [date_precision, ajd, start, offset]
-  end
+    #
+    # Custom dump which preserves DatePrecision   
+    # 
+    # Author:: Jodi Showers
+    #
+    def marshal_dump
+      [date_precision, ajd, start, offset]
+    end
 
-  #
-  # Custom load which preserves DatePrecision   
-  # 
-  # Author:: Jodi Showers
-  #
-  def marshal_load(dumped_obj)
-    @date_precision, @ajd, @sg, @of=dumped_obj
+    #
+    # Custom load which preserves DatePrecision   
+    # 
+    # Author:: Jodi Showers
+    #
+    def marshal_load(dumped_obj)
+      @date_precision, @ajd, @sg, @of=dumped_obj
+    end
+
   end
-  
-end
 end

@@ -144,4 +144,10 @@ class PDateTest < Test::Unit::TestCase
     end
   end
   
+  def test_parse_with_precision
+    month_parsed = PDate.parse('April 2004', :precision => PDate::MONTH)
+    assert_equal month_parsed, PDate.month(2004,04)
+    assert_not_equal month_parsed, PDate.year(2004,04)
+  end
+  
 end
