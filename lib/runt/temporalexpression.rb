@@ -131,6 +131,20 @@ class Collection
   def initialize(expressions = [])
     @expressions = expressions
   end
+  
+  def ==(other)
+    if other.is_a?(Collection)
+      o_exprs = other.expressions.dup
+      expressions.each do |e|
+        return false unless i = o_exprs.index(e)
+        o_exprs.delete_at(i)
+      end
+      o_exprs.each {|e| return false unless i == expressions.index(e)}
+      return true
+    else
+      super(other)
+    end
+  end
 
   def add(anExpression)
     @expressions.push anExpression
@@ -244,6 +258,10 @@ class Diff
     @expr2 = expr2
   end
 
+  def ==(o)
+    o.is_a?(Diff) ? expr1 == o.expr1 && expr2 == o.expr2 : super(o)
+  end
+
   def include?(aDate)
     return false unless (@expr1.include?(aDate) && !@expr2.include?(aDate))
     true
@@ -272,6 +290,10 @@ class Spec
     @date_expr = date_expr
   end
 
+  def ==(o)
+    o.is_a?(Spec) ? date_expr == o.date_expr : super(o)
+  end
+
   # Will return true if the supplied object is == to that which was used to
   # create this instance
   def include?(date_expr)
@@ -296,6 +318,10 @@ class RSpec < Spec
   ## create this instance
   def include?(date_expr)
     return @date_expr.include?(date_expr)
+  end
+  
+  def ==(o)
+    o.is_a?(RSpec) ? date_expr == o.date_expr : super(o)
   end
   
   # Will return true if the supplied object overlaps with the range used to
@@ -388,9 +414,15 @@ class DIMonth
   include TExpr
   include TExprUtils
 
+  attr_reader :day_index, :week_of_month_index
+
   def initialize(week_of_month_index,day_index)
     @day_index = day_index
     @week_of_month_index = week_of_month_index
+  end
+
+  def ==(o)
+    o.is_a?(DIMonth) ? day_index == o.day_index && week_of_month_index == o.week_of_month_index : super(o)
   end
 
   def include?(date)
@@ -427,12 +459,18 @@ class DIWeek
   include TExpr
 
   VALID_RANGE = 0..6
+  
+  attr_reader :ordinal_weekday
 
   def initialize(ordinal_weekday)
     unless VALID_RANGE.include?(ordinal_weekday)
       raise ArgumentError, 'invalid ordinal day of week'
     end
     @ordinal_weekday = ordinal_weekday
+  end
+  
+  def ==(o)
+    o.is_a?(DIWeek) ? ordinal_weekday == o.ordinal_weekday : super(o)
   end
 
   def include?(date)
@@ -457,6 +495,8 @@ class REWeek
 
   VALID_RANGE = 0..6
 
+  attr_reader :start_day, :end_day
+
   # Creates a REWeek using the supplied start
   # day(range = 0..6, where 0=>Sunday) and an optional end
   # day. If an end day is not supplied, the maximum value
@@ -465,6 +505,10 @@ class REWeek
     validate(start_day,end_day)
     @start_day = start_day
     @end_day = end_day
+  end
+  
+  def ==(o)
+    o.is_a?(REWeek) ? start_day == o.start_day && end_day == o.end_day : super(o)
   end
 
   def include?(date)
@@ -567,22 +611,26 @@ class REYear
     else
       case args.size
       when 1
-	@end_month = args[0]
-	@start_day = NO_DAY
-	@end_day = NO_DAY
+        @end_month = args[0]
+        @start_day = NO_DAY
+        @end_day = NO_DAY
       when 2
-	@start_day = args[0]
-	@end_month = args[1]
-	@end_day = NO_DAY
+        @start_day = args[0]
+        @end_month = args[1]
+        @end_day = NO_DAY
       when 3
-	@start_day = args[0]
-	@end_month = args[1]
-	@end_day = args[2]
+        @start_day = args[0]
+        @end_month = args[1]
+        @end_day = args[2]
       else
-	raise "Invalid number of var args: 1 or 3 expected, #{args.size} given"
+        raise "Invalid number of var args: 1 or 3 expected, #{args.size} given"
       end
     end
     @same_month_dates_provided = (@start_month == @end_month) && (@start_day!=NO_DAY && @end_day != NO_DAY)
+  end
+
+  def ==(o)
+    o.is_a?(REYear) ? start_day == o.start_day && end_day == o.end_day && start_month == o.start_month && end_month == o.end_month : super(o)
   end
 
   def include?(date)
@@ -639,7 +687,7 @@ class REDay
   NEXT=29
   ANY_DATE=PDate.day(2002,8,CURRENT)
   
-  attr_reader :range
+  attr_reader :range, :spans_midnight
 
   def initialize(start_hour, start_minute, end_hour, end_minute, less_precise_match=true)
 
@@ -654,6 +702,10 @@ class REDay
 
     @range = start_time..end_time
     @less_precise_match = less_precise_match
+  end
+  
+  def ==(o)
+    o.is_a?(REDay) ? spans_midnight == o.spans_midnight && range == o.range : super(o)
   end
   
   def duration
@@ -706,11 +758,17 @@ class WIMonth
 
   VALID_RANGE = -2..5
 
+  attr_reader :ordinal
+  
   def initialize(ordinal)
     unless VALID_RANGE.include?(ordinal)
       raise ArgumentError, 'invalid ordinal week of month'
     end
     @ordinal = ordinal
+  end
+  
+  def ==(o)
+    o.is_a?(WIMonth) ? ordinal == o.ordinal : super(o)
   end
 
   def include?(date)
@@ -735,9 +793,15 @@ class REMonth
 
   include TExpr
 
+  attr_reader :range
+  
   def initialize(start_day, end_day=0)
     end_day=start_day if end_day==0
     @range = start_day..end_day
+  end
+
+  def ==(o)
+    o.is_a?(REMonth) ? range == o.range : super(o)
   end
 
   def include?(date)
@@ -757,12 +821,18 @@ end
 class EveryTE
 
   include TExpr
+  
+  attr_reader :start, :interval, :precision
 
   def initialize(start,n,precision=nil)
     @start=start
     @interval=n
     # Use the precision of the start date by default
     @precision=precision || @start.date_precision
+  end
+
+  def ==(o)
+    o.is_a?(EveryTE) ? start == o.start && precision == o.precision && interval == o.interval  : super(o)
   end
 
   def include?(date)
@@ -789,9 +859,15 @@ class DayIntervalTE
 
   include TExpr
 
+  attr_reader :interval, :base_date
+
   def initialize(base_date,n)
     @base_date = DPrecision.to_p(base_date,DPrecision::DAY)
     @interval = n
+  end
+  
+  def ==(o)
+    o.is_a?(DayIntervalTE) ? base_date == o.base_date && interval == o.interval  : super(o)
   end
 
   def include?(date)
@@ -811,8 +887,14 @@ class YearTE
 
   include TExpr
 
+  attr_reader :year
+
   def initialize(year)
     @year = year
+  end
+
+  def ==(o)
+    o.is_a?(YearTE) ? year == o.year  : super(o)
   end
 
   def include?(date)
@@ -829,10 +911,16 @@ end
 class BeforeTE
 
   include TExpr
+  
+  attr_reader :date, :inclusive
 
   def initialize(date, inclusive=false)
     @date = date
     @inclusive = inclusive
+  end
+  
+  def ==(o)
+    o.is_a?(BeforeTE) ? date == o.date && inclusive == o.inclusive  : super(o)
   end
 
   def include?(date)
@@ -850,10 +938,17 @@ class AfterTE
 
   include TExpr
 
+  attr_reader :date, :inclusive
+
   def initialize(date, inclusive=false)
     @date = date
     @inclusive = inclusive
   end
+
+  def ==(o)
+    o.is_a?(AfterTE) ? date == o.date && inclusive == o.inclusive  : super(o)
+  end
+
 
   def include?(date)
     return (date > @date) || (@inclusive && @date == date)
