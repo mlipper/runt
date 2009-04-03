@@ -108,7 +108,7 @@ module TExpr
       re_days.each do |re_day|
         start_hour = re_day.range.first.hour
         start_min  = re_day.range.first.min
-        start_time = date.to_date_time + start_hour / 24.0 + start_min / 1440.0
+        start_time = DateTime.new(date.year, date.month, date.day, start_hour, start_min)
         
         result << {:duration => re_day.duration, :date_time => start_time}
       end
