@@ -91,7 +91,7 @@ module TExpr
   # Will stop calculating dates once a number of dates equal 
   # to the optional attribute limit are found. (A limit of zero will collect
   # all matching dates in the date range.)
-  def date_times_and_durations(date_range, limit = 0)
+  def date_times_and_durations(date_range, limit = 0, opts = {})
     result = []
     date_range.each do |date|
 
@@ -109,8 +109,12 @@ module TExpr
         start_hour = re_day.range.first.hour
         start_min  = re_day.range.first.min
         start_time = DateTime.new(date.year, date.month, date.day, start_hour, start_min)
-        
-        result << {:duration => re_day.duration, :date_time => start_time}
+        duration = re_day.duration
+        if opts[:hours]
+          duration = 1.respond_to(:hours) ? duration/1.hours : duration * 24
+        end
+            
+        result << {:duration => duration , :start_date_time => start_date_time, :end_date_time => start_date_time + re_day.duration}
       end
       
       break if limit > 0 and result.size == limit
@@ -709,7 +713,7 @@ class REDay
   end
   
   def duration
-    (range.last - range.first) * 24
+    range.last - range.first
   end
 
   def include?(date)
