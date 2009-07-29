@@ -109,12 +109,8 @@ module TExpr
         start_hour = re_day.range.first.hour
         start_min  = re_day.range.first.min
         start_time = DateTime.new(date.year, date.month, date.day, start_hour, start_min)
-        duration = re_day.duration
-        if opts[:hours]
-          duration = 1.respond_to(:hours) ? duration/1.hours : duration * 24
-        end
-            
-        result << {:duration => duration , :start_date_time => start_date_time, :end_date_time => start_date_time + re_day.duration}
+        
+        result << {:duration => re_day.duration, :date_time => start_time}
       end
       
       break if limit > 0 and result.size == limit
@@ -713,7 +709,7 @@ class REDay
   end
   
   def duration
-    range.last - range.first
+    (range.last - range.first) * 24
   end
 
   def include?(date)
