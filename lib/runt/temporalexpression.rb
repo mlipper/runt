@@ -538,6 +538,76 @@ class REWeek
   end
 end
 
+# Extends REWeek to also allow intervals to specify bi-weekly events, every 3rd week events, etc.
+# Requires a start date to calculate which weeks should fire the events.  All date arguments are 
+# converted to DPrecision::DAY precision. 
+#
+# NOTE: one major difference from REWeek is that the days are given as an array so you can specify
+# [2,4] for events that should happen on Tuesdays and Thursdays, or [1,3,5] for Monday, Wednesday, Friday
+# events.
+#
+# Contributed by Jeff Whitmire
+class REWeekWithIntervalTE
+
+  include TExpr
+
+  VALID_RANGE = 0..6
+
+  attr_reader :interval, :base_date, :week_days
+
+  def initialize(base_date, interval, week_days)
+    validate(base_date, interval, week_days)
+    @base_date = DPrecision.to_p(base_date,DPrecision::DAY)
+    # convert base_date to the start of the week
+    @base_date -= base_date.wday
+    
+    @interval = interval || 2
+    @week_days = week_days
+  end
+  
+  def ==(o)
+    o.is_a?(REWeekWithIntervalTE) ? base_date == o.base_date && interval == o.interval && week_days == o.week_days : super(o)
+  end
+  
+  def interval_days
+    interval * 7
+  end
+
+  def include?(date)
+    return false if date < base_date
+    num_of_intervals_to_jump = (date - base_date).to_i / interval_days
+    
+    start_of_active_week = base_date + (num_of_intervals_to_jump * interval_days)
+    date_offset = DPrecision.to_p(date,DPrecision::DAY) - start_of_active_week
+    
+    week_days.is_a?(Fixnum) ? (date_offset == week_days) : week_days.include?(date_offset)
+  end
+
+  def to_s
+    "every #{Runt.ordinalize(@interval)} week after #{Runt.format_date(@base_date)}"
+  end
+
+  private
+
+  def validate(base_date, interval, weekdays)
+    raise ArgumentError, 'starting date is required' unless base_date
+    raise ArgumentError, 'starting date must be a valid date' unless base_date.is_a?(Date)
+    raise ArgumentError, 'interval is required' unless interval 
+    unless interval.is_a?(Fixnum) && interval >= 2 && interval <= 10
+      raise ArgumentError, 'interval must be in the range (2..10).'
+    end
+    unless weekdays && (weekdays.is_a?(Fixnum) || (weekdays.is_a?(Array) && !weekdays.empty?))
+      raise ArgumentError, 'weekdays are required'
+    end
+    unless (weekdays.is_a?(Fixnum) && VALID_RANGE.include?(weekdays)) || (weekdays.is_a?(Array) && weekdays.all?{|day| VALID_RANGE.include?(day) })
+      raise ArgumentError, "weekdays must be in the range (#{VALID_RANGE.to_s})."
+    end
+  end
+
+end
+
+
+
 #
 # TExpr that matches date ranges within a single year. Assumes that the start 
 # and end parameters occur within the same year. 

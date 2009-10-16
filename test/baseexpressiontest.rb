@@ -81,10 +81,14 @@ class BaseExpressionTest < Test::Unit::TestCase
     @time_20070930235959 = Time.mktime(2007,9,30,23,59,59) # 11:59:59am, Sunday, September 30th, 2007
   end
 
-  def test_nothing
-    # Sigh...I should figure out how to tell TestUnit that this is an "abstract" class
-  end
+  # override default_test keeps it from growling about no other tests in this file
+  def default_test; end
 
+  def assert_raise_message(types, matcher, message = nil, &block)
+    args = [types].flatten + [message]
+    exception = assert_raise(*args, &block)
+    assert_match matcher, exception.message, message
+  end
 end
 
 class StubExpression
