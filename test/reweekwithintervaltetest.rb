@@ -53,6 +53,19 @@ class REWeekWithIntervalTETest < BaseExpressionTest
     bad_dates.each do |date|
       assert !every_tth_every_3.include?(date), "Expression #{every_tth_every_3.to_s} should not include #{date}"
     end
+    
+    range_start = Date.new(2006,5,1)
+    range_end = Date.new(2006,8,1)
+    expected_dates = [
+      Date.new(2006,5,2), Date.new(2006,5,4),
+      Date.new(2006,5,23), Date.new(2006,5,25),
+      Date.new(2006,6,13), Date.new(2006,6,15),
+      Date.new(2006,7,4), Date.new(2006,7,6),
+      Date.new(2006,7,25), Date.new(2006,7,27)
+    ]
+    
+    dates = every_tth_every_3.dates(DateRange.new(range_start, range_end))
+    assert_equal dates, expected_dates
   end
 
   def test_to_s
