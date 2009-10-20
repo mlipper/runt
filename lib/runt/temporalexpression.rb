@@ -575,8 +575,7 @@ class REWeekWithIntervalTE
 
   def include?(date)
     return false if date < base_date
-    num_of_intervals_to_jump = (date - base_date).to_i / interval_days
-    
+    num_of_intervals_to_jump = ((date - base_date) / interval_days).to_i
     start_of_active_week = base_date + (num_of_intervals_to_jump * interval_days)
     date_offset = DPrecision.to_p(date,DPrecision::DAY) - start_of_active_week
     
