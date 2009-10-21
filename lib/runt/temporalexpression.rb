@@ -605,8 +605,6 @@ class REWeekWithIntervalTE
 
 end
 
-
-
 #
 # TExpr that matches date ranges within a single year. Assumes that the start 
 # and end parameters occur within the same year. 

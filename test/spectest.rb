@@ -16,6 +16,16 @@ class SpecTest < BaseExpressionTest
   def test_initialize
     assert_same @stub1, @spec.date_expr, "Expected #{@stub1}, instead got #{@spec.date_expr}"
   end
+  
+  def test_specific_date
+    date_spec = Spec.new(Date.new(2006,06,27))
+    
+    assert !date_spec.include?(Date.new(2005,06,27))
+    assert !date_spec.include?(Date.new(2006,06,26))
+    assert date_spec.include?(Date.new(2006,06,27))
+    assert !date_spec.include?(Date.new(2006,06,28))
+    assert !date_spec.include?(Date.new(2007,06,27))
+  end
 
   def test_include_arg_has_include_method
     assert !@spec.include?(@stub2), "Expression should not include configured stub"

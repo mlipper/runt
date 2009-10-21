@@ -30,6 +30,10 @@ module Runt
       end
       result
     end
+    
+    def scheduled_dates(date_range)
+      @elems.values.collect{|expr| expr.dates(date_range)}.flatten.sort.uniq
+    end
 
     # Return true or false depend on if the supplied event is scheduled to occur on the
     # given date.
@@ -67,6 +71,8 @@ module Runt
     end
 
   end
+  
+  # TODO: Extend event to take other attributes
 
   class Event
 
