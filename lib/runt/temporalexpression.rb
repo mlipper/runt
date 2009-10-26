@@ -991,6 +991,7 @@ class BeforeTE
   end
 
   def include?(date)
+    return false unless date
     return (date < @date) || (@inclusive && @date == date)
   end
 
