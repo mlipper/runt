@@ -3,14 +3,14 @@
 
 require 'baseexpressiontest'
 
-# Unit tests for Spec class
+# Unit tests for TemporalDate class
 # Author:: Matthew Lipper
 
-class SpecTest < BaseExpressionTest
+class TemporalDateTest < BaseExpressionTest
 
   def setup
     super
-    @spec = Spec.new(@stub1)
+    @spec = TemporalDate.new(@stub1)
   end
 
   def test_initialize
@@ -18,7 +18,7 @@ class SpecTest < BaseExpressionTest
   end
   
   def test_specific_date
-    date_spec = Spec.new(Date.new(2006,06,27))
+    date_spec = TemporalDate.new(Date.new(2006,06,27))
     
     assert !date_spec.include?(Date.new(2005,06,27))
     assert !date_spec.include?(Date.new(2006,06,26))
@@ -34,7 +34,7 @@ class SpecTest < BaseExpressionTest
   end
 
   def test_include_arg_without_include_method
-    @spec = Spec.new(4)
+    @spec = TemporalDate.new(4)
     assert !@spec.include?(3), "Expression #{@spec.to_s} should not include 3"
     assert @spec.include?(4), "Expression #{@spec.to_s} should include 4"
   end 

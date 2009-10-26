@@ -87,7 +87,7 @@ class ScheduleTest < Test::Unit::TestCase
     @sched=Schedule.new
     e1=Event.new("e1")
     assert(!@sched.include?(e1,nil))
-    range=RSpec.new(DateRange.new(PDate.new(2006,12,3),PDate.new(2007,1,24)))
+    range=TemporalRange.new(DateRange.new(PDate.new(2006,12,3),PDate.new(2007,1,24)))
     in_range=PDate.new(2007,1,4)
     assert(range.include?(in_range))
     out_of_range=PDate.new(2006,1,4)
@@ -113,10 +113,10 @@ class ScheduleTest < Test::Unit::TestCase
   def test_using_a_schedule
         
     # September 18th - 19th, 2005, 8am - 10am 
-    expr1=RSpec.new(DateRange.new(PDate.day(2005,9,18),PDate.day(2005,9,19))) & REDay.new(8,0,10,0)
+    expr1=TemporalRange.new(DateRange.new(PDate.day(2005,9,18),PDate.day(2005,9,19))) & REDay.new(8,0,10,0)
     assert(expr1.include?(PDate.min(2005,9,18,8,15)))
     # September 19th - 20th, 2005, 9am - 11am 
-    expr2=RSpec.new(DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))) & REDay.new(9,0,11,0) 
+    expr2=TemporalRange.new(DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))) & REDay.new(9,0,11,0) 
     # Quick sanuty check
     assert(expr1.overlap?(expr2))
     # Setup a @schedule w/first expression

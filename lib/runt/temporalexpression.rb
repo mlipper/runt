@@ -280,7 +280,7 @@ class Diff
 end
 
 # TExpr that provides for inclusion of an arbitrary date.
-class Spec
+class TemporalDate
   
   include TExpr
 
@@ -291,7 +291,7 @@ class Spec
   end
 
   def ==(o)
-    o.is_a?(Spec) ? date_expr == o.date_expr : super(o)
+    o.is_a?(TemporalDate) ? date_expr == o.date_expr : super(o)
   end
 
   # Will return true if the supplied object is == to that which was used to
@@ -312,7 +312,7 @@ end
 # facilitating inclusion of an arbitrary range in a temporal expression.
 #
 #  See also: Range
-class RSpec < Spec 
+class TemporalRange < TemporalDate 
 
   ## Will return true if the supplied object is included in the range used to
   ## create this instance
@@ -321,7 +321,7 @@ class RSpec < Spec
   end
   
   def ==(o)
-    o.is_a?(RSpec) ? date_expr == o.date_expr : super(o)
+    o.is_a?(TemporalRange) ? date_expr == o.date_expr : super(o)
   end
   
   # Will return true if the supplied object overlaps with the range used to
