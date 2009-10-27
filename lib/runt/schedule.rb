@@ -70,6 +70,18 @@ module Runt
       block.call(@elems[event])
     end
 
+    def date_to_event_hash(event_attribute=:id)
+      start_date = end_date = nil
+      @elems.keys.each do |event|
+        start_date = event.start_date if start_date.nil? || start_date > event.start_date
+        end_date = event.end_date if end_date.nil? || end_date < event.end_date
+      end
+      
+      scheduled_dates(DateRange.new(start_date, end_date)).inject({}) do |h, date|
+        h[date] = events(date).collect{|e| e.send(event_attribute)}
+        h
+      end
+    end
   end
   
   # TODO: Extend event to take other attributes
