@@ -7,6 +7,12 @@ require 'baseexpressiontest'
 
 class EveryTETest < BaseExpressionTest
 
+  def test_every_other_week
+    date = @pdate_20081112
+    expr = EveryTE.new(date, 14, DPrecision::DAY)
+    assert !expr.include?(date + 7)
+    assert expr.include?(date + 14)
+  end
 
   def test_every_2_minutes
     date = @pdate_200401282100

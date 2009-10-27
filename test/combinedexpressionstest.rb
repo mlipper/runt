@@ -153,6 +153,15 @@ class CombinedExpressionTest < BaseExpressionTest
     #   e1 = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     #   e2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     #   ticket = e1 | e2
- end
-
+  end
+  
+  def test_dates_every_four_hours_on_tuesdays
+    # 3am, Tuesday, May 8th, 2012 to 3am Wednesday, May 9th, 2012
+    range = DateRange.new(@pdate_2012050803, PDate.new(2012,5,9,15))
+    every_four_hours = EveryTE.new(@pdate_2012050803,4)
+    tuesday = DIWeek.new(Tuesday)
+    every_four_hours_on_tuesday = every_four_hours & tuesday
+    result = every_four_hours_on_tuesday.dates(range)
+  end
+  
 end

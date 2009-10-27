@@ -28,6 +28,7 @@ class BaseExpressionTest < Test::Unit::TestCase
     @pdate_20071028 = PDate.day(2007,10,28)             # Sunday, October 28th, 2007
     @pdate_20071030 = PDate.day(2007,10,30)             # Tuesday, October 30th, 2007
     @pdate_20071114 = PDate.day(2007,11,14)             # Wednesday, November 14th, 2007
+    @pdate_20081112 = PDate.day(2008,11,12)             # Wednesday, November 12th, 2008
     @pdate_1922041816 = PDate.hour(1922,4,18,16)        # 4pm, Tuesday, April 18th, 1922
     @pdate_1975060512 = PDate.hour(1975,6,5,12)         # 12pm, Thursday, June 5th, 1975
     @pdate_2004090600 = PDate.hour(2004,9,6,0)          # 12am, Monday, September 6th, 2004
