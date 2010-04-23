@@ -1,133 +1,68 @@
-# Rakefile for runt        -*- ruby -*-
+require 'rubygems'
+require 'rake'
 
 begin
-  require 'rubygems'
-  require 'rake/gempackagetask'
-  require 'hoe'
-  require './lib/runt.rb'
-rescue Exception
-  nil
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "runt"
+
+    gem.authors = ["Matthew Lipper"]
+    gem.summary = %q{Runt is a Ruby[http://www.ruby-lang.org/en/] implementation of select Martin Fowler  patterns[http://www.martinfowler.com/articles].}
+    gem.description = %Q{
+Runt is an implementation of select temporal patterns by Martin Fowler in the super-fantastic Ruby language. Runt provides:
+
+  * ability to define recurring events using simple, set-like expressions
+  * an interfaced-based API for creating schedules for arbitrary events/objects
+  * precisioned date types using Time Points
+  * date Ranges
+  * everlasting peace and/or eternal life
+    }
+    gem.email = ["mlipper@gmail.com"]
+    gem.extra_rdoc_files = ["History.txt", "LICENSE.txt", "Manifest.txt", "README.txt"]
+    gem.files = ["History.txt", "LICENSE.txt", "Manifest.txt", "README.txt", "Rakefile", "TODO", "examples/payment_report.rb", "examples/payment_reporttest.rb", "examples/reminder.rb", "examples/schedule_tutorial.rb", "examples/schedule_tutorialtest.rb", "lib/runt.rb", "lib/runt/daterange.rb", "lib/runt/dprecision.rb", "lib/runt/expressionbuilder.rb", "lib/runt/pdate.rb", "lib/runt/schedule.rb", "lib/runt/sugar.rb", "lib/runt/temporalexpression.rb", "runt.gemspec", "setup.rb", "site/blue-robot3.css", "site/dcl-small.gif", "site/index.html", "site/logohover.png", "site/runt-logo.gif", "site/runt-logo.psd", "test/aftertetest.rb", "test/baseexpressiontest.rb", "test/beforetetest.rb", "test/collectiontest.rb", "test/combinedexpressionstest.rb", "test/daterangetest.rb", "test/dayintervaltetest.rb", "test/difftest.rb", "test/dimonthtest.rb", "test/diweektest.rb", "test/dprecisiontest.rb", "test/everytetest.rb", "test/expressionbuildertest.rb", "test/icalendartest.rb", "test/intersecttest.rb", "test/pdatetest.rb", "test/redaytest.rb", "test/remonthtest.rb", "test/reweektest.rb", "test/reyeartest.rb", "test/temporalrangetest.rb", "test/runttest.rb", "test/scheduletest.rb", "test/temporaldatetest.rb", "test/sugartest.rb", "test/temporalexpressiontest.rb", "test/uniontest.rb", "test/wimonthtest.rb", "test/yeartetest.rb"]
+    gem.has_rdoc = true
+    gem.homepage = %q{http://github.com/paydici/runt}
+    gem.rdoc_options = ["--main", "README.txt"]
+    gem.require_paths = ["lib"]
+    gem.rubyforge_project = %q{Runt}
+    gem.rubygems_version = %q{1.3.1}
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
-require 'rake'
-require 'rake/clean'
+
 require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/*test.rb'
+  test.verbose = true
+end
+
+begin
+  require 'rcov/rcovtask'
+  Rcov::RcovTask.new do |test|
+    test.libs << 'test'
+    test.pattern = 'test/*test.rb'
+    test.verbose = true
+  end
+rescue LoadError
+  task :rcov do
+    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+  end
+end
+
+task :test => :check_dependencies
+
+task :default => :test
+
 require 'rake/rdoctask'
-require 'rake/contrib/sshpublisher'
-require 'rake/contrib/rubyforgepublisher'
-require 'fileutils'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
-
-#####################################################################
-# Constants
-#####################################################################
-
-# Build Settings
-PKG_VERSION = "0.8.0"
-
-# Files to be included in Runt distribution
-PKG_FILES = FileList[
-  'setup.rb',
-  '[A-Z]*',
-  'lib/**/*.rb',
-  'test/**/*.rb',
-  'examples/**/*.rb',
-  'doc/**/*',
-  'site/**/*'
-].exclude("*.ses")
-
-if(RUBY_PLATFORM =~ /win32/i)
-  PKG_EXEC_TAR = false
-else
-  PKG_EXEC_TAR = true 
-end
-  
-# build directory
-TARGET_DIR = "target"
-
-RDOC_OPTS = %w{--main README --title Runt --inline-source --line-numbers}
-
-# Trying to auto-build with Hoe.
-Hoe.new('runt', PKG_VERSION) do |p|
-   p.rubyforge_name = 'Runt' # if different than lowercase project name
-   p.developer('Matthew Lipper', 'mlipper@gmail.com')
-end
-
-#####################################################################
-# Targets
-#####################################################################
-
-task :default => [:test]
-task :clobber => [:clobber_build_dir]
-
-# Make the build directory
-directory TARGET_DIR
-
-# Calling this task directly doesn't work?
-desc "Clobber the entire build directory."
-task :clobber_build_dir do |t|
-    CLOBBER.include(TARGET_DIR)
-end
-
-Rake::RDocTask.new do |rd|
-  rd.rdoc_dir="#{TARGET_DIR}/doc"
-  rd.options.concat(RDOC_OPTS)
-  rd.rdoc_files.include('lib/*','doc/*.rdoc','README','CHANGES','TODO','LICENSE.txt')
-end
-
-Rake::TestTask.new do |t|
-  t.libs << "test" << "examples"
-  t.pattern = '**/*test.rb'
-  t.verbose = false	
-  t.warning = false
-end
-
-desc "Copy html files for the Runt website to the build directory."
-file "copy_site" => TARGET_DIR
-file "copy_site" do
-    cp_r Dir["site/*.{html,gif,png,css}"], TARGET_DIR
-end
-
-desc "Publish the Documentation to RubyForge."
-task :publish => [:rdoc,:copy_site,:clobber_package] do |t|
-  publisher = Rake::CompositePublisher.new
-        publisher.add Rake::SshDirPublisher.new("mlipper@rubyforge.org", "/var/www/gforge-projects/runt",TARGET_DIR)
-  publisher.upload
-end
-
-desc "Publish the Documentation to the build dir."
-task :test_publish => [:rdoc,:copy_site,:clobber_package] do |t|
-  puts "YAY! We've tested publish! YAY!"
-end
-
-
-if ! defined?(Gem)
-  puts "Package Target requires RubyGEMs"
-else
-  spec = Gem::Specification.new do |s|
-    s.platform = Gem::Platform::RUBY
-    s.summary = "Ruby Temporal Expressions."
-    s.name = 'runt'
-    s.version = PKG_VERSION
-    s.requirements << 'none'
-    s.require_path = 'lib'
-    s.files = PKG_FILES.to_a
-    s.author = 'Matthew Lipper'
-    s.email = 'mlipper@gmail.com'
-    s.homepage = 'http://runt.rubyforge.org'
-    s.has_rdoc = true
-    s.rdoc_options += RDOC_OPTS
-    s.extra_rdoc_files = FileList["README","CHANGES","TODO","LICENSE.txt","doc/*.rdoc"]    
-    s.test_files = Dir['**/*test.rb']
-    s.rubyforge_project = 'runt'
-    s.description = <<EOF
-Runt is a Ruby version of temporal patterns by
-Martin Fowler. Runt provides an API for scheduling
- recurring events using set-like semantics. 
-EOF
-  end
-  
-  Rake::GemPackageTask.new(spec) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar = PKG_EXEC_TAR
-  end
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "runt #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
