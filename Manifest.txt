@@ -45,10 +45,10 @@ test/redaytest.rb
 test/remonthtest.rb
 test/reweektest.rb
 test/reyeartest.rb
-test/rspectest.rb
+test/temporalrangetest.rb
 test/runttest.rb
 test/scheduletest.rb
-test/spectest.rb
+test/temporaldatetest.rb
 test/sugartest.rb
 test/temporalexpressiontest.rb
 test/uniontest.rb
