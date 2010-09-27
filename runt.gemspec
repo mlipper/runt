@@ -24,13 +24,13 @@ Runt is an implementation of select temporal patterns by Martin Fowler in the su
     "History.txt",
      "LICENSE.txt",
      "Manifest.txt",
-     "README.txt"
+     "README.rdoc"
   ]
   s.files = [
     "History.txt",
      "LICENSE.txt",
      "Manifest.txt",
-     "README.txt",
+     "README.rdoc",
      "Rakefile",
      "TODO",
      "examples/payment_report.rb",
@@ -85,7 +85,7 @@ Runt is an implementation of select temporal patterns by Martin Fowler in the su
      "test/yeartetest.rb"
   ]
   s.homepage = %q{http://github.com/paydici/runt}
-  s.rdoc_options = ["--main", "README.txt"]
+  s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{Runt}
   s.rubygems_version = %q{1.3.6}
