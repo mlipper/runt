@@ -21,7 +21,7 @@ Runt is an implementation of select temporal patterns by Martin Fowler in the su
     gem.extra_rdoc_files = ["History.txt", "LICENSE.txt", "Manifest.txt", "README.txt"]
     gem.files = ["History.txt", "LICENSE.txt", "Manifest.txt", "README.txt", "Rakefile", "TODO", "examples/payment_report.rb", "examples/payment_reporttest.rb", "examples/reminder.rb", "examples/schedule_tutorial.rb", "examples/schedule_tutorialtest.rb", "lib/runt.rb", "lib/runt/daterange.rb", "lib/runt/dprecision.rb", "lib/runt/expressionbuilder.rb", "lib/runt/pdate.rb", "lib/runt/schedule.rb", "lib/runt/sugar.rb", "lib/runt/temporalexpression.rb", "runt.gemspec", "setup.rb", "site/blue-robot3.css", "site/dcl-small.gif", "site/index.html", "site/logohover.png", "site/runt-logo.gif", "site/runt-logo.psd", "test/aftertetest.rb", "test/baseexpressiontest.rb", "test/beforetetest.rb", "test/collectiontest.rb", "test/combinedexpressionstest.rb", "test/daterangetest.rb", "test/dayintervaltetest.rb", "test/difftest.rb", "test/dimonthtest.rb", "test/diweektest.rb", "test/dprecisiontest.rb", "test/everytetest.rb", "test/expressionbuildertest.rb", "test/icalendartest.rb", "test/intersecttest.rb", "test/pdatetest.rb", "test/redaytest.rb", "test/remonthtest.rb", "test/reweektest.rb", "test/reyeartest.rb", "test/temporalrangetest.rb", "test/runttest.rb", "test/scheduletest.rb", "test/temporaldatetest.rb", "test/sugartest.rb", "test/temporalexpressiontest.rb", "test/uniontest.rb", "test/wimonthtest.rb", "test/yeartetest.rb"]
     gem.has_rdoc = true
-    gem.homepage = %q{http://github.com/paydici/runt}
+    gem.homepage = %q{http://github.com/mlipper/runt}
     gem.rdoc_options = ["--main", "README.txt"]
     gem.require_paths = ["lib"]
     gem.rubyforge_project = %q{Runt}

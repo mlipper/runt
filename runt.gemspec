@@ -74,7 +74,7 @@ Gem::Specification.new do |s|
     "test/wimonthtest.rb",
     "test/yeartetest.rb"
   ]
-  s.homepage = "http://github.com/paydici/runt"
+  s.homepage = "http://github.com/mlipper/runt"
   s.rdoc_options = ["--main", "README.txt"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "Runt"
