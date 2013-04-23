@@ -16,12 +16,12 @@ module Runt
   #
   # Author:: Matthew Lipper
   class PDate < DateTime
+	include Comparable
     include DPrecision
 
     attr_accessor :date_precision
 
     class << self
-      alias_method :old_civil, :civil
 
       def civil(*args)
         precision=nil
@@ -30,9 +30,9 @@ module Runt
         else
           return PDate::sec(*args)
         end
-        _civil = old_civil(*args)
-        _civil.date_precision = precision
-        _civil
+        pdate = super(*args)
+        pdate.date_precision = precision
+        pdate
       end
       
       def parse(*args)
@@ -41,10 +41,10 @@ module Runt
         pdate.date_precision = opts[:precision] || opts[:date_precision]
         pdate
       end
+
+	  alias_method :new, :civil
       
     end
-
-    class << self; alias_method :new, :civil end
 
     def include?(expr)
       eql?(expr)
@@ -52,54 +52,53 @@ module Runt
 
     def + (n)
       raise TypeError, 'expected numeric' unless n.kind_of?(Numeric)
+	  ndays = n
       case @date_precision
       when YEAR then
         return DPrecision::to_p(PDate::civil(year+n,month,day),@date_precision)
       when MONTH then
-        current_date = self.class.to_date(self)
-        return DPrecision::to_p((current_date>>n),@date_precision)
+        return DPrecision::to_p((self.to_date>>n),@date_precision)
       when WEEK then
-        return new_self_plus(n*7)	
+        ndays = n*7	
       when DAY then
-        return new_self_plus(n)
+        ndays = n
       when HOUR then
-        return new_self_plus(n){ |n| n = (n*(1.to_r/24) ) }
+        ndays = n*(1.to_r/24)
       when MIN then
-        return new_self_plus(n){ |n| n = (n*(1.to_r/1440) ) }
+        ndays = n*(1.to_r/1440)
       when SEC then
-        return new_self_plus(n){ |n| n = (n*(1.to_r/86400) ) }
+        ndays = n*(1.to_r/86400)
       when MILLI then
-        return self
+        ndays = n*(1.to_r/86400000)
       end
+	  DPrecision::to_p((self.to_date + ndays),@date_precision)
     end
 
     def - (x)
       case x
       when Numeric then
         return self+(-x)
-        #FIXME!!
-      when Date;    return @ajd - x.ajd
+      when Date then
+	 	return super(DPrecision::to_p(x,@date_precision))
       end
       raise TypeError, 'expected numeric or date'
     end
 
     def <=> (other)
       result = nil
-      if(other.respond_to?("date_precision") && other.date_precision>@date_precision)
+	  raise "I'm broken #{self.to_s}" if @date_precision.nil?
+      if(!other.nil? && other.respond_to?("date_precision") && other.date_precision>@date_precision)
         result = super(DPrecision::to_p(other,@date_precision))
       else
         result = super(other)
       end
-      #puts "#{self.to_s}<=>#{other.to_s} => #{result}" if $DEBUG
+      puts "self<#{self.to_s}><=>other<#{other.to_s}> => #{result}" if $DEBUG
       result
     end
 
-    def new_self_plus(n)
-      if(block_given?)
-        n=yield(n)
-      end
-      return DPrecision::to_p(self.class.new!(@ajd + n, @of, @sg),@date_precision)
-    end
+    def succ
+	  result = self + 1
+	end
 
     def to_date_time
       DateTime.new(self.year,self.month,self.day,self.hour,self.min,self.sec)

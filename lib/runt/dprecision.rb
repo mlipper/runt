@@ -16,7 +16,7 @@ module Runt
   module DPrecision
 
     def DPrecision.to_p(date,prec=DEFAULT)
-
+	  #return date if date.respond_to?(:date_precision) && (prec == date.date_precision) 
       case prec
         when MIN then PDate.min(*DPrecision.explode(date,prec))
         when DAY then PDate.day(*DPrecision.explode(date,prec))
