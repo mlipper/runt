@@ -100,17 +100,8 @@ module Runt
 	  result = self + 1
 	end
 
-    def to_date_time
-      DateTime.new(self.year,self.month,self.day,self.hour,self.min,self.sec)
-    end
-    
     def to_date
-      (self.date_precision > DPrecision::DAY) ? self.to_date_time : Date.new(self.year, self.month, self.day)
-    end
-
-
-    def PDate.to_date(pdate)
-      pdate.to_date
+      (self.date_precision > DAY) ? DateTime.new(self.year,self.month,self.day,self.hour,self.min,self.sec) : Date.new(self.year, self.month, self.day)
     end
 
     def PDate.year(yr,*ignored)
