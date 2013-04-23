@@ -156,6 +156,7 @@ module Runt
       PDate.civil(DEFAULT, *args)
     end
 
+	#FIXME: marshall broken in 1.9
     #
     # Custom dump which preserves DatePrecision   
     # 
@@ -165,6 +166,7 @@ module Runt
       [date_precision, ajd, start, offset]
     end
 
+	#FIXME: marshall broken in 1.9
     #
     # Custom load which preserves DatePrecision   
     # 

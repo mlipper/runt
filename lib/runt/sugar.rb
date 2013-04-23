@@ -137,8 +137,6 @@
 #    BeforeTE.new(date)
 #    BeforeTE.new(date, true)
 #    
-
-
 require 'runt'
 
 module Runt
@@ -154,12 +152,7 @@ module Runt
   end
 
   def method_missing(name, *args, &block) 
-    result = self.build(name, *args, &block)
-    return result unless result.nil?
-    super
-  end
-
-  def build(name, *args, &block)
+	#puts "method_missing(#{name},#{args},#{block}) => #{result}"
     case name.to_s
     when /^daily_(\d{1,2})_(\d{2})([ap]m)_to_(\d{1,2})_(\d{2})([ap]m)$/
       # REDay
@@ -189,7 +182,7 @@ module Runt
       return DIMonth.new(Runt.const(ordinal), Runt.const(day))
     else
       # You're hosed
-      nil
+	  super
     end
   end
 

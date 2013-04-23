@@ -2,17 +2,12 @@
 
 require 'test/unit'
 require 'runt'
-require 'runt/sugar'
 
 class SugarTest < Test::Unit::TestCase
   include Runt
 
   def setup
     @date = PDate.day(2008,7,1)
-  end
-
-  def test_build__should_return_nil_when_an_unknown_name_is_given
-    assert self.build('duh').nil?
   end
 
   def test_method_missing_should_be_called_for_invalid_name

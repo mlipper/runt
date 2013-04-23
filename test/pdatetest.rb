@@ -25,6 +25,14 @@ class PDateTest < Test::Unit::TestCase
     @second_prec = PDate.sec(2004,3,1,0,0,10)
   end
 
+  def test_pdate_with_native_range
+	start_dt = PDate.min(2013,04,22,8,0)
+	middle_dt = PDate.min(2013,04,22,8,2)
+	end_dt = PDate.min(2013,04,22,8,04)
+	range = start_dt..end_dt
+	assert(range.include?(middle_dt))
+  end
+
   def test_marshal
     # Thanks to Jodi Showers for finding/fixing this bug
     pdate=PDate.new(2004,2,29,22,13,2)
@@ -32,6 +40,9 @@ class PDateTest < Test::Unit::TestCase
     data=Marshal.dump pdate
     obj=Marshal.load data
     assert_not_nil obj.date_precision
+	#FIXME: marshall broken in 1.9
+	#assert(obj.eql?(pdate))
+    #assert(pdate.eql?(obj))
   end
 
   def test_include
