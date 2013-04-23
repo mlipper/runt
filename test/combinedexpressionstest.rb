@@ -164,26 +164,4 @@ class CombinedExpressionTest < BaseExpressionTest
     result = every_four_hours_on_tuesday.dates(range)
   end
 
-  #def test_matching_expressions_for
-  #  expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
-  #  assert(expr.matching_expressions_for(PDate.day(2009, 01, 04)), (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)))
-  #end
-
-
-  def test_date_times_and_durations
-    expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
-    results =  expr.date_times_and_durations(DateRange.new(PDate.day(2009, 04, 01), PDate.day(2009, 04, 06)))
-    
-    assert_equal results, [{:duration=>Rational(5, 1), :date_time=>DateTime.parse("Wed, 01 Apr 2009 10:30:00")}, 
-                           {:duration=>Rational(5, 1), :date_time=>DateTime.parse("Thu, 02 Apr 2009 10:30:00")}, 
-                           {:duration=>Rational(5, 1), :date_time=>DateTime.parse("Fri, 03 Apr 2009 10:30:00")}, 
-                           {:duration=>Rational(3, 1), :date_time=>DateTime.parse("Sat, 04 Apr 2009 10:30:00")}]
-    expr2 = DIWeek.new(Wednesday) & (REDay.new(10,30,15,30) | REDay.new(16,30,17,30))
-    results2 =  expr2.date_times_and_durations(DateRange.new(PDate.day(2009, 04, 01), PDate.day(2009, 04, 06)))
-    
-    assert_equal results2, [{:duration=>Rational(5, 1), :date_time=>DateTime.parse("Wed, 01 Apr 2009 10:30:00")}, 
-                           {:duration=>Rational(1, 1), :date_time=>DateTime.parse("Thu, 01 Apr 2009 16:30:00")}] 
-
-    
-  end
 end

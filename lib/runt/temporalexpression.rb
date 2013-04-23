@@ -23,14 +23,6 @@ module TExpr
   # date expression.
   def include?(date_expr); false end
   
-  
-  # Returns the simplest subset of the current TExpr that matches aDate
-  # return nil if the current TExpr doesn't match aDate
-  # In the case of a single TExpr, it just returns itself it the TExpr matches the date
-  def matching_expressions_for(aDate)
-    include?(aDate) ? self : nil
-  end
-  
   def to_s; "TExpr" end
 
   def or (arg)
@@ -85,39 +77,6 @@ module TExpr
     result
   end
   
-  
-  # Returns an Array of {:date_time, :duration} hash of all the events that occur
-  # within the supplied DateRange
-  # Will stop calculating dates once a number of dates equal 
-  # to the optional attribute limit are found. (A limit of zero will collect
-  # all matching dates in the date range.)
-  def date_times_and_durations(date_range, limit = 0, opts = {})
-    result = []
-    date_range.each do |date|
-
-      date.date_precision = DPrecision::DAY
-      matching_expression = self.matching_expressions_for(date)
-      re_days = if matching_expression.is_a?(REDay)
-        [matching_expression]
-      elsif matching_expression.class < Collection
-        matching_expression.re_days
-      else
-        []
-      end
-      
-      re_days.each do |re_day|
-        start_hour = re_day.range.first.hour
-        start_min  = re_day.range.first.min
-        start_time = DateTime.new(date.year, date.month, date.day, start_hour, start_min)
-        
-        result << {:duration => re_day.duration, :date_time => start_time}
-      end
-      
-      break if limit > 0 and result.size == limit
-    end
-    result
-  end
-
 end
 
 # Base class for TExpr classes that can be composed of other
@@ -151,13 +110,6 @@ class Collection
     self
   end
   
-  # Returns the simplest subset of the current TExpr that matches aDate
-  # return nil if the current TExpr doesn't match aDate
-  # In the case of a single TExpr, it just returns itself it the TExpr matches the date
-  def matching_expressions_for
-    nil
-  end
-
   # Will return true if the supplied object overlaps with the range used to
   # create this instance
   def overlap?(date_expr)
@@ -166,11 +118,6 @@ class Collection
     end
     false    
   end
-
-  def re_days
-    @expressions.map{|e| ((e.class < Collection) && e.re_days) || (e.is_a?(REDay) && e) || nil}.flatten.compact
-  end
-
 
   def to_s
     if !@expressions.empty? && block_given?
@@ -210,11 +157,6 @@ class Union < Collection
     false
   end
   
-  def matching_expressions_for(aDate)
-    new_exprs = @expressions.map{|expr| expr.matching_expressions_for(aDate)}.compact
-    new_exprs.length == 1 ? new_exprs.first : Union.new(new_exprs)  
-  end  
-
   def to_s
     super {['every ',' or ']}
   end
@@ -232,14 +174,6 @@ class Intersect < Collection
     result
   end
   
-  def matching_expressions_for(aDate)
-    Intersect.new(@expressions.map do |expr| 
-      e = expr.matching_expressions_for(aDate)
-      return nil unless e
-      e
-    end)
-  end
-
   def to_s 
     super {['every ', ' and ']}  
   end
@@ -265,13 +199,6 @@ class Diff
   def include?(aDate)
     return false unless (@expr1.include?(aDate) && !@expr2.include?(aDate))
     true
-  end
-
-  def matching_expressions_for(aDate)
-    matching_expr1 = @expr1.matching_expressions_for(aDate)
-    matching_expr2 = @expr2.matching_expressions_for(aDate)
-    return nil unless matching_expr1 && matching_expr2
-    Diff.new(matching_expr1, matching_expr2)
   end
 
   def to_s
@@ -775,10 +702,6 @@ class REDay
     o.is_a?(REDay) ? spans_midnight == o.spans_midnight && range == o.range : super(o)
   end
   
-  def duration
-    (range.last - range.first) * 24
-  end
-
   def include?(date)
     # 
     # If @less_precise_match == true and the precision of the argument
