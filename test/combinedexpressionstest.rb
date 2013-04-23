@@ -164,10 +164,10 @@ class CombinedExpressionTest < BaseExpressionTest
     result = every_four_hours_on_tuesday.dates(range)
   end
 
-  def test_matching_expressions_for
-    expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
-    assert(expr.matching_expressions_for(PDate.day(2009, 01, 04)), (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)))
-  end
+  #def test_matching_expressions_for
+  #  expr = (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)) | (DIWeek.new(Saturday) & REDay.new(10,30,13,30))
+  #  assert(expr.matching_expressions_for(PDate.day(2009, 01, 04)), (REWeek.new(Tuesday, Friday) & REDay.new(10,30,15,30)))
+  #end
 
 
   def test_date_times_and_durations
