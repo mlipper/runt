@@ -465,73 +465,6 @@ class REWeek
   end
 end
 
-# Extends REWeek to also allow intervals to specify bi-weekly events, every 3rd week events, etc.
-# Requires a start date to calculate which weeks should fire the events.  All date arguments are 
-# converted to DPrecision::DAY precision. 
-#
-# NOTE: one major difference from REWeek is that the days are given as an array so you can specify
-# [2,4] for events that should happen on Tuesdays and Thursdays, or [1,3,5] for Monday, Wednesday, Friday
-# events.
-#
-# Contributed by Jeff Whitmire
-class REWeekWithIntervalTE
-
-  include TExpr
-
-  VALID_RANGE = 0..6
-
-  attr_reader :interval, :base_date, :week_days
-
-  def initialize(base_date, interval, week_days)
-    validate(base_date, interval, week_days)
-    @base_date = DPrecision.to_p(base_date,DPrecision::DAY)
-    # convert base_date to the start of the week
-    @base_date -= base_date.wday
-    
-    @interval = interval || 2
-    @week_days = week_days
-  end
-  
-  def ==(o)
-    o.is_a?(REWeekWithIntervalTE) ? base_date == o.base_date && interval == o.interval && week_days == o.week_days : super(o)
-  end
-  
-  def interval_days
-    interval * 7
-  end
-
-  def include?(date)
-    return false if date < base_date
-    num_of_intervals_to_jump = ((date - base_date) / interval_days).to_i
-    start_of_active_week = base_date + (num_of_intervals_to_jump * interval_days)
-    date_offset = DPrecision.to_p(date,DPrecision::DAY) - start_of_active_week
-    
-    week_days.is_a?(Fixnum) ? (date_offset == week_days) : week_days.include?(date_offset)
-  end
-
-  def to_s
-    "every #{Runt.ordinalize(@interval)} week after #{Runt.format_date(@base_date)}"
-  end
-
-  private
-
-  def validate(base_date, interval, weekdays)
-    raise ArgumentError, 'starting date is required' unless base_date
-    raise ArgumentError, 'starting date must be a valid date' unless base_date.is_a?(Date)
-    raise ArgumentError, 'interval is required' unless interval 
-    unless interval.is_a?(Fixnum) && interval >= 2 && interval <= 10
-      raise ArgumentError, 'interval must be in the range (2..10).'
-    end
-    unless weekdays && (weekdays.is_a?(Fixnum) || (weekdays.is_a?(Array) && !weekdays.empty?))
-      raise ArgumentError, 'weekdays are required'
-    end
-    unless (weekdays.is_a?(Fixnum) && VALID_RANGE.include?(weekdays)) || (weekdays.is_a?(Array) && weekdays.all?{|day| VALID_RANGE.include?(day) })
-      raise ArgumentError, "weekdays must be in the range (#{VALID_RANGE.to_s})."
-    end
-  end
-
-end
-
 #
 # TExpr that matches date ranges within a single year. Assumes that the start 
 # and end parameters occur within the same year. 
@@ -868,6 +801,107 @@ class DayIntervalTE
     "every #{Runt.ordinalize(@interval)} day after #{Runt.format_date(@base_date)}"
   end
 
+end
+
+# 
+# This class creates an expression which matches dates occuring during the weeks 
+# alternating at the given interval begining on the week containing the date 
+# used to create the instance. 
+#  
+#    WeekInterval.new(starting_date, interval)
+# 
+# Weeks are defined as Sunday to Saturday, as opposed to the commercial week
+# which starts on a Monday. For example,
+#
+#     every_other_week = WeekInterval.new(Date.new(2013,04,24), 2)
+#  
+# will match any date that occurs during every other week begining with the
+# week of 2013-04-21 (2013-04-24 is a Wednesday and 2013-04-21 is the Sunday
+# that begins the containing week).
+#    
+#     # Sunday of starting week
+#     every_other_week.include?(Date.new(2013,04,21)) #==> true     
+#     # Saturday of starting week
+#     every_other_week.include?(Date.new(2013,04,27)) #==> true
+#     # First week _after_ start week     
+#     every_other_week.include?(Date.new(2013,05,01)) #==> false     
+#     # Second week _after_ start week     
+#     every_other_week.include?(Date.new(2013,05,06)) #==> true     
+#
+# NOTE: The idea and tests for this class were originally contributed as the 
+# REWeekWithIntervalTE class by Jeff Whitmire. The behavior of the original class 
+# provided both the matching of every n weeks and the specification of specific
+# days of that week in a single class. This class only provides the matching
+# of every n weeks. The exact functionality of the original class is easy to create
+# using the Runt set operators and the DIWeek class:
+#
+#     # Old way
+#     tu_thurs_every_third_week = REWeekWithIntervalTE.new(Date.new(2013,04,24),2,[2,4])
+#
+#     # New way
+#     tu_thurs_every_third_week = 
+#         WeekInterval.new(Date.new(2013,04,24),2) & (DIWeek.new(Tuesday) | DIWeek.new(Thursday))
+# 
+# Notice that the compound expression (in parens after the "&") can be replaced 
+# or combined with any other appropriate temporal expression to provide different
+# functionality (REWeek to provide a range of days, REDay to provide certain times, etc...). 
+# 
+# Contributed by Jeff Whitmire
+class WeekInterval
+  include TExpr
+  def initialize(start_date,interval=2)
+    @start_date = DPrecision.to_p(start_date,DPrecision::DAY)
+    # convert base_date to the start of the week
+    @base_date = @start_date - @start_date.wday
+    @interval = interval
+  end
+  
+  def include?(date)
+	return false if @base_date > date
+	((adjust_for_year(date) - week_num(@base_date)) % @interval) == 0 
+  end
+  
+  def to_s
+    "every #{Runt.ordinalize(@interval)} week starting with the week containing #{Runt.format_date(@start_date)}"
+  end
+
+  private
+  def week_num(date)
+	# %U - Week number of the year. The week starts with Sunday.  (00..53)
+	date.strftime("%U").to_i    
+  end
+  def max_week_num(year)	
+	d = Date.new(year,12,31)
+	max = week_num(d)
+	while max < 52
+	  d = d - 1
+	  max = week_num(d)
+	end
+	max
+  end
+  def adjust_for_year(date)
+	# Exclusive range: if date.year == @base_date.year, this will be empty
+	range_of_years = @base_date.year...date.year
+	in_same_year = range_of_years.to_a.empty?
+	# Week number of the given date argument
+	week_number = week_num(date)
+	# Default (most common case) date argument is in same year as @base_date
+    # and the week number is also part of the same year. This starting value 
+	# is also necessary for the case where they're not in the same year.
+	adjustment = week_number
+	if in_same_year && (week_number < week_num(@base_date)) then
+	  # The given date occurs within the same year 
+	  # but is actually week number 1 of the next year
+	  adjustment = adjustment + max_week_num(date.year)
+	elsif !in_same_year then
+	  # Date occurs in different year
+	  range_of_years.each do |year|
+	    # Max week number taking into account we are not using commercial week
+	    adjustment = adjustment + max_week_num(year)
+	  end
+	end
+	adjustment
+  end
 end
 
 # Simple expression which returns true if the supplied arguments
