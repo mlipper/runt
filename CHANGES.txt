@@ -1,6 +1,14 @@
 = Runt Changelog
 
-== Version 0.8.0
+== Version 0.9.0
+
+* Removed old-school setup.rb
+
+* Switched to MIT license
+
+* Switched to Bundler for gemification
+
+* Fixed compatiblity with Ruby 1.9 and Ruby 2.0
 
 * Merged several commits from Paydici GitHub repo which included various enhancements and fixes by multiple contributors
 

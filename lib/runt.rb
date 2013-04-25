@@ -35,6 +35,7 @@ require 'yaml'
 require 'time'
 require 'date'
 require 'date/format'
+require "runt/version"
 require "runt/dprecision"
 require "runt/pdate"
 require "runt/temporalexpression"
@@ -56,8 +57,6 @@ require "runt/expressionbuilder"
 #
 module Runt
   
-  VERSION = "0.8.0"
-
   class << self
     
     def day_name(number)

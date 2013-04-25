@@ -8,39 +8,13 @@
 
 * gem install runt
 
-  <b>or</b>
-
-* Unpack the Runt distribution.
-
-   $ tar -xzvf runt-<version>.tar.gz
-
-* cd $UNPACK_DIR/runt/
-
-* execute:
-
-   $ ruby setup.rb config
-   $ ruby setup.rb setup
-   $ ruby setup.rb install (may require root privilege)
-
-  <b>or</b>
-
-   $ ruby setup.rb --help
-
-  for more options.
-
 = QUICK START
 
 * require 'runt'
 
-* See Runt website[http://runt.rubyforge.org].
-
-* See $UNPACK_DIR/runt/test/*.rb for example usage.
-
-* See this mini-TemporalExpression tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_te_rdoc.html]
-* Also this tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_schedule_rdoc.html]
-* And this tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_sugar_rdoc.html]
-
-* See http://chronicj.digitalclash.com/apidocs/index.html for commented Java source (JavaDoc)
+* See this mini-TemporalExpression tutorial[doc/tutorial_te_rdoc.rdoc]
+* Also this tutorial[doc/tutorial_schedule_rdoc.rdoc]
+* And this tutorial[doc/tutorial_sugar_rdoc.rdoc]
 
 Get in touch if you have questions or if Runt causes your computer to burst into flames...
 
@@ -91,9 +65,9 @@ The number 12, and the letters E, J, and B.
 = Etc...
 
 Author::   Matthew Lipper <mlipper@gmail.com>
-Requires:: Ruby 1.8.0 or later, Date/DateTime classes
+Requires:: Ruby 1.8.7 or later, Date/DateTime classes
 License::  Copyright 2004 by Digital Clash LLC.
-           Released under the Apache Software license (see LICENSE.txt)
+           Released under the MIT License (see LICENSE.txt)
            included in the distribution.
 
 = Warranty
@@ -103,4 +77,4 @@ implied warranties, including, without limitation, the implied
 warranties of merchantibility and fitness for a particular
 purpose.
 
-link://../dcl-small.gif
+link:site/dcl-small.gif
