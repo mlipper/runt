@@ -12,9 +12,9 @@
 
 * require 'runt'
 
-* See this mini-TemporalExpression tutorial[doc/tutorial_te_rdoc.rdoc]
-* Also this tutorial[doc/tutorial_schedule_rdoc.rdoc]
-* And this tutorial[doc/tutorial_sugar_rdoc.rdoc]
+* See this mini-TemporalExpression tutorial[link:doc/tutorial_te_rdoc.rdoc]
+* Also this tutorial[link:doc/tutorial_schedule_rdoc.rdoc]
+* And this tutorial[link:doc/tutorial_sugar_rdoc.rdoc]
 
 Get in touch if you have questions or if Runt causes your computer to burst into flames...
 
