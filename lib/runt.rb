@@ -156,22 +156,26 @@ end
 
 #
 # Add precision +Runt::DPrecision+ to standard library classes Date and DateTime 
-# (which is a subclass of Date). Also, add an inlcude? method for interoperability
+# (which is a subclass of Date). Also, add an include? method for interoperability
 # with +Runt::TExpr+ classes
 #
 class Date
 
   include Runt
 
+  alias_method :include?, :eql?
+
   attr_accessor :date_precision
 
-  def include?(expr)
-    eql?(expr)
-  end
-
   def date_precision
-    return @date_precision unless @date_precision.nil? 
-    return Runt::DPrecision::DEFAULT 
+	if @date_precision.nil? then
+      if self.class == DateTime then
+        @date_precision = Runt::DPrecision::SEC
+	  else
+        @date_precision = Runt::DPrecision::DAY
+	  end
+	end
+    @date_precision	
   end 	  
 end
 
@@ -190,7 +194,7 @@ class Time
     if(args[0].instance_of?(Runt::DPrecision::Precision))
       @precision=args.shift
     else
-      @precision=Runt::DPrecision::DEFAULT
+      @precision=Runt::DPrecision::SEC
     end
     old_initialize(*args)
   end

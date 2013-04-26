@@ -31,7 +31,7 @@ class REYearTest < BaseExpressionTest
     assert expr.end_day == REYear::NO_DAY, "End day should equal constant NO_DAY"
   end
 
-  def test_ctor_three_args
+  def test_ctor_four_args
     expr = REYear.new(10,21,12,3)
     assert expr.start_month == 10, "Start month should equal 10"
     assert expr.end_month == 12, "End month should equal 12"

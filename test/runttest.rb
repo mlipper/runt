@@ -80,12 +80,12 @@ class RuntModuleTest < Test::Unit::TestCase
 
   def test_date_class_dprecision
     date=Date.today
-    assert_equal(Runt::DPrecision::DEFAULT,date.date_precision)
+    assert_equal(Runt::DPrecision::DAY,date.date_precision)
   end
 
   def test_datetime_class_dprecision
     date=DateTime.civil
-    assert_equal(Runt::DPrecision::DEFAULT,date.date_precision)
+    assert_equal(Runt::DPrecision::SEC,date.date_precision)
   end
 
   def test_time_plus

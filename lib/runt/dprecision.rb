@@ -16,7 +16,9 @@ module Runt
   module DPrecision
 
     def DPrecision.to_p(date,prec=DEFAULT)
-	  #return date if date.respond_to?(:date_precision) && (prec == date.date_precision) 
+	  has_p = date.respond_to?(:date_precision)
+	  #puts "DPrecision.to_p(#{date.class}<#{has_p ? date.date_precision : nil}>,#{prec})" 
+	  return date if PDate == date.class && (prec == date.date_precision) 
       case prec
         when MIN then PDate.min(*DPrecision.explode(date,prec))
         when DAY then PDate.day(*DPrecision.explode(date,prec))
@@ -32,7 +34,7 @@ module Runt
 
     def DPrecision.explode(date,prec)
       result = [date.year,date.month,date.day]
-        if(date.respond_to?("hour"))
+        if(date.respond_to?(:hour))
           result << date.hour << date.min << date.sec
         else
           result << 0 << 0 << 0
