@@ -1,14 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'date'
-require 'runt'
-require 'set'
+require 'minitest_helper'
 
 
 # RFC 2445 is the iCalendar specification.  It includes dozens of
 # specific examples that make great tests for Runt temporal expressions.
-class ICalendarTest < Test::Unit::TestCase
+class ICalendarTest < MiniTest::Unit::TestCase
   include Runt
 
   # "Daily for 10 occurences"

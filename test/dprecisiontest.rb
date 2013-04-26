@@ -1,14 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
-require 'date'
+require 'minitest_helper'
 
 # Unit tests for DPrecision class
 #
 # Author:: Matthew Lipper
 
-class DPrecisionTest < Test::Unit::TestCase
+class DPrecisionTest < MiniTest::Unit::TestCase
 
   include Runt
 

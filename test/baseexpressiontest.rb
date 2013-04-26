@@ -1,16 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
-require 'date'
-require 'time'
+require 'minitest_helper.rb'
 
 $DEBUG=false
 
 # Base test case for refactored temporal expression unit tests
 # Author:: Matthew Lipper
 
-class BaseExpressionTest < Test::Unit::TestCase
+class BaseExpressionTest < MiniTest::Unit::TestCase
 
   include Runt
   include DPrecision

@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
-require 'date'
-require 'pp'
+require 'minitest_helper'
 
-class RuntModuleTest < Test::Unit::TestCase
+class RuntModuleTest < MiniTest::Unit::TestCase
   
   def test_last
     assert Runt::Last == -1
@@ -92,7 +89,7 @@ class RuntModuleTest < Test::Unit::TestCase
     time=Time.local(2006, 12, 9, 5, 56, 12)
     # Default precision is minute
     assert_equal(Runt::PDate.min(2006,12,9,5,56),Runt::DPrecision.to_p(time))
-    assert_not_equal(Time.parse("Sat Dec 09 05:56:00 -0500 2006"),time)
+    refute_equal(Time.parse("Sat Dec 09 05:56:00 -0500 2006"),time)
   end
 
 end

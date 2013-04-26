@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
-require 'date'
+require 'minitest_helper'
 
 # Unit tests for Schedule classes
 # Author:: Matthew Lipper
-class ScheduleTest < Test::Unit::TestCase
+class ScheduleTest < MiniTest::Unit::TestCase
 
   include Runt
 

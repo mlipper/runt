@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
+require 'minitest_helper'
 
-class SugarTest < Test::Unit::TestCase
+class SugarTest < MiniTest::Unit::TestCase
   include Runt
 
   def setup

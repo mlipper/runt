@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
+require 'minitest_helper'
 
-class ExpressionBuilderTest < Test::Unit::TestCase
+class ExpressionBuilderTest < MiniTest::Unit::TestCase
 
   def setup
     @builder = ExpressionBuilder.new

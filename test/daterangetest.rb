@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'runt'
-require 'date'
+require 'minitest_helper'
 
 # Unit tests for DateRange class
 #
 # Author:: Matthew Lipper
-class DateRangeTest < Test::Unit::TestCase
+class DateRangeTest < MiniTest::Unit::TestCase
 
   include Runt
 

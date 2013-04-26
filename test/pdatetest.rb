@@ -1,12 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-require 'date'
-require 'runt'
+require 'minitest_helper'
 
 # Unit tests for PDate class
 # Author:: Matthew Lipper
-class PDateTest < Test::Unit::TestCase
+class PDateTest < MiniTest::Unit::TestCase
 
   include Runt
 
@@ -36,10 +34,10 @@ class PDateTest < Test::Unit::TestCase
   def test_marshal
     # Thanks to Jodi Showers for finding/fixing this bug
     pdate=PDate.new(2004,2,29,22,13,2)
-    assert_not_nil pdate.date_precision
+    refute_nil pdate.date_precision
     data=Marshal.dump pdate
     obj=Marshal.load data
-    assert_not_nil obj.date_precision
+    refute_nil obj.date_precision
 	#FIXME: marshall broken in 1.9
 	#assert(obj.eql?(pdate))
     #assert(pdate.eql?(obj))
@@ -158,7 +156,7 @@ class PDateTest < Test::Unit::TestCase
   def test_parse_with_precision
     month_parsed = PDate.parse('April 2004', :precision => PDate::MONTH)
     assert_equal month_parsed, PDate.month(2004,04)
-    assert_not_equal month_parsed, PDate.year(2004,04)
+    refute_equal month_parsed, PDate.year(2004,04)
   end
   
 end
