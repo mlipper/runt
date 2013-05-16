@@ -9,7 +9,7 @@
 *   gem install runt
 
 
-# QUICK START
+## QUICK START
 
 ```ruby
 require 'date'
@@ -66,12 +66,14 @@ mon_or_wed_8_to_11_expr.include?(a_wednesday)   # => true - a Wednesday at 8:45
 
 ## Etc...
 
-Author:   Matthew Lipper <mlipper@gmail.com>
-Requires:   Ruby 1.8.7 or later, Date/DateTime classes
-License:   Copyright 2013 by Digital Clash LLC. Released under the MIT License (see LICENSE.txt) included in the distribution.
+**Author:** Matthew Lipper <mlipper@gmail.com>  
+
+**Requires:** Tested with J/Ruby 1.8.7, 1.9.3 and Ruby 2.0.x 
+
+**License:** Released under the MIT License (see LICENSE.txt).
 
 ## Warranty
 
 This software is provided "as is" and without any express or implied warranties, including, without limitation, the implied warranties of merchantibility and fitness for a particular purpose.
 
-link:site/dcl-small.gif
+![DCL Logo](site/dcl-small.gif)
