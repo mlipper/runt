@@ -2,6 +2,8 @@
 
 == Version 0.9.0
 
+* Replaced RDoc-based tutorials with Markdown files
+
 * Removed old-school setup.rb
 
 * Switched to MIT license
@@ -12,7 +14,7 @@
 
 * Merged several commits from Paydici GitHub repo which included various enhancements and fixes by multiple contributors
 
-* Fixed RDoc generation from Rakefile so start page points to README
+* Moved to GitHub (finally)
 
 == Version 0.7.0
 
