@@ -187,4 +187,4 @@ See the schedule tutorial[http://runt.rubyforge.org/doc/files/doc/tutorial_sched
 
 * Fowler's recurring event pattern[http://martinfowler.com/apsupp/recurring.pdf]
 
-* Other temporal patterns[http://martinfowler.com/ap2/timeNarrative.html]
+* Other temporal patterns[http://martinfowler.com/eaaDev/timeNarrative.html]

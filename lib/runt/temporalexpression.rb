@@ -603,9 +603,13 @@ end
 # NOTE: By default, this class will match any date expression whose
 # precision is less than or equal to DPrecision::DAY. To override
 # this behavior, pass the optional fifth constructor argument the 
-# value: false.
+# value: false. 
 #
-#  See also: Date
+# When the less_precise_match argument is true, the 
+# date-like object passed to :include? will be "promoted" to
+# DPrecision::MINUTE if it has a precision of DPrecision::DAY or
+# less.
+#
 class REDay 
 
   include TExpr
@@ -639,14 +643,17 @@ class REDay
     # 
     # If @less_precise_match == true and the precision of the argument
     #  is day or greater, then the result is always true
-    return true if @less_precise_match && date.date_precision <= DPrecision::DAY
-    if(@spans_midnight&&date.hour<12) then
+    return true if @less_precise_match && less_precise?(date)
+	
+	date_to_use = ensure_precision(date)
+    
+	if(@spans_midnight&&date_to_use.hour<12) then
       #Assume next day
-      return @range.include?(get_next(date.hour,date.min))
+      return @range.include?(get_next(date_to_use.hour,date_to_use.min))
     end
 
     #Same day
-    return @range.include?(get_current(date.hour,date.min))
+    return @range.include?(get_current(date_to_use.hour,date_to_use.min))
   end
 
   def to_s
@@ -654,6 +661,16 @@ class REDay
   end
 
   private
+  
+  def less_precise?(date)
+	date.date_precision <= DPrecision::DAY
+  end
+
+  def ensure_precision(date)
+	return date unless less_precise?(date)
+	DPrecision.to_p(date,DPrecision::MIN)
+  end
+
   def spans_midnight?(start_hour, end_hour)
     return end_hour < start_hour
   end

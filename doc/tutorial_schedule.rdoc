@@ -390,4 +390,4 @@ end
 
 * Fowler's recurring event pattern[http://martinfowler.com/apsupp/recurring.pdf]
 
-* Other temporal patterns[http://martinfowler.com/ap2/timeNarrative.html]
+* Other temporal patterns[http://martinfowler.com/eaaDev/timeNarrative.html]
