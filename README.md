@@ -76,4 +76,4 @@ mon_or_wed_8_to_11_expr.include?(a_wednesday)   # => true - a Wednesday at 8:45
 
 This software is provided "as is" and without any express or implied warranties, including, without limitation, the implied warranties of merchantibility and fitness for a particular purpose.
 
-![DCL Logo](site/dcl-small.gif)
+Copyright &copy; 2002-2013 ![DCL Logo](site/dcl-small.gif)
