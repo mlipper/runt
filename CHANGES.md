@@ -1,6 +1,8 @@
-= Runt Changelog
+# Runt Changelog
 
-== Version 0.9.0
+## Version 0.9.0
+
+* Special thanks to Bill Burcham for his repo contributions and help getting this release out the door
 
 * Replaced RDoc-based tutorials with Markdown files
 
@@ -16,7 +18,7 @@
 
 * Moved to GitHub (finally)
 
-== Version 0.7.0
+## Version 0.7.0
 
 * Addded tutorial_sugar.rdoc for new builder and shortcut stuff
 
@@ -44,7 +46,7 @@
 
 * Fixed bug #19982: REYear will match day in any month if @same_month_dates_provided with patch submitted by Riley Lynch
 
-== Version 0.6.0
+## Version 0.6.0
 
 * Refactored and improved temporal expression tests, moving them to separate files per class
 
@@ -62,7 +64,7 @@
 
 * Added README (and related files) in the generated rdoc
 
-== Version 0.5.0
+## Version 0.5.0
 
 * Refactored Schedule implementation which greatly simplifies customization but does potentially break existing clients who relied on the ability to call add mulitple times (SEE BELOW)
 
@@ -92,13 +94,13 @@
 
 * Removed unnecessary test suite alltests.rb
 
-== Version 0.4.0
+## Version 0.4.0
 
 * Added DayIntervalTE contributed by Ira Burton which matches every n days past a given date
 
 * Added YearTE requested by Pat Maddox
 
-== Version 0.3.0
+## Version 0.3.0
 
 * TExpr (finally!) becomes a Module instead of a superclass
 
@@ -121,7 +123,7 @@
 * Fixed Object.id deprecation warning
 
 
-== Version 0.2.0
+## Version 0.2.0
 
 * Fixed Schedule class
 * Renamed Schedule#is_occurring? to Schedule#include?
@@ -134,7 +136,7 @@
   - hour_of_day -> hour
   - day_of_month -> day
 
-== Version 0.1.0
+## Version 0.1.0
 
 * Inspired by suggestions[http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/95465] on c.l.r., did massive renaming and refactoring to make source more Ruby-esque:
 
@@ -147,20 +149,20 @@
 * Updated TE Tutorial to reflect new and improved syntax usage
 * Skipped several version numbers to celebrate
 
-== Version 0.0.6
+## Version 0.0.6
 
 * TE Tutorial
 * Website beautification
 * Credits
 
-== Version 0.0.4
+## Version 0.0.4
 
 * Improved Rake[http://rake.rubyforge.org] support
 * Better documentation: README, TODO, CHANGES, etc.
 * More Ruby-like source code layout and code organization inspired by Rake[http://rake.rubyforge.org] distribution
 * Dropped the obviously superfluous 'alpha' from versioning
 
-== Version 0.0.1
+## Version 0.0.1
 
 * Learned Ruby (or began trying, at any rate...)
 * RubyForge project setup
