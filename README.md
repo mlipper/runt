@@ -36,7 +36,9 @@ mon_or_wed_expr.include?(a_monday)              # => true
 mon_or_wed_expr.include?(a_wednesday)           # => true
 
 daily_8_to_11_expr =REDay.new(8,00,11,00,false) # Matches from 8am to 11am on ANY date. 
-                                                # The 'false' argument says not to auto-match expressions of lesser precision.
+                                                # The 'false' argument says not to auto-match 
+                                                # expressions of lesser precision.
+
 at_9 = DateTime.new(2013,5,12,9,0)              # Sunday, May 12 at 9:00am
 daily_8_to_11_expr.include?(at_9)               # => true 
 #
