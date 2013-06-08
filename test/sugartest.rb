@@ -4,6 +4,7 @@ require 'minitest_helper'
 
 class SugarTest < MiniTest::Unit::TestCase
   include Runt
+  include Runt::Sugar
 
   def setup
     @date = PDate.day(2008,7,1)

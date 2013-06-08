@@ -151,6 +151,7 @@ module Runt
     end
   end
 
+  module Sugar
   def method_missing(name, *args, &block) 
 	#puts "method_missing(#{name},#{args},#{block}) => #{result}"
     case name.to_s
@@ -199,5 +200,6 @@ module Runt
   def parse_time(hour, minute, ampm)
     hour = hour.to_i + 12 if ampm =~ /pm/
     [hour.to_i, minute.to_i]
+  end
   end
 end
