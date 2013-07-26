@@ -96,7 +96,7 @@ Now let's look at the new `ExpressionBuilder` class. This class uses some simple
 
 ```ruby
 # Create a new builder
-b = ExpressionBuilder.new
+d = ExpressionBuilder.new
 
 # Call define with a block
 expression = d.define do
