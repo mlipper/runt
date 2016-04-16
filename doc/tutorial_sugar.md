@@ -46,7 +46,7 @@ Here's a quick summary of patterns and the expressions they create.
 
 **example**: `monthly_2nd_to_24th`
 
-**action**:  `REMonth.new(2,24)` 
+**action**:  `REMonth.new(2,24)`
 
 
 ### REYear
@@ -100,7 +100,7 @@ d = ExpressionBuilder.new
 
 # Call define with a block
 expression = d.define do
-  on REDay.new(8,45,9,30)       
+  on REDay.new(8,45,9,30)
   on DIWeek.new(Friday)              # "And"
   possibly DIWeek.new(Saturday)      # "Or"
   except DIMonth.new(Last, Friday)   # "Not"
@@ -149,7 +149,7 @@ ExpressionBuilder creates expressions by evaluating a block passed to the `:defi
 
 **:occurs**    alias for `:on` method
 
-**:maybe**     alias for `:possibly` method 
+**:maybe**     alias for `:possibly` method
 
 
 Of course it's easy to open the builder class and add you own aliases if the ones provided don't work for you:

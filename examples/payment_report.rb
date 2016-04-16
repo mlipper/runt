@@ -3,7 +3,7 @@
 require 'runt'
 
 class Report
-  
+
   attr_reader :schedule
 
   def initialize(schedule)
@@ -43,7 +43,7 @@ if __FILE__ == $0
   insurance_payment = Payment.new("Insurance", 345)
   insurance_expr = REYear.new(1, 7, 1, 7)
   schedule.add(insurance_payment, insurance_expr)
-  
+
   # Run a report
   report = Report.new(schedule)
   result = report.list(PDate.day(2008, 1, 1)..PDate.day(2008,1,31))

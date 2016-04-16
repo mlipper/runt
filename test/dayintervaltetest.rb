@@ -27,11 +27,11 @@ class DayIntervalTETest < BaseExpressionTest
     assert expr.include?(date + 4), "Expression #{expr.to_s} should include #{(date + 4).to_s}"
     assert !expr.include?(date + 3), "Expression #{expr.to_s} should not include #{(date + 3).to_s}"
   end
-  
+
   def test_to_s
     every_four_days = DayIntervalTE.new(Date.new(2006,2,26), 4)
     assert_equal "every 4th day after #{Runt.format_date(Date.new(2006,2,26))}", every_four_days.to_s
   end
 
-  
+
 end

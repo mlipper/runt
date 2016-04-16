@@ -32,7 +32,7 @@ class BaseExpressionTest < MiniTest::Unit::TestCase
     @pdate_2012050803 = PDate.hour(2012,5,8,3)          # 3am, Tuesday, May 8th, 2012
     @pdate_2012050815 = PDate.hour(2012,5,8,15)         # 3pm, Tuesday, May 8th, 2012
     @pdate_200401282100 = PDate.min(2004,1,28,21,0)     # 9:00pm, Wednesday, January 28th, 2004
-    @pdate_200401280000 = PDate.min(2004,1,28,0,0)      # 12:00am, Wednesday, January 28th, 2004 
+    @pdate_200401280000 = PDate.min(2004,1,28,0,0)      # 12:00am, Wednesday, January 28th, 2004
     @pdate_200401280001 = PDate.min(2004,1,28,0,1)      # 12:01am, Wednesday, January 28th, 2004
     @pdate_200405010806 = PDate.min(2004,5,1,8,6)       # 8:06am, Saturday, May 1st, 2004
     @pdate_200405030906 = PDate.min(2004,5,3,9,6)       # 9:06am, Monday, May 3rd, 2004

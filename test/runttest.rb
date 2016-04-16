@@ -3,11 +3,11 @@
 require 'minitest_helper'
 
 class RuntModuleTest < MiniTest::Unit::TestCase
-  
+
   def test_last
     assert Runt::Last == -1
   end
-  
+
   def test_last_of
     assert Runt::Last_of == -1
   end
@@ -33,7 +33,7 @@ class RuntModuleTest < MiniTest::Unit::TestCase
       i=i+1
     end
   end
-  
+
   def test_month_name
     i=0
     Date::MONTHNAMES.each do |n|

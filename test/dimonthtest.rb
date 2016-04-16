@@ -27,7 +27,7 @@ class DIMonthTest < BaseExpressionTest
   def test_dates_mixin_last_friday
     dates = DIMonth.new(Last, Friday).dates(@date_range)
     assert dates.size == 12
-    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     dates.each do |d|
       assert @date_range.include?(d)
       assert d.wday == 5 # friday
@@ -46,12 +46,12 @@ class DIMonthTest < BaseExpressionTest
     assert expr.include?(@date_20040109), "Second Friday of the month should include #{@date_20040109.to_s}"
     assert !expr.include?(@date_20040116), "Second Friday of the month should not include #{@date_20040116.to_s}"
   end
-  
+
   def test_last_sunday_of_the_month
     expr = DIMonth.new(Last_of,Sunday)
     assert expr.include?(@date_20040125), "Last Sunday of the month should include #{@date_20040125}"
   end
-  
+
   def test_to_s
     assert_equal 'last Sunday of the month', DIMonth.new(Last_of,Sunday).to_s
   end

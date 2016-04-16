@@ -12,12 +12,12 @@ class CombinedExpressionTest < BaseExpressionTest
     expr = DIMonth.new(Last, Friday) | DIMonth.new(First, Tuesday)
     dates = expr.dates(date_range)
     assert_equal 24, dates.size, "Expected 24 dates in 2005 which were either on the last Friday or first Tuesday of the month"
-    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] 
+    month_days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     dates.each do |d|
       unless (d.wday == 2 and d.day < 8) or \
         (d.wday == 5 and d.day > month_days[d.month-1] - 8)
         # Fail
-        assert false, d.to_s 
+        assert false, d.to_s
       end
     end
   end
@@ -65,7 +65,7 @@ class CombinedExpressionTest < BaseExpressionTest
     memorial_day = REYear.new(5) & DIMonth.new(Last,Monday)
     # May 29th, 2006
     last_monday_in_may = @pdate_200605291012
-    # Before 
+    # Before
     assert job.include?(last_monday_in_may), "Expression #{job.to_s} should include #{last_monday_in_may.to_s}"
     assert job.include?(@pdate_200605301400), "Expression #{job.to_s} should include #{@pdate_200605301400.to_s}"
     # Add Diff expression
@@ -153,7 +153,7 @@ class CombinedExpressionTest < BaseExpressionTest
     #   e2 = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     #   ticket = e1 | e2
   end
-  
+
   def test_dates_every_four_hours_on_tuesdays
     # 3am, Tuesday, May 8th, 2012 to 3am Wednesday, May 9th, 2012
     range = DateRange.new(@pdate_2012050803, PDate.new(2012,5,9,15))

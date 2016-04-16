@@ -31,12 +31,12 @@ class EveryTETest < BaseExpressionTest
     assert !expr.include?(date + 1), "Expression #{expr.to_s} should not include #{(date + 1).to_s}"
     assert !expr.include?(date - 3), "Expression #{expr.to_s} should not include #{(date - 3).to_s}"
   end
-  
-  
+
+
   def test_to_s
     date=@pdate_20071116100030
     every_thirty_seconds=EveryTE.new(date, 30)
     assert_equal "every 30 seconds starting #{Runt.format_date(date)}", every_thirty_seconds.to_s
   end
-  
+
 end

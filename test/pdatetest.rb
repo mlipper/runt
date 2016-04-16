@@ -73,7 +73,7 @@ class PDateTest < MiniTest::Unit::TestCase
   def test_minus
     assert(PDate.year(1998,12)==(@year_prec-12))
     assert(PDate.month(2002,6)==(@month_prec-26))
-    assert(PDate.week(2004,1,11)==(@week_prec-2))    
+    assert(PDate.week(2004,1,11)==(@week_prec-2))
     #Hmmm...FIXME? @day_prec-26 == 12/31??
     assert(PDate.day(2003,12,30)==(@day_prec-26))
     assert(PDate.min(1999,12,31,21,57)==(@minute_prec-122))
@@ -146,17 +146,17 @@ class PDateTest < MiniTest::Unit::TestCase
 
     week_before = PDate.week(2004, 12, 19)
     week_after  = PDate.week(2004, 12, 27)
-        
+
     one_week.each do |week_prec|
       assert week_prec != week_before
       assert week_prec != week_after
     end
   end
-  
+
   def test_parse_with_precision
     month_parsed = PDate.parse('April 2004', :precision => PDate::MONTH)
     assert_equal month_parsed, PDate.month(2004,04)
     refute_equal month_parsed, PDate.year(2004,04)
   end
-  
+
 end

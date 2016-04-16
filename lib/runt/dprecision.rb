@@ -17,8 +17,8 @@ module Runt
 
     def DPrecision.to_p(date,prec=DEFAULT)
 	  has_p = date.respond_to?(:date_precision)
-	  #puts "DPrecision.to_p(#{date.class}<#{has_p ? date.date_precision : nil}>,#{prec})" 
-	  return date if PDate == date.class && (prec == date.date_precision) 
+	  #puts "DPrecision.to_p(#{date.class}<#{has_p ? date.date_precision : nil}>,#{prec})"
+	  return date if PDate == date.class && (prec == date.date_precision)
       case prec
         when MIN then PDate.min(*DPrecision.explode(date,prec))
         when DAY then PDate.day(*DPrecision.explode(date,prec))
@@ -89,8 +89,8 @@ module Runt
 
       def Precision.week
         new(WEEK_PREC)
-      end 
-      
+      end
+
       def Precision.day
         new(DAY_PREC)
       end

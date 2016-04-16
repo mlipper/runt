@@ -11,7 +11,7 @@ class ReminderTest < Test::Unit::TestCase
   def setup
     @schedule = Schedule.new
     @north_event = Event.new("north side of the street will be ticketed")
-    north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)  
+    north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     @schedule.add(@north_event, north_expr)
     @south_event = Event.new("south side of the street will be ticketed")
     south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)

@@ -34,7 +34,7 @@ module Runt
         pdate.date_precision = precision
         pdate
       end
-      
+
       def parse(*args)
         opts = args.last.is_a?(Hash) ? args.pop : {}
         pdate = super(*args)
@@ -43,7 +43,7 @@ module Runt
       end
 
 	  alias_method :new, :civil
-      
+
     end
 
     def include?(expr)
@@ -59,7 +59,7 @@ module Runt
       when MONTH then
         return DPrecision::to_p((self.to_date>>n),@date_precision)
       when WEEK then
-        ndays = n*7	
+        ndays = n*7
       when DAY then
         ndays = n
       when HOUR then
@@ -115,7 +115,7 @@ module Runt
     def PDate.week( yr,mon,day,*ignored )
       #LJK: need to calculate which week this day implies,
       #and then move the day back to the *first* day in that week;
-      #note that since rfc2445 defaults to weekstart=monday, I'm 
+      #note that since rfc2445 defaults to weekstart=monday, I'm
       #going to use commercial day-of-week
       raw = PDate.day(yr, mon, day)
       cooked = PDate.commercial(raw.cwyear, raw.cweek, 1)
@@ -149,8 +149,8 @@ module Runt
 
 	#FIXME: marshall broken in 1.9
     #
-    # Custom dump which preserves DatePrecision   
-    # 
+    # Custom dump which preserves DatePrecision
+    #
     # Author:: Jodi Showers
     #
     def marshal_dump
@@ -159,8 +159,8 @@ module Runt
 
 	#FIXME: marshall broken in 1.9
     #
-    # Custom load which preserves DatePrecision   
-    # 
+    # Custom load which preserves DatePrecision
+    #
     # Author:: Jodi Showers
     #
     def marshal_load(dumped_obj)

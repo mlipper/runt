@@ -39,5 +39,5 @@ class REDayTest < BaseExpressionTest
 	assert !expr.include?(@date_19611101), \
 	  "Expression #{expr.to_s} created with less_precise_match=false should not hurl when given a Date instance"
   end
-  
+
 end

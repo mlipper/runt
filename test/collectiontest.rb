@@ -21,7 +21,7 @@ class CollectionTest < BaseExpressionTest
     #base class that should always return false
     assert !@expr.include?(StubExpression.new(true)), "Collection#include? should always return false"
   end
-  
+
 
   def test_to_s
     assert_equal 'empty', @expr.to_s

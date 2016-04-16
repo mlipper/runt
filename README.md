@@ -21,12 +21,12 @@ a_monday = Date.new(2013,5,13)                  # Monday, May 13 - has "day-leve
 a_wednesday = DateTime.new(2013,5,15,8,45)      # Wednesday, May 15 at 8:45am - has "minute-level" precision
 
 monday_expr = DIWeek.new(Mon)                   # Matches any Monday
-monday_expr.include?(a_monday)                  # => true 
-monday_expr.include?(a_wednesday)               # => false 
+monday_expr.include?(a_monday)                  # => true
+monday_expr.include?(a_wednesday)               # => false
 
 wednesday_expr = DIWeek.new(Wed)                # Matches any Wednesday
-wednesday_expr.include?(a_monday)               # => false 
-wednesday_expr.include?(a_wednesday)            # => true 
+wednesday_expr.include?(a_monday)               # => false
+wednesday_expr.include?(a_wednesday)            # => true
 
 #
 # Use an "OR" between two expressions
@@ -35,17 +35,17 @@ mon_or_wed_expr = monday_expr | wednesday_expr  # Matches any Monday OR any Wedn
 mon_or_wed_expr.include?(a_monday)              # => true
 mon_or_wed_expr.include?(a_wednesday)           # => true
 
-daily_8_to_11_expr =REDay.new(8,00,11,00,false) # Matches from 8am to 11am on ANY date. 
-                                                # The 'false' argument says not to auto-match 
+daily_8_to_11_expr =REDay.new(8,00,11,00,false) # Matches from 8am to 11am on ANY date.
+                                                # The 'false' argument says not to auto-match
                                                 # expressions of lesser precision.
 
 at_9 = DateTime.new(2013,5,12,9,0)              # Sunday, May 12 at 9:00am
-daily_8_to_11_expr.include?(at_9)               # => true 
+daily_8_to_11_expr.include?(at_9)               # => true
 #
-# On the next line, the given Date instance is "promoted" to the minute-level precision 
+# On the next line, the given Date instance is "promoted" to the minute-level precision
 # required by the temporal expression so the time component defaults to 00:00
 #
-daily_8_to_11_expr.include?(a_monday)           # => false 
+daily_8_to_11_expr.include?(a_monday)           # => false
 
 #
 # Use an "AND" between two expressions to match
@@ -68,9 +68,9 @@ mon_or_wed_8_to_11_expr.include?(a_wednesday)   # => true - a Wednesday at 8:45
 
 ## Etc...
 
-**Author:** Matthew Lipper <mlipper@gmail.com>  
+**Author:** Matthew Lipper <mlipper@gmail.com>
 
-**Requires:** Tested with J/Ruby 1.8.7, 1.9.3 and Ruby 2.0.x 
+**Requires:** Tested with J/Ruby 1.8.7, 1.9.3 and Ruby 2.0.x
 
 **License:** Released under the MIT License (see LICENSE.txt).
 

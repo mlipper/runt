@@ -13,7 +13,7 @@ module Runt
     end
 
     #  Schedule event to occur using the given expression.
-    #  NOTE: version 0.5.0 no longer uses an Array of ScheduleElements 
+    #  NOTE: version 0.5.0 no longer uses an Array of ScheduleElements
     #  internally to hold data. This would only matter to clients if they
     #  they depended on the ability to call add multiple times for the same
     #  event. Use the update method instead.
@@ -30,7 +30,7 @@ module Runt
       end
       result
     end
-    
+
     def scheduled_dates(date_range)
       @elems.values.collect{|expr| expr.dates(date_range)}.flatten.sort.uniq
     end
@@ -50,10 +50,10 @@ module Runt
     end
 
     #
-    # Selects events using the user supplied block/Proc. The Proc must accept 
-    # two parameters: an Event and a TemporalExpression. It will be called 
+    # Selects events using the user supplied block/Proc. The Proc must accept
+    # two parameters: an Event and a TemporalExpression. It will be called
     # with each existing Event-expression pair at which point it can choose
-    # to include the Event in the final result by returning true or to filter 
+    # to include the Event in the final result by returning true or to filter
     # it by returning false.
     #
     def select(&block)
@@ -63,7 +63,7 @@ module Runt
     end
 
     #
-    # Call the supplied block/Proc with the currently configured 
+    # Call the supplied block/Proc with the currently configured
     # TemporalExpression associated with the supplied Event.
     #
     def update(event,&block)
@@ -76,14 +76,14 @@ module Runt
         start_date = event.start_date if start_date.nil? || start_date > event.start_date
         end_date = event.end_date if end_date.nil? || end_date < event.end_date
       end
-      
+
       scheduled_dates(DateRange.new(start_date, end_date)).inject({}) do |h, date|
         h[date] = events(date).collect{|e| e.send(event_attribute)}
         h
       end
     end
   end
-  
+
   # TODO: Extend event to take other attributes
 
   class Event

@@ -24,7 +24,7 @@ class UnionTest < BaseExpressionTest
     assert @union.include?(@date), "Union instance should include any dates"
 
   end
-  
+
   def test_to_s
     assert_equal 'empty', @union.to_s
     @union.add(@stub1)
@@ -32,5 +32,5 @@ class UnionTest < BaseExpressionTest
     @union.add(@stub2)
     assert_equal 'every ' + @stub1.to_s + ' or ' + @stub2.to_s, @union.to_s
   end
-  
+
 end

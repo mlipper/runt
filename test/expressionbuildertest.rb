@@ -12,9 +12,9 @@ class ExpressionBuilderTest < MiniTest::Unit::TestCase
     @builder.define do
       @ctx = "meow"
     end
-    assert_equal "meow", @builder.ctx, "Expected instance variable @ctx to be set by block"  
+    assert_equal "meow", @builder.ctx, "Expected instance variable @ctx to be set by block"
   end
-  
+
   def test_add_should_initialize_empty_ctx_with_expression
     result = @builder.add('expr',:to_s)
     assert_equal 'expr', result, "Result should equal string given to add method"
@@ -48,7 +48,7 @@ class ExpressionBuilderTest < MiniTest::Unit::TestCase
     assert_equal 3, result, "Result should equal 3 == 1 | 2"
     assert_equal 3, @builder.ctx, "Builder context should equal result"
   end
-  
+
   def test_builder_created_expression_should_equal_manually_created_expression
     manual = Runt::REDay.new(8,45,9,30) & Runt::DIWeek.new(Runt::Friday) | \
       Runt::DIWeek.new(Runt::Saturday) -  Runt::DIMonth.new(Runt::Last, Runt::Friday)

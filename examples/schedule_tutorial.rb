@@ -3,7 +3,7 @@
 require 'runt'
 
 class Reminder
-  
+
   TO = "me@myselfandi.com"
   FROM = "reminder@daemon.net"
   SUBJECT = "Move your car!"
@@ -34,7 +34,7 @@ class MailServer
   def send(to, from, subject, text)
     puts "Sending message TO: #{to} FROM: #{from} RE: #{subject}..." if $DEBUG
     Struct::Email.new(to, from, subject, text)
-   # etc... 
+   # etc...
   end
 end
 
@@ -48,7 +48,7 @@ if __FILE__ == $0
   north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
   schedule.add(north_event, north_expr)
   south_event = Event.new("south side")
-  south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)      
+  south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
   schedule.add(south_event, south_expr)
   reminder = Reminder.new(schedule, MailServer.new)
   while true

@@ -23,10 +23,10 @@ class Reminder
   def next_times(event,end_point,now=Time.now)
     @schedule.dates(event,DateRange.new(now,end_point))
   end
-end 
+end
 
 # start of range whose occurrences we want to list
-# TODO fix Runt so this can be done with Time instead 
+# TODO fix Runt so this can be done with Time instead
 #      e.g., now=Time.now
 #now=Time.parse("13:00")
 #now.date_precision=Runt::DPrecision::MIN
@@ -39,10 +39,10 @@ soon=(now + 10.minutes)
 print "start: #{now.to_s} (#{now.date_precision}) end: #{soon.to_s} (#{soon.date_precision})\n"
 
 #
-# Schedule used to house TemporalExpression describing the recurrence from 
+# Schedule used to house TemporalExpression describing the recurrence from
 # which we'd list to generate a list of dates. In this example, some Event
 # occuring every 5 minutes.
-# 
+#
 schedule=Runt::Schedule.new
 
 # Some event whose schedule we're interested in
@@ -52,7 +52,7 @@ event=Runt::Event.new("whatever")
 # NOTE: any Object that is a sensible Hash key can be used
 schedule.add(event,Runt::EveryTE.new(now,5.minutes))
 
-# Example domain Object using Runt 
+# Example domain Object using Runt
 reminder=Reminder.new(schedule)
 
 # Call our domain Object with the start and end times and the event

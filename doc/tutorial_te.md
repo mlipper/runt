@@ -35,7 +35,7 @@ expr.include?(Date.new(2004,3,18)) #Thurs 3/18/04 => false
 expr.include?(Date.new(2004,8,27)) #Fri 8/27/04 => false
 ```
 
-A couple things are worth noting before we move on to more complicated expressions. 
+A couple things are worth noting before we move on to more complicated expressions.
 
 Clients use temporal expressions by creating specific instances (`DIMonth` == day in month, `REYear` == range each year) and then, optionally, combining them using various familiar operators  `( & , | , - )`.
 
@@ -82,7 +82,7 @@ mon_wed_fri.include?( DateTime.new(2004,3,10,19,15) )     # Wed => true
 mon_wed_fri.include?( DateTime.new(2004,3,14,9,00) )      # Sun => false
 ```
 
-8am to 11am: 
+8am to 11am:
 
 ```ruby
 eight_to_eleven = REDay.new(8,00,11,00)
@@ -93,7 +93,7 @@ combine the two:
 expr1 = mon_wed_fri & eight_to_eleven
 ```
 
-and, logically speaking, we now have '(Mon **OR** Wed **OR** Fri)  **AND** (8am to 11am)'. We're halfway there. 
+and, logically speaking, we now have '(Mon **OR** Wed **OR** Fri)  **AND** (8am to 11am)'. We're halfway there.
 
 Tuesdays and Thursdays:
 

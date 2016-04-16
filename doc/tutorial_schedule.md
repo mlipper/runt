@@ -4,7 +4,7 @@
 
 * In his [paper](http://martinfowler.com/apsupp/recurring.pdf) about recurring events, Martin Fowler also discusses a simple schedule API which is used, surprisingly enough, to build a schedule. We're not going to cover the pattern itself in this tutorial as Fowler already does a nice job. Because it is such a simple pattern (once you invent it!), you'll be able understand it even if you decide not to read his paper.
 
-So, let's pretend that I own a car. Since I don't want to get a ticket, I decide to create an application which will tell me where and when I can park it on my street. (Since this is all make believe anyway, my car is a late 60's model black Ford Mustang with flame detailing (and on the back seat is one million dollars)). 
+So, let's pretend that I own a car. Since I don't want to get a ticket, I decide to create an application which will tell me where and when I can park it on my street. (Since this is all make believe anyway, my car is a late 60's model black Ford Mustang with flame detailing (and on the back seat is one million dollars)).
 
 We'll build a Runt Schedule that models the parking regulations. Our app  will check this Schedule at regular intervals and send us reminders to  move our car so we don't get a ticket. YAY!
 
@@ -18,15 +18,15 @@ Thus...
 
 <pre>
     #############################   #############################
-    #                           #   #                           #                             
-    #       NO PARKING          #   #       NO PARKING          #                            
-    #                           #   #                           #                            
-    #  Mon, Wed, Fri 8am-11am   #   #  Tu, Th 11:30am-2:00pm    #                            
-    #                           #   #                           #                            
-    #                           #   #                           #                             
-    #  Violators will be towed! #   #  Violaters will be towed! #                            
-    #                           #   #                           #                            
-    #############################   #############################                          
+    #                           #   #                           #
+    #       NO PARKING          #   #       NO PARKING          #
+    #                           #   #                           #
+    #  Mon, Wed, Fri 8am-11am   #   #  Tu, Th 11:30am-2:00pm    #
+    #                           #   #                           #
+    #                           #   #                           #
+    #  Violators will be towed! #   #  Violaters will be towed! #
+    #                           #   #                           #
+    #############################   #############################
                 # #                              # #
                 # #                              # #
                 # #                              # #
@@ -34,12 +34,12 @@ Thus...
       North side of the street      South side of the street
 </pre>
 
-We'll start by creating temporal expressions which describe the verboten parking times: 
+We'll start by creating temporal expressions which describe the verboten parking times:
 
 ```ruby
-north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)  
+north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
 
-south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)  
+south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
 ```
 
 What we need at this point is a way to write queries against these expressions to determine whether we need to send a reminder. For this purpose, we can use a Schedule and an associated Event, both of which are supplied by Runt.
@@ -76,7 +76,7 @@ class Schedule
 ...
 ```
 
-Now that we have a Schedule configured, we need something to check it and then let us know if we need to move the car. For this, we'll create a simple class called Reminder which will function as the "main-able" part of  our app.  We'll start by creating an easily testable constructor which will be passed a Schedule instance (like the one we just created) and an SMTP server. 
+Now that we have a Schedule configured, we need something to check it and then let us know if we need to move the car. For this, we'll create a simple class called Reminder which will function as the "main-able" part of  our app.  We'll start by creating an easily testable constructor which will be passed a Schedule instance (like the one we just created) and an SMTP server.
 
 ```ruby
 class Reminder
@@ -100,7 +100,7 @@ class ReminderTest < Test::Unit::TestCase
   def setup
     @schedule = Schedule.new
     @north_event = Event.new("north side of the street will be ticketed")
-    north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)  
+    north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     @schedule.add(@north_event, north_expr)
     @south_event = Event.new("south side of the street will be ticketed")
     south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
@@ -128,7 +128,7 @@ class MailServer
 
   def send(to, from, subject, text)
     Struct::Email.new(to, from, subject, text)
-    # etc... 
+    # etc...
   end
 
 end
@@ -174,7 +174,7 @@ class Reminder
   ...
 ```
 
-Testing this is simple thanks to our MailServer stub which simply regurgitates the text argument it's passed as a result. 
+Testing this is simple thanks to our MailServer stub which simply regurgitates the text argument it's passed as a result.
 
 ```ruby
 class ReminderTest < Test::Unit::TestCase
@@ -227,7 +227,7 @@ north_event = Event.new("north side")
 north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
 schedule.add(north_event, north_expr)
 south_event = Event.new("south side")
-south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)      
+south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
 schedule.add(south_event, south_expr)
 reminder = Reminder.new(schedule, MailServer.new)
 while true
@@ -278,7 +278,7 @@ class MailServer
     def send(to, from, subject, text)
       puts "Sending message TO: #{to} FROM: #{from} RE: #{subject}..." if $DEBUG
       Struct::Email.new(to, from, subject, text)
-     # etc... 
+     # etc...
     end
 
 end
@@ -292,7 +292,7 @@ if __FILE__ == $0
     north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
     schedule.add(north_event, north_expr)
     south_event = Event.new("south side")
-    south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)      
+    south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)
     schedule.add(south_event, south_expr)
     reminder = Reminder.new(schedule, MailServer.new)
     while true
@@ -315,7 +315,7 @@ class ReminderTest < Test::Unit::TestCase
     def setup
       @schedule = Schedule.new
       @north_event = Event.new("north side of the street will be ticketed")
-      north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)  
+      north_expr = (DIWeek.new(Mon) | DIWeek.new(Wed) | DIWeek.new(Fri)) & REDay.new(8,00,11,00)
       @schedule.add(@north_event, north_expr)
       @south_event = Event.new("south side of the street will be ticketed")
       south_expr = (DIWeek.new(Tue) | DIWeek.new(Thu)) & REDay.new(11,30,14,00)

@@ -18,5 +18,5 @@ class YearTETest < BaseExpressionTest
   def test_to_s
     assert_equal 'during the year 1934', YearTE.new(1934).to_s
   end
-  
+
 end

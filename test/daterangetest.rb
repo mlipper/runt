@@ -53,10 +53,10 @@ class DateRangeTest < MiniTest::Unit::TestCase
     assert(o_range.overlap?(range))
     assert(o_range.overlap?(DateRange.new(r_start,o_end)))
     assert(o_range.overlap?(DateRange.new(o_start,r_end)))
-        
-    # September 18th - 19th, 2005, 8am - 10am 
-    expr1=DateRange.new(PDate.day(2005,9,18),PDate.day(2005,9,19)) 
-    # September 19th - 20th, 2005, 9am - 11am 
+
+    # September 18th - 19th, 2005, 8am - 10am
+    expr1=DateRange.new(PDate.day(2005,9,18),PDate.day(2005,9,19))
+    # September 19th - 20th, 2005, 9am - 11am
     expr2=DateRange.new(PDate.day(2005,9,19),PDate.day(2005,9,20))
 
     assert(expr1.overlap?(expr2))

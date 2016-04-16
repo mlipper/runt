@@ -21,7 +21,7 @@ class SugarTest < MiniTest::Unit::TestCase
     assert_equal Runt::Monday, Runt.const('monday'), \
       "Expected #{Runt::Monday} but was #{Runt.const('monday')}"
   end
-  
+
   def test_method_missing_should_define_dimonth
       make_ordinals.each do |ordinal|
         make_days.each do |day|
@@ -32,7 +32,7 @@ class SugarTest < MiniTest::Unit::TestCase
 	end
       end
   end
-  
+
   def test_method_missing_should_define_diweek
     assert_expression(DIWeek.new(Monday), self.monday)
     assert_expression(DIWeek.new(Tuesday), self.tuesday)
@@ -77,7 +77,7 @@ class SugarTest < MiniTest::Unit::TestCase
 	end_day = rand(27) + 1
         if st_mon_number == end_mon_number && st_day > end_day then
 	  st_day, end_day = end_day, st_day
-	end	  
+	end
 	#puts "Checking #{st_month} #{st_day} - #{end_month} #{end_day}"
 	assert_expression REYear.new(st_mon_number, st_day, end_mon_number, end_day), \
 	  self.send('yearly_' + st_month + '_' + st_day.to_s + '_to_' + end_month + '_' + end_day.to_s)
@@ -109,7 +109,7 @@ class SugarTest < MiniTest::Unit::TestCase
     assert !result.instance_variable_get("@inclusive")
   end
 
-  private 
+  private
   def assert_expression(expected, actual)
     assert_equal expected.to_s, actual.to_s, \
       "Expected #{expected.to_s} but was #{actual.to_s}"
