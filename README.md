@@ -70,7 +70,7 @@ mon_or_wed_8_to_11_expr.include?(a_wednesday)   # => true - a Wednesday at 8:45
 
 **Author:** Matthew Lipper <mlipper@gmail.com>
 
-**Requires:** Tested with J/Ruby 1.8.7, 1.9.3 and Ruby 2.0.x
+**Requires:** Tested with J/Ruby 1.8.7, 1.9.3 and Ruby 2.0.0, 2.2
 
 **License:** Released under the MIT License (see LICENSE.txt).
 

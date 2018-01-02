@@ -229,8 +229,10 @@ end
 #
 # Useful shortcuts!
 #
-# Contributed by Ara T. Howard who is pretty sure he got the idea from
+# Originally contributed by Ara T. Howard who is pretty sure he got the idea from
 # somewhere else. :-)
+#
+# Patched by rgeerts in GH pull-request #17
 #
 class Numeric #:nodoc:
   def microseconds() Float(self  * (10 ** -6)) end unless self.instance_methods.include?(:microseconds)
